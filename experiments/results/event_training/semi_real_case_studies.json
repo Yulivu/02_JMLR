@@ -1,0 +1,80 @@
+[
+  {
+    "task": "product_code",
+    "seed": 0,
+    "tokens": "I B8 dash Z2 0 I1",
+    "gold": "IB-201",
+    "baseline_pred": "182201",
+    "baseline_constrained_pred": "IA-001",
+    "event_pred": "IB-201",
+    "event_constrained_pred": "IB-201",
+    "baseline_p_event": 0.22767122089862823,
+    "event_p_event": 0.7088837027549744,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  },
+  {
+    "task": "product_code",
+    "seed": 0,
+    "tokens": "Z2 O0 - Z 0 B8",
+    "gold": "ZO-208",
+    "baseline_pred": "Z-6208",
+    "baseline_constrained_pred": "ZC-208",
+    "event_pred": "ZZ-208",
+    "event_constrained_pred": "ZZ-208",
+    "baseline_p_event": 0.341743528842926,
+    "event_p_event": 0.7319820523262024,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  },
+  {
+    "task": "product_code",
+    "seed": 0,
+    "tokens": "O D0 _ Z2 O 1",
+    "gold": "OD-201",
+    "baseline_pred": "O-6201",
+    "baseline_constrained_pred": "OS-001",
+    "event_pred": "OS-201",
+    "event_constrained_pred": "OS-201",
+    "baseline_p_event": 0.34742891788482666,
+    "event_p_event": 0.9293792843818665,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  },
+  {
+    "task": "product_code",
+    "seed": 1,
+    "tokens": "A4 1 - 4 Z2 I1",
+    "gold": "AI-421",
+    "baseline_pred": "AO-4ZI",
+    "baseline_constrained_pred": "AO-461",
+    "event_pred": "AC-421",
+    "event_constrained_pred": "AC-421",
+    "baseline_p_event": 0.3097688555717468,
+    "event_p_event": 0.8975216150283813,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  },
+  {
+    "task": "product_code",
+    "seed": 1,
+    "tokens": "5 B8 - 9 I1 S5",
+    "gold": "SB-915",
+    "baseline_pred": "SB-9IS",
+    "baseline_constrained_pred": "SB-905",
+    "event_pred": "SB-905",
+    "event_constrained_pred": "SB-905",
+    "baseline_p_event": 0.4057929515838623,
+    "event_p_event": 0.781629741191864,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  },
+  {
+    "task": "product_code",
+    "seed": 1,
+    "tokens": "I A _ B 2 I1",
+    "gold": "IA-821",
+    "baseline_pred": "BA-82I",
+    "baseline_constrained_pred": "BA-825",
+    "event_pred": "BA-821",
+    "event_constrained_pred": "BA-821",
+    "baseline_p_event": 0.421860933303833,
+    "event_p_event": 0.9432013630867004,
+    "comment": "hard constraint gives a legal output, but baseline posterior event mass is low"
+  }
+]

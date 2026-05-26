@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Keep curated current artifacts, but ignore future bulky run folders by default.
+experiments/runs/
+experiments/results/**/autodl_jmlr_block/

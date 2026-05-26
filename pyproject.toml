@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tensor-crf-jmlr"
+version = "0.1.0"
+description = "Reference code and experiments for regular-language posterior events in CRFs."
+requires-python = ">=3.10"
+dependencies = [
+  "torch",
+  "pandas",
+  "openpyxl",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = [
+  "src/tensor_crf_jmlr/posterior_event_algebra",
+  "src/tensor_crf_jmlr/event_training/tests",
+]
