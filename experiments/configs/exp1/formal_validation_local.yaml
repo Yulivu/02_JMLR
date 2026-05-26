@@ -1,0 +1,4 @@
+id: formal_validation_local
+module: tensor_crf_jmlr.event_training.formal_validation_runner
+args:
+  seed_count: 10

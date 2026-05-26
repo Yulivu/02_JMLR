@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass
 from math import sqrt
 from pathlib import Path
 from statistics import mean, stdev
-from typing import Iterable, Sequence
+from typing import Sequence
 
 import torch
 
@@ -897,7 +897,7 @@ def _markdown_trim(lines: list[str], *, max_rows: int) -> list[str]:
     rows = lines[2:]
     if len(rows) <= max_rows:
         return lines
-    return header + rows[:max_rows] + [f"| ... | ... | ... | ... | ... | ... | ... | ... |"]
+    return header + rows[:max_rows] + ["| ... | ... | ... | ... | ... | ... | ... | ... |"]
 
 
 def main_settings(seed_count: int) -> tuple[list[ProbeSetting], list[ProbeSetting], list[ProbeSetting]]:

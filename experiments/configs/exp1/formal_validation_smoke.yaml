@@ -1,0 +1,6 @@
+id: formal_validation_smoke
+module: tensor_crf_jmlr.event_training.formal_validation_runner
+args:
+  seed_count: 1
+  tasks:
+    - LLDDD

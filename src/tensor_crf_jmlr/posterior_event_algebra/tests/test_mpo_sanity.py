@@ -2,7 +2,6 @@
 
 import unittest
 
-from tensor_crf_jmlr.posterior_event_algebra.dfa import make_parity_monitor
 from tensor_crf_jmlr.posterior_event_algebra.mpo_sanity import (
     augmented_mode_order,
     augmented_mode_values,

@@ -47,6 +47,20 @@ python -c "import tensor_crf_jmlr; print('tensor_crf_jmlr import ok')"
 python -m pytest
 ```
 
+查看当前可复现实验 suite：
+
+```powershell
+python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml --dry-run
+```
+
+运行最小本地 smoke：
+
+```powershell
+python scripts/run_experiment_suite.py `
+  --suite experiments/suites/current_repro.yaml `
+  --task formal_validation_smoke
+```
+
 ## 推荐阅读顺序
 
 ```text

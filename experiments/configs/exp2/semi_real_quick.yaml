@@ -1,0 +1,8 @@
+id: semi_real_quick
+module: tensor_crf_jmlr.event_training.semi_real_format_probe
+args:
+  seed_count: 1
+  quick: true
+  tasks:
+    - product_code
+    - amount

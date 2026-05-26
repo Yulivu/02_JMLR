@@ -15,7 +15,6 @@ import random
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from statistics import mean
 from typing import Sequence
 
 import pandas as pd
@@ -26,11 +25,9 @@ from .semi_real_format_probe import (
     ProbeRun,
     ProbeSetting,
     SemiRealTask,
-    VariantConfig,
     build_vocab,
     encode,
     evaluate_model,
-    summarize_runs,
     train_model,
     write_outputs,
 )

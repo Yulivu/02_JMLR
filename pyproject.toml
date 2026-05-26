@@ -11,11 +11,13 @@ dependencies = [
   "torch",
   "pandas",
   "openpyxl",
+  "PyYAML",
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest",
+  "ruff",
 ]
 
 [tool.setuptools.packages.find]
@@ -27,3 +29,7 @@ testpaths = [
   "src/tensor_crf_jmlr/posterior_event_algebra",
   "src/tensor_crf_jmlr/event_training/tests",
 ]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

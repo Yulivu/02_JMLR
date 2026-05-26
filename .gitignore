@@ -7,7 +7,28 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+*.log
+*.tmp
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
 
-# Keep curated current artifacts, but ignore future bulky run folders by default.
-experiments/runs/
+# Data staging. Keep directory placeholders and the current retained small-field
+# research artifact, but ignore future raw/interim/processed drops by default.
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/online_retail.xlsx
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Keep curated current artifacts in experiments/results, but ignore raw runs and
+# bulky machine-specific experiment output by default.
+experiments/runs/*
+!experiments/runs/.gitkeep
 experiments/results/**/autodl_jmlr_block/
+experiments/visualizations/*.png
+experiments/visualizations/*.pdf
