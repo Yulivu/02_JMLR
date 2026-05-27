@@ -962,7 +962,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     write_plan(output_dir)
 
-    seed_count = 2 if args.quick else args.seed_count
+    seed_count = min(args.seed_count, 2) if args.quick else args.seed_count
     tasks = parse_task_names(args.tasks)
     main_settings_list, learning_settings_list, lambda_settings_list = main_settings(seed_count)
 

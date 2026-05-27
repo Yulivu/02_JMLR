@@ -1,10 +1,10 @@
 suite: current_repro
 description: Local reproducibility suite for pre-paper Tensor CRF posterior-event validation.
 tasks:
-  - id: formal_validation_smoke
+  - id: r0_controlled_smoke
     script: scripts/exp1/run_event_training_task.py
     config: experiments/configs/exp1/formal_validation_smoke.yaml
-    output_subdir: local_checks/formal_validation_smoke
+    output_subdir: local_checks/r0_controlled_smoke
     tags:
       - exp1
       - controlled
@@ -12,25 +12,25 @@ tasks:
       - machine:cpu
     enabled: true
 
-  - id: semi_real_quick
+  - id: r0_semi_real_smoke
     script: scripts/exp1/run_event_training_task.py
     config: experiments/configs/exp2/semi_real_quick.yaml
-    output_subdir: local_checks/semi_real_quick
+    output_subdir: local_checks/r0_semi_real_smoke
     tags:
       - exp2
       - semi-real
       - smoke
       - machine:cpu
-    enabled: false
+    enabled: true
 
-  - id: real_source_quick
+  - id: r0_real_source_smoke
     script: scripts/exp1/run_event_training_task.py
     config: experiments/configs/exp3/real_source_quick.yaml
-    output_subdir: local_checks/real_source_quick
+    output_subdir: local_checks/r0_real_source_smoke
     tags:
       - exp3
       - real-source
       - smoke
       - machine:cpu
       - needs:data/raw/online_retail.xlsx
-    enabled: false
+    enabled: true

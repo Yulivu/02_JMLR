@@ -58,7 +58,7 @@ python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.
 ```powershell
 python scripts/run_experiment_suite.py `
   --suite experiments/suites/current_repro.yaml `
-  --task formal_validation_smoke
+  --task r0_controlled_smoke
 ```
 
 ## 推荐阅读顺序
@@ -84,10 +84,12 @@ docs/references/REFERENCE_INDEX.md
 
 ## 当前状态
 
-方向、理论对象、实验路线已经固定；当前处在论文写作前的“实验与理论验证加固”阶段。
+方向、理论对象、实验路线已经固定；P3/P4 已本地通过，当前处在 P5-ready：可以开始 AutoDL/HPC 工程化，但还没有进入正式大规模实验或论文写作。
+
+总路线图和进度表见：`docs/PROJECT_OVERVIEW.md` 的“项目路线图与进度”。
 
 已支持：`P_theta(L|x)` 的小规模精确计算、有限 sanity、local/semi-real/real-source probes、baseline fairness 初审、AutoDL 正式实验 gate。
 
 未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
 
-下一步：冻结严格实验协议、冻结 public/real slice、完成本地 smoke，然后再决定是否上 AutoDL 扩展正式实验。
+下一步：在不改动冻结协议的前提下，做 AutoDL/HPC runner、device、config 适配；适配通过后再进入 formal runs。

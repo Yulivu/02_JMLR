@@ -185,10 +185,16 @@ def run_settings(
     return runs
 
 
-def write_case_studies(output_dir: Path, pools: dict[str, list[str]], seeds: Sequence[int]) -> list[CaseRow]:
+def write_case_studies(
+    output_dir: Path,
+    pools: dict[str, list[str]],
+    seeds: Sequence[int],
+    tasks: Sequence[SemiRealTask] = TASKS,
+) -> list[CaseRow]:
     from .semi_real_format_probe import log_event_probability, viterbi
 
-    task = next(task for task in TASKS if task.name == "stock_5d")
+    task_by_name = {task.name: task for task in tasks}
+    task = task_by_name.get("stock_5d", tasks[0])
     setting = ProbeSetting(
         block="real_case",
         name="real_case_l25_u100",
@@ -424,16 +430,19 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", default="experiments/results/event_training")
     parser.add_argument("--seed-count", type=int, default=5)
+    parser.add_argument("--tasks", nargs="*", default=[task.name for task in TASKS])
     parser.add_argument("--quick", action="store_true")
     args = parser.parse_args()
 
-    seed_count = 2 if args.quick else args.seed_count
+    seed_count = min(args.seed_count, 2) if args.quick else args.seed_count
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    task_by_name = {task.name: task for task in TASKS}
+    tasks = [task_by_name[name] for name in args.tasks]
 
     invoices, stocks = load_field_values()
     pools: dict[str, list[str]] = {}
-    for task in TASKS:
+    for task in tasks:
         pool = build_pool(task, invoices, stocks)
         if not pool:
             raise RuntimeError(f"empty pool for task {task.name}")
@@ -441,18 +450,18 @@ def main() -> None:
 
     main_settings, learning_settings, lambda_settings = make_settings(seed_count)
 
-    main_runs = run_settings(TASKS, pools, main_settings)
+    main_runs = run_settings(tasks, pools, main_settings)
     main_summary = write_outputs("real_small_data_main", main_runs, output_dir)
 
-    learning_tasks = [task for task in TASKS if task.name in {"invoice_6d", "stock_5d"}]
+    learning_tasks = [task for task in tasks if task.name in {"invoice_6d", "stock_5d"}]
     learning_runs = run_settings(learning_tasks, pools, learning_settings)
     learning_summary = write_outputs("real_small_data_learning", learning_runs, output_dir)
 
-    lambda_tasks = [task for task in TASKS if task.name in {"invoice_6d", "stock_5d"}]
+    lambda_tasks = [task for task in tasks if task.name in {"invoice_6d", "stock_5d"}]
     lambda_runs = run_settings(lambda_tasks, pools, lambda_settings)
     lambda_summary = write_outputs("real_small_data_lambda", lambda_runs, output_dir)
 
-    cases = write_case_studies(output_dir, pools, seeds=tuple(range(min(3, seed_count))))
+    cases = write_case_studies(output_dir, pools, seeds=tuple(range(min(3, seed_count))), tasks=tasks)
 
     write_reports(output_dir, main_summary, learning_summary, lambda_summary, cases)
 

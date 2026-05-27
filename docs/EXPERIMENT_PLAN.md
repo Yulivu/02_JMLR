@@ -237,7 +237,71 @@ Hard rule:
 Do not handle AutoDL/HPC engineering before S0-S4 pass.
 ```
 
-## 8. Go / No-Go
+## 8. P3/P4 Gate Snapshot
+
+冻结日期：2026-05-27
+
+### P3 Frozen Decisions
+
+| Item | Frozen Decision | Status | Notes |
+|---|---|---|---|
+| Target claims | C1 computation, C2 training signal, C3 diagnostic signal | frozen | 不主张 benchmark superiority |
+| Baseline set | B0-B6 required; B7 WFST-style design-if-feasible | frozen | B5/B6 是 reviewer pressure baseline |
+| Primary metrics | `mean_p_event`, delta, legal rate, char/exact accuracy, diagnostic bottom/top gap | frozen | 主表必须有 mean/CI/up-rate/negative cases |
+| Controlled tasks | DATE, DDDLL, LL-DDD, LLDDD | frozen | R0 smoke uses LLDDD |
+| Semi-real tasks | amount, date, dose, product_code | frozen | R0 smoke uses product_code |
+| Public/real slice v1 | UCI Online Retail field slice: `invoice_6d`, `invoice_c6d`, `stock_5d` | frozen-with-scope | public real-source small-field block, not standalone benchmark claim |
+| Formal run list | R0-R7 table in this document | frozen | Changes require explicit protocol update before seeing results |
+| Output routing | new runs under `experiments/runs/`; curated results under `experiments/results/` | frozen | AutoDL block remains ignored until explicitly curated |
+
+### Public / Real Slice v1
+
+| Slice ID | Source | Fields | Rule IDs | Claim Boundary |
+|---|---|---|---|---|
+| `retail_fields_v1` | UCI Online Retail, local copy at `data/raw/online_retail.xlsx` | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | real-source small-field evidence only; not a general OCR or benchmark-superiority claim |
+
+### P4 R0 Smoke Suite
+
+| R0 Task | Block | Config | Output Bundle | Required |
+|---|---|---|---|---|
+| `r0_controlled_smoke` | controlled format | `experiments/configs/exp1/formal_validation_smoke.yaml` | `experiments/runs/local_checks/r0_controlled_smoke/` | yes |
+| `r0_semi_real_smoke` | semi-real format | `experiments/configs/exp2/semi_real_quick.yaml` | `experiments/runs/local_checks/r0_semi_real_smoke/` | yes |
+| `r0_real_source_smoke` | real-source small-field | `experiments/configs/exp3/real_source_quick.yaml` | `experiments/runs/local_checks/r0_real_source_smoke/` | yes |
+
+Acceptance commands:
+
+```powershell
+python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml --dry-run
+python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml
+python scripts/analysis/audit_run_bundles.py `
+  --runs-dir experiments/runs/local_checks `
+  --require r0_controlled_smoke r0_semi_real_smoke r0_real_source_smoke
+python -m pytest
+python -m ruff check src scripts
+```
+
+P4 passes only if all required R0 bundles exist, each bundle has `resolved_config.yaml`, `run_metadata.json`, `summary.md`, and runner-produced run/summary artifacts, and pytest/ruff remain green.
+
+### P4 Validation Record
+
+验证日期：2026-05-27
+
+| Check | Command / Target | Status |
+|---|---|---|
+| R0 dry-run | `python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml --dry-run` | PASS |
+| R0 full smoke | `python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml` | PASS |
+| Bundle schema | `scripts/analysis/audit_run_bundles.py` over all three R0 bundles | PASS |
+| Tests | `python -m pytest` | PASS, 44 tests |
+| Lint | `python -m ruff check src scripts` | PASS |
+
+Conclusion:
+
+```text
+P3/P4 gate passed locally. The project may proceed to P5 AutoDL/HPC engineering,
+but must not change the frozen protocol without an explicit protocol revision.
+```
+
+## 9. Go / No-Go
 
 Proceed to AutoDL/HPC engineering only if:
 
@@ -257,7 +321,7 @@ metrics are not fixed;
 result-to-claim mapping is unclear.
 ```
 
-## 9. JMLR Decision Standard
+## 10. JMLR Decision Standard
 
 Maintain JMLR route only if:
 

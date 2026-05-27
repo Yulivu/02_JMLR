@@ -3,3 +3,5 @@ module: tensor_crf_jmlr.event_training.real_small_data_retail_probe
 args:
   seed_count: 1
   quick: true
+  tasks:
+    - stock_5d

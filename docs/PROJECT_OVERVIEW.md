@@ -36,7 +36,7 @@ P_theta(L|x)。
 当前阶段：
 
 ```text
-pre-paper solidification
+P5-ready: P3/P4 passed, AutoDL/HPC engineering not started
 ```
 
 已完成：
@@ -58,7 +58,47 @@ pre-paper solidification
 - 全任务/全 baseline diagnostic aggregation；
 - paper-writing gate。
 
-## 4. 当前最安全主张
+## 4. 项目路线图与进度
+
+当前处在：
+
+```text
+P5-ready: P3/P4 已通过，下一步才是 AutoDL/HPC 工程化
+```
+
+更具体地说：主问题、理论对象、代码骨架、初步证据、仓库结构已经稳定；JMLR 前实验协议、public/real slice v1、formal run list 和 R0 本地 smoke 已完成冻结与本地验收。现在还没有进入论文写作，也还没有进入正式 AutoDL/HPC 大规模实验。下一道关键门槛是 P5：只做工程适配，不提前修改实验协议。
+
+| Phase | 阶段目标 | 当前状态 | 已有产物 | 还缺什么 | 下一步判定 |
+|---|---|---|---|---|---|
+| P0 | 立项与问题定义 | done | 主线固定为 `Tensorized Regular-Language Posterior Algebra for CRFs` | 无关键缺口 | 已通过 |
+| P1 | 理论对象最小闭环 | mostly done | `P_theta(L|x)` 定义、DFA/product-transfer reference code、theory tests | fresh proof-check 和论文级证明文本 | 补 proof audit |
+| P2 | 本地机制验证 | mostly done | posterior algebra tests、event CRF tests、controlled/semi-real/real-source local probes | 不能当作正式 benchmark claim | 保留为路线证据 |
+| P3 | JMLR 前实验协议冻结 | done | `docs/EXPERIMENT_PLAN.md`、baseline table、formal run list、suite/config scaffold、public/real slice v1 | B7/WFST-style 仍是 design-if-feasible，不阻塞 P3 | 已通过 |
+| P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
+| P5 | AutoDL/HPC 工程化 | not started | AutoDL gate 已写入计划；P3/P4 已满足进入条件 | runner/device/config 还未适配 | 当前下一步 |
+| P6 | JMLR formal runs | not started | run list 已规划 | R1-R7 正式结果未跑完 | 产出完整 evidence package |
+| P7 | result-to-claim audit | not started | claim/evidence matrix 初版 | 需要根据正式结果更新主张边界 | 决定能写到什么强度 |
+| P8 | 论文写作前冻结 | not started | 当前 docs 可作为材料 | 最终实验、图表、反例、限制、复现实验说明 | 通过后进入写论文 |
+
+简化判断：
+
+```text
+项目不是早期想法阶段；已经进入“论文前扎实实验准备阶段”。
+P3/P4 已通过；但还不是 JMLR-ready，也还没有到正式写论文阶段。
+```
+
+主路线图入口：
+
+```text
+docs/EXPERIMENT_PLAN.md
+```
+
+其中最重要的两张表是：
+
+- `Formal Run List`：R0-R7，要跑哪些实验；
+- `Execution Order`：S0-S7，什么时候才能上 AutoDL/HPC。
+
+## 5. 当前最安全主张
 
 可以说：
 
@@ -80,7 +120,7 @@ local controlled / semi-real / real-source small-field probes 支持它作为结
 - 任意 CRF / DFA / regular language 都有低秩优势；
 - 当前 local probes 等于正式真实任务结论。
 
-## 5. 与 uMPS 的关系
+## 6. 与 uMPS 的关系
 
 一句话：
 
@@ -97,7 +137,7 @@ uMPS 告诉我们，正则语言可以成为概率模型里的可计算事件；
 | 关注 u-MPS 张量网络模型 | 关注 CRF posterior event mass |
 | `P(s in R)` | `P_theta(y in L | x)` |
 
-## 6. 当前 repo 结构
+## 7. 当前 repo 结构
 
 ```text
 docs/
@@ -121,7 +161,7 @@ experiments/
   retained results plus future configs, suites, runs, and visualizations
 ```
 
-## 7. 推荐阅读顺序
+## 8. 推荐阅读顺序
 
 1. `docs/PROJECT_OVERVIEW.md`
 2. `docs/THEORY_AND_GUARDRAILS.md`
@@ -129,7 +169,7 @@ experiments/
 4. `docs/EXPERIMENT_PLAN.md`
 5. `docs/presentation/project_value_presentation_cn.html`
 
-## 8. 下一步
+## 9. 下一步
 
 按顺序执行：
 

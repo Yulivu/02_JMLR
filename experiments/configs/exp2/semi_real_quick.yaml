@@ -5,4 +5,3 @@ args:
   quick: true
   tasks:
     - product_code
-    - amount
