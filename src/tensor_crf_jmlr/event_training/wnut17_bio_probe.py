@@ -17,7 +17,7 @@ from typing import Sequence
 
 import torch
 
-from .bio_event import bio_sequence_allowed, extract_strict_bio_spans
+from .bio_event import NEG_INF, bio_sequence_allowed, extract_strict_bio_spans
 from .data_utils import (
     SequenceDataset,
     build_label_vocab,
@@ -40,8 +40,33 @@ DEFAULT_HIDDEN_CONFLICT_THRESHOLD = 0.7
 @dataclass(frozen=True)
 class VariantConfig:
     name: str
+    training_source: str = "self"
     labeled_lam: float = 0.0
     unlabeled_lam: float = 0.0
+    pr_eta: float = 0.0
+    pr_tau: float = 0.8
+    rule_bias: float = 0.0
+    constrained_primary: bool = False
+
+
+VARIANTS: dict[str, VariantConfig] = {
+    "B0_unconstrained": VariantConfig("B0_unconstrained"),
+    "B1_hard_constrained_decode": VariantConfig(
+        "B1_hard_constrained_decode",
+        training_source="B0_unconstrained",
+        constrained_primary=True,
+    ),
+    "B2_labeled_event_0.1": VariantConfig("B2_labeled_event_0.1", labeled_lam=0.1),
+    "B3_labeled_event_0.1_hard_decode": VariantConfig(
+        "B3_labeled_event_0.1_hard_decode",
+        training_source="B2_labeled_event_0.1",
+        labeled_lam=0.1,
+        constrained_primary=True,
+    ),
+    "B4_semi_event_0.1": VariantConfig("B4_semi_event_0.1", labeled_lam=0.1, unlabeled_lam=0.1),
+    "B5_rule_feature_0.8": VariantConfig("B5_rule_feature_0.8", rule_bias=0.8),
+    "B6_pr_style_tau0.7": VariantConfig("B6_pr_style_tau0.7", pr_eta=1.0, pr_tau=0.7),
+}
 
 
 @dataclass
@@ -95,6 +120,139 @@ def load_split(data_dir: Path, split: str, *, max_len: int) -> SequenceDataset:
     return filter_dataset_by_length(dataset, max_len=max_len)
 
 
+def rule_biased_start(model: TinyLinearChainCRF, *, rule_bias: float) -> torch.Tensor:
+    start = model.start
+    if rule_bias == 0.0:
+        return start
+    mask = model._bio_start_allowed.to(start.device)
+    return start + mask.to(dtype=start.dtype) * rule_bias
+
+
+def rule_biased_transitions(model: TinyLinearChainCRF, *, rule_bias: float) -> torch.Tensor:
+    transitions = model.transitions
+    if rule_bias == 0.0:
+        return transitions
+    mask = model._bio_transition_allowed.to(transitions.device)
+    return transitions + mask.to(dtype=transitions.dtype) * rule_bias
+
+
+def path_score(
+    model: TinyLinearChainCRF,
+    emissions: torch.Tensor,
+    label_ids: Sequence[int],
+    *,
+    rule_bias: float,
+) -> torch.Tensor:
+    labels = torch.tensor(label_ids, dtype=torch.long, device=emissions.device)
+    if labels.numel() == 0:
+        return torch.tensor(0.0, device=emissions.device)
+    start = rule_biased_start(model, rule_bias=rule_bias)
+    transitions = rule_biased_transitions(model, rule_bias=rule_bias)
+    score = start[labels[0]] + emissions[0, labels[0]]
+    for pos in range(1, labels.numel()):
+        score = score + transitions[labels[pos - 1], labels[pos]] + emissions[pos, labels[pos]]
+    return score
+
+
+def log_partition(model: TinyLinearChainCRF, emissions: torch.Tensor, *, rule_bias: float) -> torch.Tensor:
+    if emissions.shape[0] == 0:
+        return torch.tensor(0.0, device=emissions.device)
+    start = rule_biased_start(model, rule_bias=rule_bias)
+    transitions = rule_biased_transitions(model, rule_bias=rule_bias)
+    alpha = start + emissions[0]
+    for pos in range(1, emissions.shape[0]):
+        scores = alpha[:, None] + transitions + emissions[pos][None, :]
+        alpha = torch.logsumexp(scores, dim=0)
+    return torch.logsumexp(alpha, dim=0)
+
+
+def log_event_partition_bio(model: TinyLinearChainCRF, emissions: torch.Tensor, *, rule_bias: float) -> torch.Tensor:
+    if emissions.shape[0] == 0:
+        return torch.tensor(0.0, device=emissions.device)
+    start = rule_biased_start(model, rule_bias=rule_bias)
+    transitions = rule_biased_transitions(model, rule_bias=rule_bias)
+    start_mask = model._bio_start_allowed.to(emissions.device)
+    transition_mask = model._bio_transition_allowed.to(emissions.device)
+    alpha = torch.where(start_mask, start + emissions[0], torch.full_like(start, NEG_INF))
+    for pos in range(1, emissions.shape[0]):
+        scores = alpha[:, None] + transitions + emissions[pos][None, :]
+        scores = torch.where(transition_mask, scores, torch.full_like(scores, NEG_INF))
+        alpha = torch.logsumexp(scores, dim=0)
+    return torch.logsumexp(alpha, dim=0)
+
+
+def log_event_probability_bio(
+    model: TinyLinearChainCRF,
+    word_ids: Sequence[int],
+    *,
+    rule_bias: float,
+) -> torch.Tensor:
+    emissions = model.emission_scores(word_ids)
+    return log_event_partition_bio(model, emissions, rule_bias=rule_bias) - log_partition(
+        model,
+        emissions,
+        rule_bias=rule_bias,
+    )
+
+
+def neg_log_likelihood(
+    model: TinyLinearChainCRF,
+    word_ids: Sequence[int],
+    label_ids: Sequence[int],
+    *,
+    rule_bias: float,
+) -> torch.Tensor:
+    emissions = model.emission_scores(word_ids)
+    return log_partition(model, emissions, rule_bias=rule_bias) - path_score(
+        model,
+        emissions,
+        label_ids,
+        rule_bias=rule_bias,
+    )
+
+
+def viterbi(
+    model: TinyLinearChainCRF,
+    word_ids: Sequence[int],
+    *,
+    constrained: bool,
+    rule_bias: float,
+) -> tuple[list[int], float]:
+    emissions = model.emission_scores(word_ids)
+    if emissions.shape[0] == 0:
+        return [], 0.0
+    start = rule_biased_start(model, rule_bias=rule_bias)
+    transitions = rule_biased_transitions(model, rule_bias=rule_bias)
+    if constrained:
+        start_mask = model._bio_start_allowed.to(emissions.device)
+        transition_mask = model._bio_transition_allowed.to(emissions.device)
+        alpha = torch.where(start_mask, start + emissions[0], torch.full_like(start, NEG_INF))
+    else:
+        transition_mask = None
+        alpha = start + emissions[0]
+    backpointers: list[list[int]] = []
+    for pos in range(1, emissions.shape[0]):
+        scores = alpha[:, None] + transitions + emissions[pos][None, :]
+        if constrained:
+            scores = torch.where(transition_mask, scores, torch.full_like(scores, NEG_INF))
+        best_scores, best_prev = torch.max(scores, dim=0)
+        alpha = best_scores
+        backpointers.append(best_prev.tolist())
+    best_last = int(torch.argmax(alpha).item())
+    best_score = float(alpha[best_last].detach().cpu().item())
+    path = [best_last]
+    for prev_for_next in reversed(backpointers):
+        path.append(prev_for_next[path[-1]])
+    path.reverse()
+    return path, best_score
+
+
+def pr_style_loss(model: TinyLinearChainCRF, word_ids: Sequence[int], *, variant: VariantConfig) -> torch.Tensor:
+    p_event = torch.exp(log_event_probability_bio(model, word_ids, rule_bias=variant.rule_bias))
+    tau = torch.tensor(variant.pr_tau, dtype=p_event.dtype, device=p_event.device)
+    return torch.relu(tau - p_event).pow(2)
+
+
 def train_model(
     labeled: list[tuple[list[int], list[int]]],
     unlabeled: list[list[int]],
@@ -116,17 +274,31 @@ def train_model(
         for idx in labeled_order:
             word_ids, label_ids = labeled[idx]
             optimizer.zero_grad(set_to_none=True)
-            loss = model.neg_log_likelihood(word_ids, label_ids)
+            loss = neg_log_likelihood(model, word_ids, label_ids, rule_bias=variant.rule_bias)
             if variant.labeled_lam:
-                loss = loss - variant.labeled_lam * model.log_event_probability_bio(word_ids)
+                loss = loss - variant.labeled_lam * log_event_probability_bio(
+                    model,
+                    word_ids,
+                    rule_bias=variant.rule_bias,
+                )
+            if variant.pr_eta:
+                loss = loss + variant.pr_eta * pr_style_loss(model, word_ids, variant=variant)
             loss.backward()
             optimizer.step()
-        if unlabeled and variant.unlabeled_lam:
+        if unlabeled and (variant.unlabeled_lam or variant.pr_eta):
             unlabeled_order = list(range(len(unlabeled)))
             random.shuffle(unlabeled_order)
             for idx in unlabeled_order:
                 optimizer.zero_grad(set_to_none=True)
-                loss = -variant.unlabeled_lam * model.log_event_probability_bio(unlabeled[idx])
+                loss = torch.tensor(0.0)
+                if variant.unlabeled_lam:
+                    loss = loss - variant.unlabeled_lam * log_event_probability_bio(
+                        model,
+                        unlabeled[idx],
+                        rule_bias=variant.rule_bias,
+                    )
+                if variant.pr_eta:
+                    loss = loss + variant.pr_eta * pr_style_loss(model, unlabeled[idx], variant=variant)
                 loss.backward()
                 optimizer.step()
     return model
@@ -184,10 +356,18 @@ def evaluate_model(
 
     for idx, (word_ids, gold) in enumerate(dev):
         with torch.no_grad():
-            p_event = float(torch.exp(model.log_event_probability_bio(word_ids)).cpu().item())
-            nll = float(model.neg_log_likelihood(word_ids, gold).cpu().item()) / max(1, len(gold))
-            pred, _ = model.viterbi(word_ids, constrained=False)
-            c_pred, _ = model.viterbi(word_ids, constrained=True)
+            p_event = float(torch.exp(log_event_probability_bio(model, word_ids, rule_bias=variant.rule_bias)).cpu().item())
+            nll = float(neg_log_likelihood(model, word_ids, gold, rule_bias=variant.rule_bias).cpu().item()) / max(
+                1,
+                len(gold),
+            )
+            pred, _ = viterbi(
+                model,
+                word_ids,
+                constrained=variant.constrained_primary,
+                rule_bias=variant.rule_bias,
+            )
+            c_pred, _ = viterbi(model, word_ids, constrained=True, rule_bias=variant.rule_bias)
         pred_labels = decode(label_names, pred)
         c_pred_labels = decode(label_names, c_pred)
         gold_labels = decode(label_names, gold)
@@ -384,6 +564,7 @@ def run_smoke(
     epochs: int,
     lr: float,
     hidden_conflict_threshold: float,
+    variant_names: Sequence[str],
 ) -> None:
     train_full = load_split(data_dir, "train", max_len=max_len)
     dev_full = load_split(data_dir, "dev", max_len=max_len)
@@ -399,23 +580,25 @@ def run_smoke(
     dev = encode_dataset(dev_ds, vocab, label_to_idx)
     id_to_token = {idx: token for token, idx in vocab.items()}
 
-    variants = [
-        VariantConfig("B0_unconstrained"),
-        VariantConfig("B4_semi_event_0.1", labeled_lam=0.1, unlabeled_lam=0.1),
-    ]
+    variants = [VARIANTS[name] for name in variant_names]
     runs: list[WnutRun] = []
     cases: list[WnutCase] = []
+    trained_models: dict[str, TinyLinearChainCRF] = {}
     for variant in variants:
-        model = train_model(
-            labeled,
-            unlabeled,
-            vocab_size=len(vocab),
-            label_names=label_names,
-            variant=variant,
-            seed=seed,
-            epochs=epochs,
-            lr=lr,
-        )
+        if variant.training_source != "self" and variant.training_source in trained_models:
+            model = trained_models[variant.training_source]
+        else:
+            model = train_model(
+                labeled,
+                unlabeled,
+                vocab_size=len(vocab),
+                label_names=label_names,
+                variant=variant,
+                seed=seed,
+                epochs=epochs,
+                lr=lr,
+            )
+        trained_models[variant.name] = model
         run, variant_cases = evaluate_model(
             model,
             dev,
@@ -448,7 +631,11 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--lr", type=float, default=0.05)
     parser.add_argument("--hidden-conflict-threshold", type=float, default=DEFAULT_HIDDEN_CONFLICT_THRESHOLD)
+    parser.add_argument("--variants", nargs="*", default=list(VARIANTS))
     args = parser.parse_args()
+    unknown_variants = sorted(set(args.variants) - set(VARIANTS))
+    if unknown_variants:
+        raise SystemExit(f"unknown WNUT17 variants: {', '.join(unknown_variants)}")
 
     run_smoke(
         data_dir=Path(args.data_dir),
@@ -461,6 +648,7 @@ def main() -> None:
         epochs=args.epochs,
         lr=args.lr,
         hidden_conflict_threshold=args.hidden_conflict_threshold,
+        variant_names=args.variants,
     )
 
 

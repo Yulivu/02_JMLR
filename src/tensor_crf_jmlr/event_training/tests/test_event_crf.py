@@ -29,7 +29,12 @@ from tensor_crf_jmlr.event_training.semi_real_format_probe import (
     train_model as train_semi_real_model,
     viterbi as semi_real_viterbi,
 )
-from tensor_crf_jmlr.event_training.wnut17_bio_probe import entity_counts, f1_from_counts
+from tensor_crf_jmlr.event_training.wnut17_bio_probe import (
+    entity_counts,
+    f1_from_counts,
+    log_event_probability_bio as wnut_log_event_probability_bio,
+    viterbi as wnut_viterbi,
+)
 
 
 class EventCRFTests(unittest.TestCase):
@@ -145,6 +150,16 @@ class EventCRFTests(unittest.TestCase):
         true_positive, predicted, gold_total = entity_counts(pred, gold)
         self.assertEqual((true_positive, predicted, gold_total), (1, 2, 2))
         self.assertAlmostEqual(f1_from_counts(true_positive, predicted, gold_total), 0.5)
+
+    def test_wnut_rule_bias_helpers_have_valid_boundaries(self):
+        model = TinyLinearChainCRF(vocab_size=8, label_names=("O", "B-X", "I-X"))
+        word_ids = [1, 2, 3]
+        p_event = torch.exp(wnut_log_event_probability_bio(model, word_ids, rule_bias=0.8))
+        self.assertGreaterEqual(float(p_event.item()), 0.0)
+        self.assertLessEqual(float(p_event.item()), 1.0)
+        path, _score = wnut_viterbi(model, word_ids, constrained=True, rule_bias=0.8)
+        labels = [model.label_names[idx] for idx in path]
+        self.assertTrue(bio_sequence_allowed(labels))
 
     def test_non_bio_format_event_helpers(self):
         torch.manual_seed(11)

@@ -10,3 +10,11 @@ args:
   epochs: 1
   lr: 0.03
   hidden_conflict_threshold: 0.7
+  variants:
+    - B0_unconstrained
+    - B1_hard_constrained_decode
+    - B2_labeled_event_0.1
+    - B3_labeled_event_0.1_hard_decode
+    - B4_semi_event_0.1
+    - B5_rule_feature_0.8
+    - B6_pr_style_tau0.7

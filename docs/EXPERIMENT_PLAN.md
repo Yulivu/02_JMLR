@@ -142,9 +142,9 @@ max length / batching policy
 | Item | Remaining |
 |---|---|
 | max length / batching policy | local smoke cap currently `max_len=40`; formal cap still needs timing/coverage decision |
-| B0-B6 implementation | B0/B1/B4 smoke exists; B2/B3/B5/B6 not yet complete for WNUT17 |
+| B0-B6 implementation | local stress smoke exists for B0-B6; formal multi-seed/grid package still pending |
 | B7 WFST-style | design-if-feasible |
-| hidden conflict dev smoke | stress smoke passed: B0 `mean_p_event=0.0591`, constrained legal rate `1.0`, hidden conflict rate `1.0`; B4 raises `mean_p_event` to `0.3454` |
+| hidden conflict dev smoke | stress smoke passed: B0 `mean_p_event=0.0591`, constrained legal rate `1.0`, hidden conflict rate `1.0`; B4 raises `mean_p_event` to `0.3454`; B5/B6 also raise event mass but less than B4 |
 
 ### Controlled Format
 
@@ -371,7 +371,7 @@ Do not handle AutoDL/HPC engineering before S0-S4 pass.
 Status:
 
 ```text
-data gate frozen and locally audited; R5 B0/B1/B4 stress smoke passed; B2/B3/B5/B6 formal implementation still pending.
+data gate frozen and locally audited; R5 B0-B6 one-seed stress smoke passed; formal multi-seed/grid implementation still pending.
 ```
 
 ### P4 R0 Smoke Suite
