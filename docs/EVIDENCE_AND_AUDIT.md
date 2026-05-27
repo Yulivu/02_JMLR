@@ -35,10 +35,10 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 |---|---|---|---|
 | `Z_{theta,L}(x)` / `P_theta(L|x)` 是 posterior event 对象 | supported | theorem package, theory tests | final proof prose |
 | product automaton transfer 精确计算 event mass | supported | T1, product transfer tests | fresh proof audit |
-| 条件非负 MPO rank membership | partial / conditional | T2, MPO sanity | no arbitrary low-rank claim |
+| 条件非负 MPO rank membership | appendix-only / conditional | T2, MPO sanity | no arbitrary low-rank claim; not paper identity |
 | positive-cone event-mass error | supported | T3 | posterior/log needs extra assumptions |
 | `P_theta(L|x)` 可作为训练信号 | locally supported | gradient, controlled, semi-real, real-source | larger formal evidence |
-| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive | stronger public slice |
+| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive | stronger BIO/NER public slice |
 | hard constraint 与 posterior training 不同 | supported | constrained metrics, conflict cases | explicit B1/B3 rows preferred |
 | risk diagnostic | partial positive | bottom/top diagnostic | expand all tasks/baselines |
 | B4 empirically superior | not supported | B5/B6 competitive | stronger baseline block |
@@ -159,7 +159,8 @@ Current evidence does not support:
 | fresh proof-check | theory prose before paper must be externally/freshly audited | run proof-check before drafting |
 | explicit B1/B3 rows | constrained metrics are currently implicit | add rows or preserve clear flags |
 | B5/B6 grids | B5/B6 pressure decides empirical strength | freeze and run grids |
-| public/real slice | current slice is frozen but still small-field | validate on AutoDL/HPC before formal runs |
+| canonical BIO/NER public slice | missing reviewer-facing structured benchmark | add and freeze before P6 formal runs |
+| retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
 | AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
 
@@ -170,8 +171,10 @@ GO: continue pre-paper formal validation planning.
 GO: P3 protocol/public slice/run list frozen.
 GO: P4 local CPU smoke passed.
 GO: P5 AutoDL/HPC smoke engineering may proceed.
+GO: revise P6 around canonical BIO/NER hidden-conflict benchmark before formal runs.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
 HOLD: P6 formal AutoDL runs until P5 target-machine smoke passes.
+HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

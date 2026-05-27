@@ -13,6 +13,7 @@ Tensorized Regular-Language Posterior Algebra for CRFs
 ```text
 docs/
   PROJECT_OVERVIEW.md          项目定位、当前状态、下一步
+  PAPER_POSITIONING.md         paper identity、主线收缩、reviewer-facing narrative
   THEORY_AND_GUARDRAILS.md     理论对象、定理包、禁止主张
   EVIDENCE_AND_AUDIT.md        当前证据、baseline audit、claim gate
   EXPERIMENT_PLAN.md           JMLR 前实验协议、run list、AutoDL gate
@@ -93,6 +94,8 @@ docs/references/REFERENCE_INDEX.md
 未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
 
 下一步：在不改动冻结协议的前提下，做 AutoDL/HPC runner、device、config 适配；适配通过后再进入 formal runs。
+
+路线修订：P6 前需要补一个 canonical BIO/NER structured benchmark；`retail_fields_v1` 保留为辅助 real-source small-field，而不是主 public benchmark。
 
 P5 AutoDL/HPC 工程入口：
 

@@ -37,14 +37,28 @@ M_t^L[(c,q),(c',q')]
 
 ## 2. Theorem Package
 
+Main-paper theorem spine:
+
+```text
+finite setup -> exact product transfer -> event loss / diagnostic object
+```
+
+Appendix-only theory support:
+
+```text
+conditional MPO/rank membership and positive-cone approximation bounds
+```
+
+This distinction is intentional. The paper identity is posterior event semantics, not tensor complexity theory.
+
 | ID | Statement | Status | Scope |
 |---|---|---|---|
-| T0 | finite posterior setup is well-defined | provable | finite `Y,T`, finite score |
-| T1 | product automaton transfer computes `Z_{theta,L}(x)` exactly | provable | complete DFA, fixed convention |
-| T2 | event transfer has conditional nonnegative MPO rank membership | conditional | needs explicit `r_g/r_shift/r_A` assumptions |
-| T3 | positive-cone transfer approximation controls event mass multiplicatively | provable | nonnegative matrices and boundary vectors |
-| C1 | posterior probability control | conditional | needs numerator and denominator control |
-| C2 | log event/posterior control | conditional | needs strict positivity |
+| T0 | finite posterior setup is well-defined | main | finite `Y,T`, finite score |
+| T1 | product automaton transfer computes `Z_{theta,L}(x)` exactly | main | complete DFA, fixed convention |
+| T2 | event transfer has conditional nonnegative MPO rank membership | appendix / optional | needs explicit `r_g/r_shift/r_A` assumptions |
+| T3 | positive-cone transfer approximation controls event mass multiplicatively | appendix / optional | nonnegative matrices and boundary vectors |
+| C1 | posterior probability control | appendix / conditional | needs numerator and denominator control |
+| C2 | log event/posterior control | appendix / conditional | needs strict positivity |
 
 ## 3. Exact Event Algebra
 
@@ -76,6 +90,19 @@ P_theta(L|x)=Z_{theta,L}(x)/Z_theta(x)
 ```
 
 ## 4. Conditional Nonnegative MPO Rank Membership
+
+Placement:
+
+```text
+appendix only unless needed for a specific approximation/scaling argument.
+```
+
+Reviewer-risk note:
+
+```text
+Do not let this theorem become the paper identity.
+It is weaker and more conditional than the posterior-event semantics contribution.
+```
 
 Under a fixed mode order, suppose:
 
@@ -147,9 +174,9 @@ Allowed:
 
 - posterior event identity;
 - product automaton event-mass representation;
-- conditional event-transfer rank membership;
-- positive-cone event-mass error;
-- posterior/log corollaries under extra positivity and denominator conditions;
+- conditional event-transfer rank membership as appendix support only;
+- positive-cone event-mass error as appendix support only;
+- posterior/log corollaries under extra positivity and denominator conditions as appendix support only;
 - unit tests as sanity evidence only.
 
 Forbidden:
@@ -169,7 +196,9 @@ Forbidden:
 
 ```text
 GO: use this package as the theory basis.
+GO: keep T0/T1 in the main paper spine.
 WARN: T2 is conditional membership, not low-rank superiority.
+WARN: T2/T3 should not distract from posterior event semantics.
 WARN: posterior/log corollaries need denominator and positivity control.
 HOLD: paper theorem prose until fresh proof-check.
 HOLD: arbitrary low-rank claim.

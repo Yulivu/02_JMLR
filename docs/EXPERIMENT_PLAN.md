@@ -4,6 +4,19 @@
 
 ## 1. 实验总目标
 
+Paper identity:
+
+```text
+decoded output legality is not posterior consistency.
+```
+
+实验必须围绕这个问题组织：
+
+```text
+hard-constrained decoding 可以修最终输出；
+P_theta(L|x) 暴露模型后验里是否仍有大量非法结构概率质量。
+```
+
 实验只服务三个主张：
 
 | Claim | 含义 | 需要证据 |
@@ -54,6 +67,42 @@ PR eta in {0.2, 0.5, 1.0, 2.0}
 ```
 
 ## 3. 数据与任务
+
+### Canonical BIO / NER Structured Benchmark
+
+用途：作为 reviewer-facing canonical structured prediction block。
+
+核心问题：
+
+```text
+constrained decoding 后输出可以是合法 BIO，
+但 baseline CRF posterior 是否仍然有大量非法 BIO probability mass？
+event training 是否能提高 P_theta(BIO-legal|x)，减少 hidden posterior conflict？
+```
+
+这是 P6 前最高优先级补强项。相比 invoice/stock 字段，BIO/NER 更标准、更容易让 reviewer 理解，也更直接地区分本项目和 constrained decoding。
+
+纳入标准：
+
+- public / citable source；
+- BIO 或 BIOES 标签；
+- 能构造 CRF-style sequence labeling setup；
+- BIO legality 是明确 regular language；
+- 能报告 unconstrained prediction、constrained decoding、posterior BIO-legal mass；
+- 能构造 hidden-conflict cases：decoded output legal but `P_theta(BIO-legal|x)` low；
+- 能跑 B0-B6，B7/WFST-style if feasible。
+
+P6 前必须冻结：
+
+```text
+dataset source
+label scheme
+split
+preprocessing
+label vocabulary
+BIO legality DFA
+max length / batching policy
+```
 
 ### Controlled Format
 
@@ -113,7 +162,7 @@ invoice_6d / stock_5d legal rate 容易饱和；
 
 ### Public / Real Formal Slice
 
-JMLR 需要至少一个冻结的 public / real-source formal slice。
+JMLR 需要至少一个冻结的 canonical structured prediction slice。优先级现在高于 retail small-field。
 
 纳入标准：
 
@@ -130,8 +179,9 @@ JMLR 需要至少一个冻结的 public / real-source formal slice。
 
 | Candidate | 结论 |
 |---|---|
-| UCI Online Retail Extended | 保留 real-source small-field block，不单独承担 benchmark claim |
-| Public receipt / invoice-like field dataset | JMLR formal public slice 优先候选 |
+| BIO/NER public benchmark | P6 formal public slice 最高优先级 |
+| UCI Online Retail Extended | 保留 real-source small-field auxiliary block，不单独承担 benchmark claim |
+| Public receipt / invoice-like field dataset | 可作为 second public slice，而非替代 BIO/NER |
 | Real field value + fixed OCR-like noise | 可作为 controlled-real bridge，不能称 fully real OCR benchmark |
 
 ## 4. 指标
@@ -142,6 +192,8 @@ Primary:
 mean_p_event
 delta_p_event
 unconstrained_legal_rate
+constrained_decoded_legal_rate
+hidden_conflict_rate
 char_accuracy
 exact_sequence_accuracy
 bottom/top exact error gap
@@ -176,10 +228,11 @@ negative/tradeoff cases
 | R1 | controlled robustness | DATE, DDDLL, LL-DDD, LLDDD | B0-B4 | 20 | lambda grid |
 | R2 | semi-real main | amount, date, dose, product_code | B0-B6 | 10 | B5/B6 grid |
 | R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
-| R4 | real-source small | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
-| R5 | public slice | frozen public fields | B0-B6 | 10 | default + best grids |
+| R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
+| R5 | canonical BIO/NER public slice | frozen BIO/NER sequence labeling task | B0-B7 if feasible | 10 | default + best grids |
 | R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
+| R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | sequence length / DFA states / batch size |
 
 Default settings:
 
@@ -250,8 +303,9 @@ Do not handle AutoDL/HPC engineering before S0-S4 pass.
 | Primary metrics | `mean_p_event`, delta, legal rate, char/exact accuracy, diagnostic bottom/top gap | frozen | 主表必须有 mean/CI/up-rate/negative cases |
 | Controlled tasks | DATE, DDDLL, LL-DDD, LLDDD | frozen | R0 smoke uses LLDDD |
 | Semi-real tasks | amount, date, dose, product_code | frozen | R0 smoke uses product_code |
-| Public/real slice v1 | UCI Online Retail field slice: `invoice_6d`, `invoice_c6d`, `stock_5d` | frozen-with-scope | public real-source small-field block, not standalone benchmark claim |
-| Formal run list | R0-R7 table in this document | frozen | Changes require explicit protocol update before seeing results |
+| Retail small-field slice | UCI Online Retail field slice: `invoice_6d`, `invoice_c6d`, `stock_5d` | frozen-with-scope | auxiliary real-source small-field block, not standalone benchmark claim |
+| Canonical structured slice | BIO/NER public benchmark | required-before-P6 | must be frozen before formal runs |
+| Formal run list | R0-R8 table in this document | revised-frozen | BIO/NER and complexity rows added before formal results |
 | Output routing | new runs under `experiments/runs/`; curated results under `experiments/results/` | frozen | AutoDL block remains ignored until explicitly curated |
 
 ### Public / Real Slice v1
@@ -259,6 +313,17 @@ Do not handle AutoDL/HPC engineering before S0-S4 pass.
 | Slice ID | Source | Fields | Rule IDs | Claim Boundary |
 |---|---|---|---|---|
 | `retail_fields_v1` | UCI Online Retail, local copy at `data/raw/online_retail.xlsx` | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | real-source small-field evidence only; not a general OCR or benchmark-superiority claim |
+
+### Canonical BIO/NER Slice Gate
+
+| Item | Requirement |
+|---|---|
+| role | primary reviewer-facing structured prediction benchmark |
+| required before | P6 formal runs |
+| core event | BIO legality as regular language |
+| central case study | constrained decoded output legal, but baseline `P_theta(BIO-legal|x)` low |
+| must report | posterior legal mass, constrained legal output, hidden conflict, task metrics |
+| failure mode | if unavailable, downgrade JMLR empirical route before spending formal-run budget |
 
 ### P4 R0 Smoke Suite
 
@@ -316,6 +381,8 @@ P5 is an engineering gate, not a formal evidence run.
 P5 is complete only after the same checks pass on the AutoDL/HPC machine. Local
 validation of these scripts is necessary but not sufficient to mark P5 done.
 
+P5 must not launch R1-R8 formal runs. P5 also must not treat retail smoke as a substitute for BIO/NER slice selection.
+
 ## 10. Go / No-Go
 
 Proceed to AutoDL/HPC engineering only if:
@@ -341,14 +408,16 @@ result-to-claim mapping is unclear.
 Maintain JMLR route only if:
 
 - fresh proof-check does not fail;
+- canonical BIO/NER slice demonstrates hidden posterior conflict;
 - B4 posterior event mass is stable across controlled/semi-real/real-source;
 - B5/B6 do not fully dominate B4;
-- public/real-source slice gives at least partial positive evidence;
+- retail small-field slice gives at least auxiliary positive evidence;
 - diagnostic bottom/top separation is clear.
 
 Downgrade if:
 
 - B5/B6 are clearly stronger: position as posterior-event algebra/auditability;
-- public slice fails: controlled/semi-real theory paper route only;
+- BIO/NER slice fails or is unavailable: downgrade JMLR empirical route before formal runs;
+- retail slice fails: keep it auxiliary or remove real-source claim;
 - diagnostic fails: remove diagnostic claim;
 - proof-check fails: stop paper route until theory repair.

@@ -97,5 +97,5 @@ all pass on the AutoDL/HPC machine.
 - Do not write smoke output into `experiments/results/`.
 - Do not edit `docs/EXPERIMENT_PLAN.md` after seeing smoke results unless making
   an explicit protocol revision.
-- Do not start R1-R7 formal runs during P5.
+- Do not start R1-R8 formal runs during P5.
 - Do not interpret P5 smoke metrics as paper evidence.

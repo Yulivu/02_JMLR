@@ -50,7 +50,7 @@ P_theta(L | x)
 | Audit | 最高分输出合法但 `P_theta(L|x)` 很低，说明模型并不真正相信规则 |
 | Training | 用 `-log P_theta(L|x)` 作为 event loss，推动后验质量进入合法集合 |
 | Diagnostic | 低 `P_theta(L|x)` 样本可能是错误或 hidden conflict |
-| Theory | 用 product automaton transfer 精确表示 event mass，并讨论条件 rank / error bounds |
+| Theory | 用 product automaton transfer 精确表示 event mass；rank/MPO 仅作 appendix support |
 
 ## 3. Relation To uMPS
 
@@ -94,7 +94,7 @@ CRF local context state × DFA state
 |---|---|---|---|
 | T0 | finite posterior setup is well-defined | provable | finite labels/length/score |
 | T1 | product automaton transfer computes event mass exactly | provable | complete DFA, fixed convention |
-| T2 | event transfer has conditional nonnegative MPO rank membership | conditional | needs explicit rank assumptions |
+| T2 | event transfer has conditional nonnegative MPO rank membership | appendix / optional | needs explicit rank assumptions |
 | T3 | positive-cone transfer approximation controls event mass multiplicatively | provable | nonnegative matrices and boundary vectors |
 | C1 | posterior probability control | conditional | needs numerator and denominator control |
 | C2 | log event/posterior control | conditional | needs strict positivity |
@@ -132,10 +132,10 @@ Roadmap:
 | P0 | problem definition | done | mainline fixed | none |
 | P1 | theory object closed loop | mostly done | posterior algebra, DFA/product-transfer tests | fresh proof-check |
 | P2 | local mechanism validation | mostly done | controlled/semi-real/real-source probes | not benchmark evidence |
-| P3 | experiment protocol freeze | done | frozen protocol, baselines, metrics, run list, public/real slice v1 | B7 design optional |
+| P3 | experiment protocol freeze | revised | frozen protocol plus reviewer-route update | BIO/NER slice before P6 |
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
 | P5 | AutoDL/HPC engineering | in progress | preflight, runbook, autodl smoke suite | target-machine smoke |
-| P6 | formal runs | not started | R1-R7 planned | run formal experiments |
+| P6 | formal runs | not started | R1-R8 planned | add BIO/NER before formal experiments |
 | P7 | result-to-claim audit | not started | claim/evidence matrix draft | update after P6 |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limits |
 
@@ -200,17 +200,18 @@ to posterior-event algebra + auditability + diagnostic value.
 
 ## 9. P6 Formal Run Design
 
-Formal runs are R1-R7. R0 is only smoke and already passed locally.
+Formal runs are R1-R8. R0 is only smoke and already passed locally.
 
 | Run ID | Stage | Tasks | Systems | Seeds | Grid |
 |---|---|---|---|---:|---|
 | R1 | controlled robustness | DATE, DDDLL, LL-DDD, LLDDD | B0-B4 | 20 | lambda grid |
 | R2 | semi-real main | amount, date, dose, product_code | B0-B6 | 10 | B5/B6 grid |
 | R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
-| R4 | real-source small | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
-| R5 | public slice | frozen public fields | B0-B6 | 10 | default + best grids |
+| R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
+| R5 | canonical BIO/NER public slice | frozen BIO/NER task | B0-B7 if feasible | 10 | default + best grids |
 | R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
+| R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | length / DFA states / batch size |
 
 Primary metrics:
 
@@ -243,11 +244,23 @@ Decision standard:
 
 ## 10. Public / Real Slice
 
-Current frozen v1:
+Current auxiliary frozen v1:
 
 | Slice ID | Source | Fields | Rule IDs | Claim Boundary |
 |---|---|---|---|---|
-| `retail_fields_v1` | UCI Online Retail local copy | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | real-source small-field evidence only, not OCR benchmark superiority |
+| `retail_fields_v1` | UCI Online Retail local copy | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | auxiliary real-source small-field evidence only, not primary benchmark |
+
+Required before P6:
+
+```text
+canonical BIO/NER public structured prediction slice
+```
+
+The BIO/NER slice should demonstrate hidden posterior conflict:
+
+```text
+constrained decoded output legal, but baseline P_theta(BIO-legal|x) low.
+```
 
 Data policy:
 
@@ -283,7 +296,8 @@ bash scripts/hpc/run_autodl_smoke.sh
 | Risk | Impact | Mitigation |
 |---|---|---|
 | B5/B6 dominate B4 | cannot claim empirical superiority | pivot to algebra/auditability/diagnostic |
-| public slice too weak | JMLR empirical strength weaker | add stronger public field slice before P6 |
+| missing BIO/NER slice | reviewer may see task as engineered field extraction | add canonical BIO/NER benchmark before P6 |
+| public slice too weak | JMLR empirical strength weaker | downgrade before spending formal-run budget |
 | B7 not implemented | reviewer may ask about WFST/constrained structured methods | design if feasible, or clearly scope |
 | diagnostic weak | remove or downgrade diagnostic claim | do full R6 before writing |
 | proof-check fails | theory section blocked | repair theory before paper writing |
@@ -295,8 +309,8 @@ bash scripts/hpc/run_autodl_smoke.sh
 2. Is `P_theta(L|x)` as posterior event mass a useful enough object for a methods/theory paper?
 3. Are C1/C2/C3 the right claims, or should one be removed before formal runs?
 4. Are B0-B6 sufficient, or is B7/WFST-style baseline mandatory?
-5. Is R1-R7 strong enough for JMLR if results are positive?
-6. Is `retail_fields_v1` acceptable as a public/real small-field slice, or should we add another public dataset before P6?
+5. Is R1-R8 strong enough for JMLR if results are positive?
+6. Which BIO/NER public benchmark should be frozen before P6?
 7. If B4 is not empirically dominant but diagnostic signal is strong, what is the right paper positioning?
 8. Are the theory guardrails appropriately conservative, especially around conditional MPO rank membership?
 
@@ -327,7 +341,7 @@ The project is past idea-only stage. It has:
 It does not yet have:
 
 - fresh external proof-check;
-- formal P6 runs;
+- canonical BIO/NER slice and formal P6 runs;
 - JMLR-ready empirical package;
 - benchmark superiority claim;
 - full diagnostic coverage.
