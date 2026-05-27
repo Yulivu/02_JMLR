@@ -9,7 +9,7 @@ change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 
 - P3/P4 passed locally.
 - Repository is synced to GitHub.
-- `data/raw/online_retail.xlsx` is present on the machine.
+- `data/raw/online_retail.xlsx` and `data/raw/wnut17/*.conll` are present on the machine.
 - Python 3.10+ is available.
 - No formal experiment should be launched until the smoke suite passes.
 
@@ -17,16 +17,20 @@ change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 
 AutoDL is treated as offline except for GitHub access.
 
-Current P5 smoke data is already tracked in this repo:
+Current P5 smoke and BIO/NER gate data are already tracked in this repo:
 
 ```text
 data/raw/online_retail.xlsx
+data/raw/wnut17/train.conll
+data/raw/wnut17/dev.conll
+data/raw/wnut17/test.conll
 ```
 
 After cloning from GitHub, verify it:
 
 ```bash
 python scripts/data/verify_data.py --strict
+python scripts/data/audit_bio_ner_slice.py --data-dir data/raw/wnut17
 ```
 
 If a future dataset is too large for GitHub, upload the original file with
@@ -39,6 +43,7 @@ AutoDL.
 ```bash
 python -m pip install -e ".[dev]"
 python scripts/data/verify_data.py --strict
+python scripts/data/audit_bio_ner_slice.py --data-dir data/raw/wnut17
 ```
 
 ## Preflight

@@ -32,6 +32,9 @@ REQUIRED_MODULES = (
 
 DATA_SHA256 = {
     "data/raw/online_retail.xlsx": "ef60e854dd93a8a60932a547ebd8c0dca63e33251f2dbbdcb8f2abb2aff3e272",
+    "data/raw/wnut17/train.conll": "731820e13f71af324c6b55a1575ec2ce59fbaa2a0806f8f0400b98d56cd6a7a5",
+    "data/raw/wnut17/dev.conll": "e053b752b8155113ca66e7db08af5f2f5f43ab993694e4774f1ec5bad42312d8",
+    "data/raw/wnut17/test.conll": "2aa79b764e56ec9264a1b30fdd9b70195bd00ff400b62edd8f399d5f13c178f0",
 }
 
 
@@ -100,13 +103,13 @@ def sha256_file(path: Path) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", default="experiments/suites/autodl_smoke.yaml")
-    parser.add_argument("--data-file", default="data/raw/online_retail.xlsx")
+    parser.add_argument("--data-file", default="", help="Optional extra data file to hash in the report.")
     parser.add_argument("--report", default="experiments/runs/preflight/autodl_preflight.json")
     parser.add_argument("--strict-cuda", action="store_true")
     args = parser.parse_args()
 
     suite_path = Path(args.suite)
-    data_file = Path(args.data_file)
+    data_file = Path(args.data_file) if args.data_file else None
     report_path = Path(args.report)
     report_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -114,13 +117,23 @@ def main() -> None:
     errors = [f"module import failed: {item['name']} {item.get('error')}" for item in modules if not item["ok"]]
     if sys.version_info < (3, 10):
         errors.append(f"Python >= 3.10 required, got {sys.version}")
-    if not data_file.is_file():
-        errors.append(f"missing required data file: {data_file}")
-    else:
-        expected_hash = DATA_SHA256.get(data_file.as_posix())
-        actual_hash = sha256_file(data_file)
-        if expected_hash and actual_hash.lower() != expected_hash:
-            errors.append(f"data hash mismatch for {data_file}: expected {expected_hash}, got {actual_hash}")
+    data_hashes: dict[str, str | None] = {}
+    for raw_path, expected_hash in DATA_SHA256.items():
+        path = Path(raw_path)
+        if not path.is_file():
+            errors.append(f"missing required data file: {path}")
+            data_hashes[raw_path] = None
+            continue
+        actual_hash = sha256_file(path).lower()
+        data_hashes[raw_path] = actual_hash
+        if actual_hash != expected_hash:
+            errors.append(f"data hash mismatch for {path}: expected {expected_hash}, got {actual_hash}")
+    extra_data_hash = None
+    if data_file is not None:
+        if not data_file.is_file():
+            errors.append(f"missing extra data file: {data_file}")
+        else:
+            extra_data_hash = sha256_file(data_file)
     if not suite_path.is_file():
         errors.append(f"missing suite file: {suite_path}")
     else:
@@ -147,8 +160,9 @@ def main() -> None:
         "python": sys.version,
         "git_commit": git_commit(),
         "suite": str(suite_path),
-        "data_file": str(data_file),
-        "data_sha256": sha256_file(data_file) if data_file.is_file() else None,
+        "data_file": str(data_file) if data_file is not None else None,
+        "data_sha256": extra_data_hash,
+        "required_data_sha256": data_hashes,
         "modules": modules,
         "torch": torch_info,
         "errors": errors,

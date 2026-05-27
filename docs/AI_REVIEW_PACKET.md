@@ -122,6 +122,7 @@ Current status:
 ```text
 P5 in progress
 AutoDL/HPC engineering prepared locally
+WNUT17 BIO/NER data gate frozen locally
 target-machine smoke pending
 ```
 
@@ -132,10 +133,10 @@ Roadmap:
 | P0 | problem definition | done | mainline fixed | none |
 | P1 | theory object closed loop | mostly done | posterior algebra, DFA/product-transfer tests | fresh proof-check |
 | P2 | local mechanism validation | mostly done | controlled/semi-real/real-source probes | not benchmark evidence |
-| P3 | experiment protocol freeze | revised | frozen protocol plus reviewer-route update | BIO/NER slice before P6 |
+| P3 | experiment protocol freeze | revised-frozen | frozen protocol plus reviewer-route update; WNUT17 BIO/NER data gate | R5 implementation before P6 |
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
-| P5 | AutoDL/HPC engineering | in progress | preflight, runbook, autodl smoke suite | target-machine smoke |
-| P6 | formal runs | not started | R1-R8 planned | add BIO/NER before formal experiments |
+| P5 | AutoDL/HPC engineering | in progress | preflight, runbook, autodl smoke suite, WNUT17 data manifest | target-machine smoke |
+| P6 | formal runs | not started | R1-R8 planned; R5 data source frozen | WNUT17 R5 runner, B0-B6, hidden-conflict smoke |
 | P7 | result-to-claim audit | not started | claim/evidence matrix draft | update after P6 |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limits |
 
@@ -250,10 +251,10 @@ Current auxiliary frozen v1:
 |---|---|---|---|---|
 | `retail_fields_v1` | UCI Online Retail local copy | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | auxiliary real-source small-field evidence only, not primary benchmark |
 
-Required before P6:
+BIO/NER data gate now frozen before P6:
 
 ```text
-canonical BIO/NER public structured prediction slice
+canonical BIO/NER public structured prediction slice = WNUT17 Emerging Entities
 ```
 
 The BIO/NER slice should demonstrate hidden posterior conflict:
@@ -261,6 +262,17 @@ The BIO/NER slice should demonstrate hidden posterior conflict:
 ```text
 constrained decoded output legal, but baseline P_theta(BIO-legal|x) low.
 ```
+
+Local data artifacts:
+
+```text
+docs/BIO_NER_SLICE_PROTOCOL.md
+data/raw/wnut17/train.conll
+data/raw/wnut17/dev.conll
+data/raw/wnut17/test.conll
+```
+
+Important data note: `test.conll` is copied from upstream `emerging.test.annotated`; upstream `emerging.test.conll` is not used because it contains comma-separated multi-annotation labels.
 
 Data policy:
 
@@ -296,7 +308,7 @@ bash scripts/hpc/run_autodl_smoke.sh
 | Risk | Impact | Mitigation |
 |---|---|---|
 | B5/B6 dominate B4 | cannot claim empirical superiority | pivot to algebra/auditability/diagnostic |
-| missing BIO/NER slice | reviewer may see task as engineered field extraction | add canonical BIO/NER benchmark before P6 |
+| missing BIO/NER implementation | reviewer may see task as engineered field extraction | implement WNUT17 R5 runner and hidden-conflict smoke before P6 |
 | public slice too weak | JMLR empirical strength weaker | downgrade before spending formal-run budget |
 | B7 not implemented | reviewer may ask about WFST/constrained structured methods | design if feasible, or clearly scope |
 | diagnostic weak | remove or downgrade diagnostic claim | do full R6 before writing |
@@ -310,7 +322,7 @@ bash scripts/hpc/run_autodl_smoke.sh
 3. Are C1/C2/C3 the right claims, or should one be removed before formal runs?
 4. Are B0-B6 sufficient, or is B7/WFST-style baseline mandatory?
 5. Is R1-R8 strong enough for JMLR if results are positive?
-6. Which BIO/NER public benchmark should be frozen before P6?
+6. Is WNUT17 strong enough as the primary BIO/NER public benchmark, or should a second BIO/NER slice be added?
 7. If B4 is not empirically dominant but diagnostic signal is strong, what is the right paper positioning?
 8. Are the theory guardrails appropriately conservative, especially around conditional MPO rank membership?
 
@@ -338,12 +350,13 @@ The project is past idea-only stage. It has:
 - local theory/code sanity;
 - preliminary controlled/semi-real/real-source positive evidence;
 - frozen P3/P4 protocol and smoke;
+- frozen WNUT17 BIO/NER data gate;
 - P5 AutoDL/HPC engineering prepared locally.
 
 It does not yet have:
 
 - fresh external proof-check;
-- canonical BIO/NER slice and formal P6 runs;
+- WNUT17 R5 implementation and formal P6 runs;
 - JMLR-ready empirical package;
 - benchmark superiority claim;
 - full diagnostic coverage.

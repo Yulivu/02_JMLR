@@ -82,6 +82,28 @@ event training 是否能提高 P_theta(BIO-legal|x)，减少 hidden posterior co
 
 这是 P6 前最高优先级补强项。相比 invoice/stock 字段，BIO/NER 更标准、更容易让 reviewer 理解，也更直接地区分本项目和 constrained decoding。
 
+冻结选择：
+
+```text
+WNUT17 Emerging Entities BIO/NER slice
+```
+
+协议入口：
+
+```text
+docs/BIO_NER_SLICE_PROTOCOL.md
+```
+
+本地数据：
+
+```text
+data/raw/wnut17/train.conll
+data/raw/wnut17/dev.conll
+data/raw/wnut17/test.conll
+```
+
+注意：test split 使用 upstream `emerging.test.annotated`；不要使用 `emerging.test.conll`，因为后者包含逗号分隔多标注标签，不是严格单标签 BIO。
+
 纳入标准：
 
 - public / citable source；
@@ -103,6 +125,26 @@ label vocabulary
 BIO legality DFA
 max length / batching policy
 ```
+
+当前已冻结：
+
+| Item | Decision |
+|---|---|
+| dataset source | WNUT17 Emerging Entities from `leondz/emerging_entities_17` |
+| license/data note | CC-BY 4.0 per upstream README; citation required |
+| local path | `data/raw/wnut17/` |
+| label scheme | strict single-label BIO after type uppercase normalization |
+| split | upstream train/dev/test annotated |
+| BIO data audit | train/dev/test gold labels pass strict BIO legality |
+
+仍需在 R5 implementation 前完成：
+
+| Item | Remaining |
+|---|---|
+| max length / batching policy | choose cap after B0 local timing smoke |
+| B0-B6 implementation | not yet complete for WNUT17 |
+| B7 WFST-style | design-if-feasible |
+| hidden conflict dev smoke | not yet run |
 
 ### Controlled Format
 
@@ -276,7 +318,7 @@ experiments/results/event_training/formal_pre_paper/autodl_jmlr_block/
 | Stage | Action | AutoDL/HPC |
 |---|---|---|
 | S0 | freeze experiment protocol | no |
-| S1 | freeze canonical BIO/NER slice data note | no |
+| S1 | freeze canonical BIO/NER slice data note | no; done for WNUT17 |
 | S2 | freeze config table and run list | no |
 | S3 | local CPU smoke, one seed per block | no |
 | S4 | audit smoke schema | no |
@@ -313,6 +355,7 @@ Do not handle AutoDL/HPC engineering before S0-S4 pass.
 | Slice ID | Source | Fields | Rule IDs | Claim Boundary |
 |---|---|---|---|---|
 | `retail_fields_v1` | UCI Online Retail, local copy at `data/raw/online_retail.xlsx` | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | real-source small-field evidence only; not a general OCR or benchmark-superiority claim |
+| `wnut17_bio` | WNUT17 Emerging Entities, local copy at `data/raw/wnut17/` | NER BIO sequence labels | `bio_legal` | primary reviewer-facing structured prediction slice; no superiority claim until R5 formal results |
 
 ### Canonical BIO/NER Slice Gate
 
@@ -324,6 +367,12 @@ Do not handle AutoDL/HPC engineering before S0-S4 pass.
 | central case study | constrained decoded output legal, but baseline `P_theta(BIO-legal|x)` low |
 | must report | posterior legal mass, constrained legal output, hidden conflict, task metrics |
 | failure mode | if unavailable, downgrade JMLR empirical route before spending formal-run budget |
+
+Status:
+
+```text
+data gate frozen and locally audited; R5 implementation/smoke still pending.
+```
 
 ### P4 R0 Smoke Suite
 

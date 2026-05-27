@@ -9,6 +9,9 @@ from pathlib import Path
 
 REQUIRED_FILES = {
     "data/raw/online_retail.xlsx": "ef60e854dd93a8a60932a547ebd8c0dca63e33251f2dbbdcb8f2abb2aff3e272",
+    "data/raw/wnut17/train.conll": "731820e13f71af324c6b55a1575ec2ce59fbaa2a0806f8f0400b98d56cd6a7a5",
+    "data/raw/wnut17/dev.conll": "e053b752b8155113ca66e7db08af5f2f5f43ab993694e4774f1ec5bad42312d8",
+    "data/raw/wnut17/test.conll": "2aa79b764e56ec9264a1b30fdd9b70195bd00ff400b62edd8f399d5f13c178f0",
 }
 
 

@@ -17,8 +17,8 @@
 
 | Question | Required Answer Before P6 |
 |---|---|
-| 是否冻结 BIO/NER public dataset？ | required |
-| 是否冻结 BIO/BIOES legality DFA？ | required |
+| 是否冻结 BIO/NER public dataset？ | yes: WNUT17 Emerging Entities |
+| 是否冻结 BIO/BIOES legality DFA？ | yes: strict BIO legality |
 | 是否能展示 hidden posterior conflict？ | required |
 | 是否报告 constrained decoded legality 与 posterior legal mass 的差异？ | required |
 | retail_fields_v1 是否只作为辅助证据？ | yes |
@@ -62,7 +62,7 @@ Reviewer will ask about:
 GO to P6 only if:
 
 - P5 target-machine smoke passes;
-- BIO/NER slice is frozen;
+- BIO/NER slice is frozen and local data audit passes;
 - B0-B6 are implementable for BIO/NER;
 - hidden-conflict metric is defined;
 - complexity story is written;
@@ -70,8 +70,15 @@ GO to P6 only if:
 
 HOLD P6 if:
 
-- BIO/NER slice is not frozen;
+- WNUT17 BIO/NER implementation or smoke is not ready;
 - retail_fields_v1 is still the only public-looking slice;
 - baseline definitions are still moving;
 - rank/MPO starts dominating main narrative;
 - result-to-claim mapping is unclear.
+
+Current BIO/NER data gate:
+
+```text
+WNUT17 data source, split, local files, manifest hashes, and strict BIO audit are frozen.
+R5 implementation and hidden-conflict dev smoke are still pending.
+```

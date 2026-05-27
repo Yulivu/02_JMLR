@@ -20,6 +20,8 @@ dist/
 data/raw/*
 !data/raw/.gitkeep
 !data/raw/online_retail.xlsx
+!data/raw/wnut17/
+!data/raw/wnut17/*.conll
 data/interim/*
 !data/interim/.gitkeep
 data/processed/*

@@ -18,6 +18,20 @@ Direct module runs remain available for development, for example:
 python -m tensor_crf_jmlr.event_training.formal_validation_runner --seed-count 10
 ```
 
+Data gates:
+
+```powershell
+python scripts/data/verify_data.py --strict
+python scripts/data/audit_bio_ner_slice.py --data-dir data/raw/wnut17
+```
+
+Only refresh WNUT17 from GitHub when intentionally updating the frozen data
+gate:
+
+```powershell
+python scripts/data/fetch_wnut17.py
+```
+
 Keep scripts thin: parse config, call package modules, and write outputs under
 `experiments/runs/` unless explicitly curating results.
 

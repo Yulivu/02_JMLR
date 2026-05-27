@@ -5,8 +5,11 @@
 *.yml text eol=lf
 *.json text eol=lf
 *.csv text eol=lf
+*.conll text eol=lf
 *.sh text eol=lf
 *.ps1 text eol=crlf
 *.html text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
 *.xlsx binary
 *.pdf binary
