@@ -85,16 +85,22 @@ class CaseRow:
     event_p_event: float
 
 
-def ensure_data_file() -> Path:
+def ensure_data_file(*, allow_download: bool = False) -> Path:
     LOCAL_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     if not LOCAL_DATA_PATH.exists():
+        if not allow_download:
+            raise FileNotFoundError(
+                f"Missing required local data file: {LOCAL_DATA_PATH}. "
+                "AutoDL/HPC runs are offline by default; put the file under data/raw/ "
+                "or rerun with --allow-download in an environment that can reach UCI."
+            )
         df = pd.read_excel(UCI_RETAIL_URL)
         df.to_excel(LOCAL_DATA_PATH, index=False)
     return LOCAL_DATA_PATH
 
 
-def load_field_values() -> tuple[list[str], list[str]]:
-    data_path = ensure_data_file()
+def load_field_values(*, allow_download: bool = False) -> tuple[list[str], list[str]]:
+    data_path = ensure_data_file(allow_download=allow_download)
     df = pd.read_excel(data_path, usecols=["InvoiceNo", "StockCode"])
     invoices = df["InvoiceNo"].dropna().astype(str).str.strip().str.upper().tolist()
     stocks = df["StockCode"].dropna().astype(str).str.strip().str.upper().tolist()
@@ -432,6 +438,7 @@ def main() -> None:
     parser.add_argument("--seed-count", type=int, default=5)
     parser.add_argument("--tasks", nargs="*", default=[task.name for task in TASKS])
     parser.add_argument("--quick", action="store_true")
+    parser.add_argument("--allow-download", action="store_true")
     args = parser.parse_args()
 
     seed_count = min(args.seed_count, 2) if args.quick else args.seed_count
@@ -440,7 +447,7 @@ def main() -> None:
     task_by_name = {task.name: task for task in TASKS}
     tasks = [task_by_name[name] for name in args.tasks]
 
-    invoices, stocks = load_field_values()
+    invoices, stocks = load_field_values(allow_download=args.allow_download)
     pools: dict[str, list[str]] = {}
     for task in tasks:
         pool = build_pool(task, invoices, stocks)

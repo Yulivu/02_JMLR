@@ -2,6 +2,7 @@
 set -euo pipefail
 
 python -m pip install -e ".[dev]"
+python scripts/data/verify_data.py --strict
 python scripts/hpc/preflight_autodl.py \
   --suite experiments/suites/autodl_smoke.yaml \
   --report experiments/runs/preflight/autodl_preflight.json

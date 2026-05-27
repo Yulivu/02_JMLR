@@ -13,10 +13,32 @@ change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 - Python 3.10+ is available.
 - No formal experiment should be launched until the smoke suite passes.
 
+## Data Policy
+
+AutoDL is treated as offline except for GitHub access.
+
+Current P5 smoke data is already tracked in this repo:
+
+```text
+data/raw/online_retail.xlsx
+```
+
+After cloning from GitHub, verify it:
+
+```bash
+python scripts/data/verify_data.py --strict
+```
+
+If a future dataset is too large for GitHub, upload the original file with
+FileZilla/SFTP into `data/raw/`, then add or update `data/DATA_MANIFEST.md`.
+Do not depend on runtime downloads from UCI/Kaggle/other external websites on
+AutoDL.
+
 ## First Command On Machine
 
 ```bash
 python -m pip install -e ".[dev]"
+python scripts/data/verify_data.py --strict
 ```
 
 ## Preflight

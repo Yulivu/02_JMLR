@@ -8,6 +8,7 @@ protocol can be executed on a fresh machine and that outputs will be routed to
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib
 import json
 import platform
@@ -27,6 +28,11 @@ REQUIRED_MODULES = (
     "openpyxl",
     "yaml",
 )
+
+
+DATA_SHA256 = {
+    "data/raw/online_retail.xlsx": "ef60e854dd93a8a60932a547ebd8c0dca63e33251f2dbbdcb8f2abb2aff3e272",
+}
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
@@ -83,6 +89,14 @@ def check_suite(suite_path: Path) -> list[str]:
     return errors
 
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--suite", default="experiments/suites/autodl_smoke.yaml")
@@ -102,6 +116,11 @@ def main() -> None:
         errors.append(f"Python >= 3.10 required, got {sys.version}")
     if not data_file.is_file():
         errors.append(f"missing required data file: {data_file}")
+    else:
+        expected_hash = DATA_SHA256.get(data_file.as_posix())
+        actual_hash = sha256_file(data_file)
+        if expected_hash and actual_hash.lower() != expected_hash:
+            errors.append(f"data hash mismatch for {data_file}: expected {expected_hash}, got {actual_hash}")
     if not suite_path.is_file():
         errors.append(f"missing suite file: {suite_path}")
     else:
@@ -129,6 +148,7 @@ def main() -> None:
         "git_commit": git_commit(),
         "suite": str(suite_path),
         "data_file": str(data_file),
+        "data_sha256": sha256_file(data_file) if data_file.is_file() else None,
         "modules": modules,
         "torch": torch_info,
         "errors": errors,
