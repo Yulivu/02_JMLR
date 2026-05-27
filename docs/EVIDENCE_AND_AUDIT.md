@@ -168,7 +168,7 @@ Current evidence does not support:
 
 ```text
 GO: continue pre-paper formal validation planning.
-GO: P3 protocol/public slice/run list frozen.
+GO: P3 protocol/run list revised around posterior event semantics.
 GO: P4 local CPU smoke passed.
 GO: P5 AutoDL/HPC smoke engineering may proceed.
 GO: revise P6 around canonical BIO/NER hidden-conflict benchmark before formal runs.

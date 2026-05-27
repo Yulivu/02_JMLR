@@ -276,7 +276,7 @@ experiments/results/event_training/formal_pre_paper/autodl_jmlr_block/
 | Stage | Action | AutoDL/HPC |
 |---|---|---|
 | S0 | freeze experiment protocol | no |
-| S1 | freeze public slice data note | no |
+| S1 | freeze canonical BIO/NER slice data note | no |
 | S2 | freeze config table and run list | no |
 | S3 | local CPU smoke, one seed per block | no |
 | S4 | audit smoke schema | no |
@@ -389,7 +389,7 @@ Proceed to AutoDL/HPC engineering only if:
 
 ```text
 R0 local smoke passes;
-public slice decision is frozen;
+retail auxiliary slice decision is frozen;
 schema output is valid;
 run-list is accepted before seeing final results.
 ```
@@ -398,7 +398,7 @@ Do not proceed if:
 
 ```text
 baseline definitions are moving;
-public slice is not frozen;
+BIO/NER canonical slice plan is unclear before P6;
 metrics are not fixed;
 result-to-claim mapping is unclear.
 ```

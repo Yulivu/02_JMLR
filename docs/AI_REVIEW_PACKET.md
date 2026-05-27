@@ -9,7 +9,7 @@
 1. 这个 idea 是否有足够独立性；
 2. 当前 claim 是否过强或过弱；
 3. P6 formal run design 是否足够支撑 JMLR 路线；
-4. baseline / diagnostic / public slice 是否还有明显缺口；
+4. baseline / diagnostic / BIO-NER slice 是否还有明显缺口；
 5. 如果结果不理想，论文定位应该如何降级。
 
 ## 1. One-Sentence Idea
@@ -318,6 +318,8 @@ bash scripts/hpc/run_autodl_smoke.sh
 
 ```text
 docs/PROJECT_OVERVIEW.md
+docs/PAPER_POSITIONING.md
+docs/ROUTE_REVIEW_CHECKLIST.md
 docs/EXPERIMENT_PLAN.md
 docs/EVIDENCE_AND_AUDIT.md
 docs/THEORY_AND_GUARDRAILS.md

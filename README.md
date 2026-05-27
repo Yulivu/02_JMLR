@@ -14,6 +14,7 @@ Tensorized Regular-Language Posterior Algebra for CRFs
 docs/
   PROJECT_OVERVIEW.md          项目定位、当前状态、下一步
   PAPER_POSITIONING.md         paper identity、主线收缩、reviewer-facing narrative
+  ROUTE_REVIEW_CHECKLIST.md    P6 前路线再审核清单
   THEORY_AND_GUARDRAILS.md     理论对象、定理包、禁止主张
   EVIDENCE_AND_AUDIT.md        当前证据、baseline audit、claim gate
   EXPERIMENT_PLAN.md           JMLR 前实验协议、run list、AutoDL gate
@@ -85,7 +86,7 @@ docs/references/REFERENCE_INDEX.md
 
 ## 当前状态
 
-方向、理论对象、实验路线已经固定；P3/P4 已本地通过，当前处在 P5-ready：可以开始 AutoDL/HPC 工程化，但还没有进入正式大规模实验或论文写作。
+方向、理论对象、实验工程路线已经固定；P3/P4 已本地通过，当前处在 P5 in progress：AutoDL/HPC 工程入口已本地准备，但目标机器 smoke 还没跑。论文路线已收缩到 posterior event semantics，P6 前必须补 BIO/NER canonical benchmark。
 
 总路线图和进度表见：`docs/PROJECT_OVERVIEW.md` 的“项目路线图与进度”。
 

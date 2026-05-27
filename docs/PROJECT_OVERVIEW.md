@@ -191,10 +191,11 @@ experiments/
 
 1. `docs/PROJECT_OVERVIEW.md`
 2. `docs/PAPER_POSITIONING.md`
-3. `docs/EXPERIMENT_PLAN.md`
-4. `docs/EVIDENCE_AND_AUDIT.md`
-5. `docs/THEORY_AND_GUARDRAILS.md`
-6. `docs/presentation/project_value_presentation_cn.html`
+3. `docs/ROUTE_REVIEW_CHECKLIST.md`
+4. `docs/EXPERIMENT_PLAN.md`
+5. `docs/EVIDENCE_AND_AUDIT.md`
+6. `docs/THEORY_AND_GUARDRAILS.md`
+7. `docs/presentation/project_value_presentation_cn.html`
 
 ## 10. 下一步
 

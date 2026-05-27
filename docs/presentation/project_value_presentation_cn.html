@@ -705,7 +705,7 @@
           </div>
           <div class="scenario-card">
             <strong>NER / BIO</strong>
-            <span>BIO 合法性适合做诊断或反例，因为它容易饱和，不一定适合作为主 usefulness 事件。</span>
+            <span>P6 前的 canonical benchmark：即使 constrained decoding 输出合法，也要检查后验里是否仍有大量非法 BIO 概率质量。</span>
           </div>
         </div>
       </section>
@@ -786,8 +786,8 @@
             <p>T=1、first-order reduced、order-\(m\) context 的双计分风险已修复并通过二轮 audit。</p>
           </div>
           <div class="claim-card">
-            <h3>Rank membership</h3>
-            <p>在明确 mode ordering 和非负 MPO rank 定义下，rank-membership formal proof audit 已 PASS。</p>
+            <h3>Appendix support</h3>
+            <p>条件 MPO/rank membership 只作为附录支持，不作为主贡献；主文聚焦 posterior event semantics。</p>
           </div>
           <div class="claim-card">
             <h3>误差传播</h3>
@@ -795,10 +795,6 @@
           </div>
         </div>
         <div class="formula">
-          \[
-            \operatorname{rank}_{\mathrm{MPO}}^+(M_t^L;O_M)
-            \le r_g\,r_{\mathrm{shift}}\,r_A .
-          \]
           \[
             (1-\rho_t)M_t^L
             \le
@@ -810,7 +806,7 @@
           \]
         </div>
         <div class="callout amber">
-          这里的理论主张是有条件的：不说任意 CRF / DFA 都低秩；不说 \(r_A\le K|Q|\) 是低秩优势；不把 rank sanity 当成实证 usefulness。
+          这里的理论主张是有条件的：不说任意 CRF / DFA 都低秩；不把 rank/MPO 当成 paper identity；不把 rank sanity 当成实证 usefulness。
         </div>
       </section>
 
@@ -838,10 +834,10 @@
         </div>
         <h3>下一步最该补什么</h3>
         <ol>
-          <li>把 B5 rule-feature 和 B6 posterior-regularization-style 做成更 faithful 的相关工作 baseline。</li>
-          <li>把真实来源小字段扩展成更可信的公开任务切片，固定 train/dev/test 和 seeds。</li>
-          <li>继续保留 hard constraint 作为强 baseline，并报告 hidden conflict cases。</li>
-          <li>再做 result-to-claim audit，决定 empirical claim 是升级、保持 partial，还是降级回 diagnostic contribution。</li>
+          <li>补一个 canonical BIO/NER public slice，证明 decoded legality 不等于 posterior consistency。</li>
+          <li>保留 retail_fields_v1 作为辅助 real-source small-field，而不是主 benchmark。</li>
+          <li>继续保留 hard constraint / rule feature / posterior regularization 作为强 baseline，并报告 hidden conflict cases。</li>
+          <li>把 rank/MPO 放到 appendix，主文集中讲 posterior event semantics、event training 和 diagnostic。</li>
         </ol>
       </section>
 
