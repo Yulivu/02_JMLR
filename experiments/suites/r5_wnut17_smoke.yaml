@@ -1,0 +1,17 @@
+suite: r5_wnut17_smoke
+description: Local WNUT17 BIO/NER smoke for the R5 pre-formal gate; not formal evidence.
+tasks:
+  - id: r5_wnut17_bio_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp5/wnut17_bio_smoke.yaml
+    output_subdir: local_checks/r5_wnut17_bio_smoke
+    tags:
+      - exp5
+      - wnut17
+      - bio-ner
+      - smoke
+      - machine:cpu
+      - needs:data/raw/wnut17/train.conll
+      - needs:data/raw/wnut17/dev.conll
+      - needs:data/raw/wnut17/test.conll
+    enabled: true

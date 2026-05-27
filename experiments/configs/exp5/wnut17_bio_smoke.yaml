@@ -1,0 +1,12 @@
+id: wnut17_bio_smoke
+module: tensor_crf_jmlr.event_training.wnut17_bio_probe
+args:
+  data_dir: data/raw/wnut17
+  seed: 0
+  train_size: 25
+  unlabeled_size: 100
+  dev_size: 200
+  max_len: 40
+  epochs: 1
+  lr: 0.03
+  hidden_conflict_threshold: 0.7

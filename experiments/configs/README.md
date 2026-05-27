@@ -10,4 +10,5 @@ Current naming:
 exp1/  controlled and formal-validation tasks
 exp2/  semi-real format tasks
 exp3/  real-source small-field tasks
+exp5/  WNUT17 BIO/NER R5 local smoke tasks
 ```

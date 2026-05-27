@@ -38,7 +38,7 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | 条件非负 MPO rank membership | appendix-only / conditional | T2, MPO sanity | no arbitrary low-rank claim; not paper identity |
 | positive-cone event-mass error | supported | T3 | posterior/log needs extra assumptions |
 | `P_theta(L|x)` 可作为训练信号 | locally supported | gradient, controlled, semi-real, real-source | larger formal evidence |
-| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive; WNUT17 data gate frozen | WNUT17 R5 implementation and formal evidence |
+| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive; WNUT17 B0/B4 stress smoke positive for posterior event mass | WNUT17 B0-B6 formal evidence |
 | hard constraint 与 posterior training 不同 | supported | constrained metrics, conflict cases | explicit B1/B3 rows preferred |
 | risk diagnostic | partial positive | bottom/top diagnostic | expand all tasks/baselines |
 | B4 empirically superior | not supported | B5/B6 competitive | stronger baseline block |
@@ -159,7 +159,7 @@ Current evidence does not support:
 | fresh proof-check | theory prose before paper must be externally/freshly audited | run proof-check before drafting |
 | explicit B1/B3 rows | constrained metrics are currently implicit | add rows or preserve clear flags |
 | B5/B6 grids | B5/B6 pressure decides empirical strength | freeze and run grids |
-| canonical BIO/NER public slice | WNUT17 data gate frozen, no R5 results yet | implement R5 smoke and formal runs before P6 claims |
+| canonical BIO/NER public slice | WNUT17 data gate frozen; B0/B1/B4 stress smoke shows hidden conflict | implement B2/B3/B5/B6 and formal runs before P6 claims |
 | retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
 | AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
@@ -171,10 +171,10 @@ GO: continue pre-paper formal validation planning.
 GO: P3 protocol/run list revised around posterior event semantics.
 GO: P4 local CPU smoke passed.
 GO: P5 AutoDL/HPC smoke engineering may proceed.
-GO: WNUT17 BIO/NER data gate is frozen; implement R5 hidden-conflict smoke before formal runs.
+GO: WNUT17 BIO/NER data gate and B0/B1/B4 local stress smoke passed.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: P6 formal AutoDL runs until P5 target-machine smoke and WNUT17 R5 local smoke pass.
+HOLD: P6 formal AutoDL runs until P5 target-machine smoke and WNUT17 B0-B6 implementation pass.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

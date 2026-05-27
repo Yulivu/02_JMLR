@@ -10,6 +10,7 @@ from tensor_crf_jmlr.event_training.bio_event import (
     bio_transition_allowed,
     extract_strict_bio_spans,
 )
+from tensor_crf_jmlr.event_training.data_utils import SequenceDataset, filter_dataset_by_length, normalize_bio_dataset
 from tensor_crf_jmlr.event_training.event_crf import TinyLinearChainCRF
 from tensor_crf_jmlr.event_training.formal_validation_runner import (
     FormatTask,
@@ -28,6 +29,7 @@ from tensor_crf_jmlr.event_training.semi_real_format_probe import (
     train_model as train_semi_real_model,
     viterbi as semi_real_viterbi,
 )
+from tensor_crf_jmlr.event_training.wnut17_bio_probe import entity_counts, f1_from_counts
 
 
 class EventCRFTests(unittest.TestCase):
@@ -125,6 +127,24 @@ class EventCRFTests(unittest.TestCase):
         labels = ["O", "B-PER", "I-PER", "O", "I-ORG", "B-LOC", "I-LOC"]
         spans = extract_strict_bio_spans(labels)
         self.assertEqual(spans, {(1, 3, "PER"), (5, 7, "LOC")})
+
+    def test_bio_dataset_normalization_and_length_filter(self):
+        dataset = SequenceDataset(
+            "toy",
+            tokens=[["John", "Smith"], ["OpenAI", "hi", "!"]],
+            labels=[["B-person", "I-person"], ["B-corporation", "O", "O"]],
+        )
+        normalized = normalize_bio_dataset(dataset)
+        self.assertEqual(normalized.labels[0], ["B-PERSON", "I-PERSON"])
+        filtered = filter_dataset_by_length(normalized, max_len=2)
+        self.assertEqual(filtered.tokens, [["John", "Smith"]])
+
+    def test_wnut_entity_count_helpers(self):
+        pred = ["B-PER", "I-PER", "O", "B-LOC"]
+        gold = ["B-PER", "I-PER", "O", "B-ORG"]
+        true_positive, predicted, gold_total = entity_counts(pred, gold)
+        self.assertEqual((true_positive, predicted, gold_total), (1, 2, 2))
+        self.assertAlmostEqual(f1_from_counts(true_positive, predicted, gold_total), 0.5)
 
     def test_non_bio_format_event_helpers(self):
         torch.manual_seed(11)

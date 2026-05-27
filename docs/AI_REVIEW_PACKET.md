@@ -123,6 +123,7 @@ Current status:
 P5 in progress
 AutoDL/HPC engineering prepared locally
 WNUT17 BIO/NER data gate frozen locally
+WNUT17 B0/B1/B4 local stress smoke passed
 target-machine smoke pending
 ```
 
@@ -133,10 +134,10 @@ Roadmap:
 | P0 | problem definition | done | mainline fixed | none |
 | P1 | theory object closed loop | mostly done | posterior algebra, DFA/product-transfer tests | fresh proof-check |
 | P2 | local mechanism validation | mostly done | controlled/semi-real/real-source probes | not benchmark evidence |
-| P3 | experiment protocol freeze | revised-frozen | frozen protocol plus reviewer-route update; WNUT17 BIO/NER data gate | R5 implementation before P6 |
+| P3 | experiment protocol freeze | revised-frozen | frozen protocol plus reviewer-route update; WNUT17 BIO/NER data gate and stress smoke | R5 B0-B6 implementation before P6 |
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
 | P5 | AutoDL/HPC engineering | in progress | preflight, runbook, autodl smoke suite, WNUT17 data manifest | target-machine smoke |
-| P6 | formal runs | not started | R1-R8 planned; R5 data source frozen | WNUT17 R5 runner, B0-B6, hidden-conflict smoke |
+| P6 | formal runs | not started | R1-R8 planned; R5 data source frozen; B0/B1/B4 smoke positive | WNUT17 B2/B3/B5/B6 and formal R5 runs |
 | P7 | result-to-claim audit | not started | claim/evidence matrix draft | update after P6 |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limits |
 
@@ -274,6 +275,15 @@ data/raw/wnut17/test.conll
 
 Important data note: `test.conll` is copied from upstream `emerging.test.annotated`; upstream `emerging.test.conll` is not used because it contains comma-separated multi-annotation labels.
 
+Local stress-smoke signal:
+
+| System | `mean_p_event` | constrained legal rate | hidden conflict rate | token acc | entity F1 |
+|---|---:|---:|---:|---:|---:|
+| B0 | 0.0591 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
+| B4 | 0.3454 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
+
+Interpretation: WNUT17 can expose posterior BIO inconsistency under a low-resource stress setting, and event training moves posterior mass upward. It does not yet show entity-level task usefulness.
+
 Data policy:
 
 - AutoDL/HPC is treated as offline except for GitHub access.
@@ -350,13 +360,13 @@ The project is past idea-only stage. It has:
 - local theory/code sanity;
 - preliminary controlled/semi-real/real-source positive evidence;
 - frozen P3/P4 protocol and smoke;
-- frozen WNUT17 BIO/NER data gate;
+- frozen WNUT17 BIO/NER data gate plus B0/B1/B4 stress smoke;
 - P5 AutoDL/HPC engineering prepared locally.
 
 It does not yet have:
 
 - fresh external proof-check;
-- WNUT17 R5 implementation and formal P6 runs;
+- WNUT17 B0-B6 implementation and formal P6 runs;
 - JMLR-ready empirical package;
 - benchmark superiority claim;
 - full diagnostic coverage.

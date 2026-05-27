@@ -32,6 +32,12 @@ gate:
 python scripts/data/fetch_wnut17.py
 ```
 
+WNUT17 R5 local smoke:
+
+```powershell
+python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_smoke.yaml
+```
+
 Keep scripts thin: parse config, call package modules, and write outputs under
 `experiments/runs/` unless explicitly curating results.
 

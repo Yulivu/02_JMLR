@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from tensor_crf_jmlr.event_training.bio_event import bio_sequence_allowed
-from tensor_crf_jmlr.event_training.data_utils import read_conll
+from tensor_crf_jmlr.event_training.data_utils import normalize_bio_label, read_conll
 
 
 @dataclass(frozen=True)
@@ -28,20 +28,11 @@ class SplitAudit:
     top_raw_labels: list[tuple[str, int]]
 
 
-def normalize_label(label: str) -> str:
-    if label == "O":
-        return label
-    prefix, sep, label_type = label.partition("-")
-    if sep != "-" or prefix not in {"B", "I"}:
-        raise ValueError(f"unexpected BIO label: {label!r}")
-    return f"{prefix}-{label_type.upper()}"
-
-
 def audit_split(split: str, path: Path) -> SplitAudit:
     dataset = read_conll(path)
     lengths = [len(tokens) for tokens in dataset.tokens]
     raw_counter = Counter(label for labels in dataset.labels for label in labels)
-    normalized_labels = [[normalize_label(label) for label in labels] for labels in dataset.labels]
+    normalized_labels = [[normalize_bio_label(label) for label in labels] for labels in dataset.labels]
     normalized_counter = Counter(label for labels in normalized_labels for label in labels)
     raw_illegal = sum(not bio_sequence_allowed(labels) for labels in dataset.labels)
     normalized_illegal = sum(not bio_sequence_allowed(labels) for labels in normalized_labels)

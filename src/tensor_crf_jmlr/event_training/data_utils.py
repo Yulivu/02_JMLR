@@ -52,6 +52,42 @@ def read_conll(
     return SequenceDataset(path.stem, sentences, labels)
 
 
+def normalize_bio_label(label: str) -> str:
+    if label == "O":
+        return label
+    prefix, sep, label_type = label.partition("-")
+    if sep != "-" or prefix not in {"B", "I"}:
+        raise ValueError(f"unexpected BIO label: {label!r}")
+    return f"{prefix}-{label_type.upper()}"
+
+
+def normalize_bio_dataset(dataset: SequenceDataset) -> SequenceDataset:
+    return SequenceDataset(
+        name=dataset.name,
+        tokens=dataset.tokens,
+        labels=[[normalize_bio_label(label) for label in labels] for labels in dataset.labels],
+    )
+
+
+def filter_dataset_by_length(dataset: SequenceDataset, *, max_len: int) -> SequenceDataset:
+    tokens: list[list[str]] = []
+    labels: list[list[str]] = []
+    for token_seq, label_seq in zip(dataset.tokens, dataset.labels):
+        if len(token_seq) <= max_len:
+            tokens.append(token_seq)
+            labels.append(label_seq)
+    return SequenceDataset(name=f"{dataset.name}_maxlen{max_len}", tokens=tokens, labels=labels)
+
+
+def take_dataset(dataset: SequenceDataset, *, start: int = 0, count: int | None = None, name: str | None = None) -> SequenceDataset:
+    end = None if count is None else start + count
+    return SequenceDataset(
+        name=name or dataset.name,
+        tokens=dataset.tokens[start:end],
+        labels=dataset.labels[start:end],
+    )
+
+
 def make_synthetic_bio_dataset(
     *,
     repeats: int = 8,

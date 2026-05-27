@@ -19,8 +19,8 @@
 |---|---|
 | 是否冻结 BIO/NER public dataset？ | yes: WNUT17 Emerging Entities |
 | 是否冻结 BIO/BIOES legality DFA？ | yes: strict BIO legality |
-| 是否能展示 hidden posterior conflict？ | required |
-| 是否报告 constrained decoded legality 与 posterior legal mass 的差异？ | required |
+| 是否能展示 hidden posterior conflict？ | yes in WNUT17 local stress smoke; formal B0-B6 still required |
+| 是否报告 constrained decoded legality 与 posterior legal mass 的差异？ | yes in local smoke |
 | retail_fields_v1 是否只作为辅助证据？ | yes |
 
 ## 3. Baseline Check
@@ -80,5 +80,6 @@ Current BIO/NER data gate:
 
 ```text
 WNUT17 data source, split, local files, manifest hashes, and strict BIO audit are frozen.
-R5 implementation and hidden-conflict dev smoke are still pending.
+B0/B1/B4 local stress smoke shows hidden conflict and B4 event-mass improvement.
+B2/B3/B5/B6 implementation and formal R5 evidence are still pending.
 ```
