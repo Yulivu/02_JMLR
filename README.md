@@ -93,3 +93,12 @@ docs/references/REFERENCE_INDEX.md
 未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
 
 下一步：在不改动冻结协议的前提下，做 AutoDL/HPC runner、device、config 适配；适配通过后再进入 formal runs。
+
+P5 AutoDL/HPC 工程入口：
+
+```text
+docs/AUTODL_HPC_RUNBOOK.md
+experiments/suites/autodl_smoke.yaml
+scripts/hpc/preflight_autodl.py
+scripts/hpc/run_autodl_smoke.sh
+```

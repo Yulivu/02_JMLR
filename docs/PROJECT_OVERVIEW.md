@@ -36,7 +36,7 @@ P_theta(L|x)。
 当前阶段：
 
 ```text
-P5-ready: P3/P4 passed, AutoDL/HPC engineering not started
+P5 in progress: AutoDL/HPC engineering prepared locally, target-machine smoke pending
 ```
 
 已完成：
@@ -63,10 +63,10 @@ P5-ready: P3/P4 passed, AutoDL/HPC engineering not started
 当前处在：
 
 ```text
-P5-ready: P3/P4 已通过，下一步才是 AutoDL/HPC 工程化
+P5 in progress: AutoDL/HPC 工程入口已本地准备，等待目标机器 smoke
 ```
 
-更具体地说：主问题、理论对象、代码骨架、初步证据、仓库结构已经稳定；JMLR 前实验协议、public/real slice v1、formal run list 和 R0 本地 smoke 已完成冻结与本地验收。现在还没有进入论文写作，也还没有进入正式 AutoDL/HPC 大规模实验。下一道关键门槛是 P5：只做工程适配，不提前修改实验协议。
+更具体地说：主问题、理论对象、代码骨架、初步证据、仓库结构已经稳定；JMLR 前实验协议、public/real slice v1、formal run list 和 R0 本地 smoke 已完成冻结与本地验收。现在还没有进入论文写作，也还没有进入正式 AutoDL/HPC 大规模实验。当前 P5 只做工程适配，不提前修改实验协议。
 
 | Phase | 阶段目标 | 当前状态 | 已有产物 | 还缺什么 | 下一步判定 |
 |---|---|---|---|---|---|
@@ -75,7 +75,7 @@ P5-ready: P3/P4 已通过，下一步才是 AutoDL/HPC 工程化
 | P2 | 本地机制验证 | mostly done | posterior algebra tests、event CRF tests、controlled/semi-real/real-source local probes | 不能当作正式 benchmark claim | 保留为路线证据 |
 | P3 | JMLR 前实验协议冻结 | done | `docs/EXPERIMENT_PLAN.md`、baseline table、formal run list、suite/config scaffold、public/real slice v1 | B7/WFST-style 仍是 design-if-feasible，不阻塞 P3 | 已通过 |
 | P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
-| P5 | AutoDL/HPC 工程化 | not started | AutoDL gate 已写入计划；P3/P4 已满足进入条件 | runner/device/config 还未适配 | 当前下一步 |
+| P5 | AutoDL/HPC 工程化 | in progress | `autodl_smoke` suite、preflight、runbook、launcher 已建立 | 还需要在 AutoDL/HPC 机器上实际通过 | 当前阶段 |
 | P6 | JMLR formal runs | not started | run list 已规划 | R1-R7 正式结果未跑完 | 产出完整 evidence package |
 | P7 | result-to-claim audit | not started | claim/evidence matrix 初版 | 需要根据正式结果更新主张边界 | 决定能写到什么强度 |
 | P8 | 论文写作前冻结 | not started | 当前 docs 可作为材料 | 最终实验、图表、反例、限制、复现实验说明 | 通过后进入写论文 |
@@ -173,8 +173,8 @@ experiments/
 
 按顺序执行：
 
-1. 冻结 JMLR 实验协议；
-2. 冻结 public / real field slice；
-3. 冻结 formal run list；
-4. 本地 CPU smoke 每个 block 1 seed；
-5. smoke 通过后再处理 AutoDL/HPC runner/device/config。
+1. 在 AutoDL/HPC 机器拉取最新 GitHub 仓库；
+2. 按 `docs/AUTODL_HPC_RUNBOOK.md` 跑 preflight；
+3. dry-run `experiments/suites/autodl_smoke.yaml`；
+4. 运行 `bash scripts/hpc/run_autodl_smoke.sh`；
+5. 只有 P5 smoke 全部通过后，才进入 P6 formal runs。

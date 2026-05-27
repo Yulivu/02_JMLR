@@ -20,3 +20,16 @@ python -m tensor_crf_jmlr.event_training.formal_validation_runner --seed-count 1
 
 Keep scripts thin: parse config, call package modules, and write outputs under
 `experiments/runs/` unless explicitly curating results.
+
+AutoDL/HPC smoke entry points:
+
+```powershell
+python scripts/hpc/preflight_autodl.py --suite experiments/suites/autodl_smoke.yaml
+python scripts/run_experiment_suite.py --suite experiments/suites/autodl_smoke.yaml --dry-run
+```
+
+On Linux/AutoDL:
+
+```bash
+bash scripts/hpc/run_autodl_smoke.sh
+```

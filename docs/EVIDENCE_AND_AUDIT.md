@@ -159,7 +159,7 @@ Current evidence does not support:
 | fresh proof-check | theory prose before paper must be externally/freshly audited | run proof-check before drafting |
 | explicit B1/B3 rows | constrained metrics are currently implicit | add rows or preserve clear flags |
 | B5/B6 grids | B5/B6 pressure decides empirical strength | freeze and run grids |
-| public/real slice | current real-source is local small-field | freeze public field slice |
+| public/real slice | current slice is frozen but still small-field | validate on AutoDL/HPC before formal runs |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
 | AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
 
@@ -167,10 +167,11 @@ Current evidence does not support:
 
 ```text
 GO: continue pre-paper formal validation planning.
-GO: freeze rigorous protocol, public slice, and run list.
-GO: run local CPU smoke.
+GO: P3 protocol/public slice/run list frozen.
+GO: P4 local CPU smoke passed.
+GO: P5 AutoDL/HPC smoke engineering may proceed.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: AutoDL/HPC engineering before protocol + smoke.
+HOLD: P6 formal AutoDL runs until P5 target-machine smoke passes.
 ```

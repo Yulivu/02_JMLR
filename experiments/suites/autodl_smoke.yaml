@@ -1,0 +1,36 @@
+suite: autodl_smoke
+description: AutoDL/HPC smoke suite for P5 engineering validation only; not a formal result run.
+tasks:
+  - id: r0_controlled_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp1/formal_validation_smoke.yaml
+    output_subdir: autodl_smoke/r0_controlled_smoke
+    tags:
+      - exp1
+      - controlled
+      - smoke
+      - machine:autodl
+    enabled: true
+
+  - id: r0_semi_real_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp2/semi_real_quick.yaml
+    output_subdir: autodl_smoke/r0_semi_real_smoke
+    tags:
+      - exp2
+      - semi-real
+      - smoke
+      - machine:autodl
+    enabled: true
+
+  - id: r0_real_source_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp3/real_source_quick.yaml
+    output_subdir: autodl_smoke/r0_real_source_smoke
+    tags:
+      - exp3
+      - real-source
+      - smoke
+      - machine:autodl
+      - needs:data/raw/online_retail.xlsx
+    enabled: true

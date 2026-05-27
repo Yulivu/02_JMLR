@@ -301,7 +301,22 @@ P3/P4 gate passed locally. The project may proceed to P5 AutoDL/HPC engineering,
 but must not change the frozen protocol without an explicit protocol revision.
 ```
 
-## 9. Go / No-Go
+## 9. P5 AutoDL/HPC Engineering Plan
+
+P5 is an engineering gate, not a formal evidence run.
+
+| Item | Artifact | Pass Condition |
+|---|---|---|
+| AutoDL/HPC runbook | `docs/AUTODL_HPC_RUNBOOK.md` | commands are explicit and do not alter P3 protocol |
+| Environment preflight | `scripts/hpc/preflight_autodl.py` | package imports, data file, suite structure, and output routing pass |
+| Smoke suite | `experiments/suites/autodl_smoke.yaml` | routes only to `experiments/runs/autodl_smoke/` |
+| Smoke launcher | `scripts/hpc/run_autodl_smoke.sh` | runs preflight, dry-run, smoke suite, bundle audit, pytest, ruff |
+| Result protection | `.gitignore` + suite output paths | no smoke output enters `experiments/results/` |
+
+P5 is complete only after the same checks pass on the AutoDL/HPC machine. Local
+validation of these scripts is necessary but not sufficient to mark P5 done.
+
+## 10. Go / No-Go
 
 Proceed to AutoDL/HPC engineering only if:
 
@@ -321,7 +336,7 @@ metrics are not fixed;
 result-to-claim mapping is unclear.
 ```
 
-## 10. JMLR Decision Standard
+## 11. JMLR Decision Standard
 
 Maintain JMLR route only if:
 
