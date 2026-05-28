@@ -5,7 +5,7 @@ Generated: 2026-05-28
 Working title:
 
 ```text
-Tensorized Regular-Language Posterior Algebra for Conditional Random Fields
+Posterior Regular-Language Event Mass for Conditional Random Fields
 ```
 
 Paper identity:
@@ -18,7 +18,7 @@ Decoded output legality is not posterior consistency.
 
 Draft content:
 
-Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the model assigns to rule-consistent structures. We define `P_theta(L|x)`, the posterior mass that a CRF assigns to a regular-language event `L`, and compute it exactly using a product construction between the CRF state and a deterministic finite automaton. The resulting scalar is a posterior-level semantic object: it can be audited, trained through an event loss, and used as a diagnostic signal. Experiments on WNUT17 BIO tagging, controlled formats, semi-real fields, real-source small fields, sample-level diagnostics, and reference scaling show that posterior event mass exposes hidden inconsistency that constrained decoding can mask. The paper is positioned around posterior-event semantics and auditability, not benchmark superiority.
+Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the model assigns to rule-consistent structures. We define `P_theta(L|x)`, the posterior mass that a CRF assigns to a regular-language event `L`, and compute it exactly using a product construction between the CRF state and a deterministic finite automaton. The resulting scalar is a posterior-level semantic object: it can be audited, trained through an event loss, and used as a diagnostic signal. In diagnostic and field-style settings, posterior event mass exposes hidden inconsistency that constrained decoding can mask. The paper is positioned around posterior-event semantics and auditability, not benchmark superiority.
 
 ## 1. Introduction
 

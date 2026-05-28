@@ -1,120 +1,138 @@
-﻿# 2_Tensor_CRF_JMLR
+# 2_Tensor_CRF_JMLR
 
-主线：
+Working paper direction:
 
 ```text
-Tensorized Regular-Language Posterior Algebra for CRFs
+Posterior Regular-Language Event Mass for Conditional Random Fields
 ```
 
-最简定位：本项目研究如何在 CRF 原始后验里计算 regular-language rule 的事件概率 `P_theta(L|x)`，并验证它能否作为训练信号和诊断信号。
+Core identity:
 
-## 当前结构
+```text
+decoded output legality != posterior consistency
+```
+
+This repository studies `P_theta(L|x)`: the posterior probability that a CRF assigns to a regular-language event `L`. The goal is posterior-event semantics, auditability, event training, and diagnostic analysis. It is not a benchmark-superiority project, not a constrained-decoding replacement project, and not a tensor-rank paper.
+
+## Current Status
+
+```text
+HPC paused.
+Formal pre-paper evidence blocks completed and audited.
+Paper-outline / proof-prose / external-review materials drafted.
+Next step: external review and paper-positioning cleanup, not more AutoDL runs.
+```
+
+Completed audited blocks:
+
+| Block | Role |
+|---|---|
+| R5 WNUT17 BIO/NER | hidden posterior conflict existence proof and task viability boundary |
+| R1 controlled | controlled format robustness |
+| R2 semi-real | field-like semi-real tasks |
+| R4 real-source small | invoice/stock auxiliary small-field evidence |
+| R6a diagnostic | field-style risk diagnostic |
+| R8 complexity | reference CPU product-transfer scaling |
+
+Supported at current scope:
+
+- `P_theta(L|x)` is a well-defined finite CRF posterior event object.
+- Product automaton transfer computes event mass exactly under the finite setup.
+- Semi-event training can raise posterior event mass in audited settings.
+- Hard-constrained decoding and posterior consistency are different objects.
+- Low event mass is a useful field-style risk signal.
+- R8 supports conservative product-state complexity discussion.
+
+Not supported:
+
+- benchmark superiority;
+- B4 improves WNUT17 NER F1;
+- B4 dominates B5/B6 overall;
+- hard constraints are useless;
+- arbitrary low-rank advantage;
+- optimized runtime superiority;
+- final JMLR-ready claim before external review.
+
+## Repository Structure
 
 ```text
 docs/
-  PROJECT_OVERVIEW.md          项目定位、当前状态、下一步
-  PAPER_POSITIONING.md         paper identity、主线收缩、reviewer-facing narrative
-  ROUTE_REVIEW_CHECKLIST.md    P6 前路线再审核清单
-  THEORY_AND_GUARDRAILS.md     理论对象、定理包、禁止主张
-  EVIDENCE_AND_AUDIT.md        当前证据、baseline audit、claim gate
-  EXPERIMENT_PLAN.md           JMLR 前实验协议、run list、AutoDL gate
-  BIO_NER_SLICE_PROTOCOL.md    WNUT17 BIO/NER canonical slice 协议
-  R5_WNUT17_FORMAL_PROTOCOL.md WNUT17 two-regime formal R5 协议
-  GITHUB_AUTODL_FILEZILLA_WORKFLOW.md 通用 GitHub/AutoDL/FileZilla 流程
-  presentation/                HTML 展示页
-  references/                  参考论文与 reading notes
+  PROJECT_OVERVIEW.md
+  PAPER_POSITIONING.md
+  FINAL_CLAIM_TABLE.md
+  JMLR_METHODS_OUTLINE.md
+  THEORY_PROOF_PROSE.md
+  EXTERNAL_REVIEW_BRIEF.md
+  EVIDENCE_AND_AUDIT.md
+  EXPERIMENT_PLAN.md
+  PRE_PAPER_EVIDENCE_GATE.md
+  presentation/
+  references/
 
-data/                          原始数据与数据说明
-experiments/                   实验结果、后续 configs/suites/runs/visualizations
-scripts/                       稳定后才沉淀的命令行入口
-src/tensor_crf_jmlr/           Python package source code
+data/
+  raw retained datasets and manifests
+
+experiments/
+  configs/      hand-written experiment configs
+  suites/       reproducible suite definitions
+  runs/         raw machine outputs, ignored by Git
+  results/      curated audit outputs
+
+scripts/
+  exp1/         thin experiment entrypoints
+  analysis/     audit/export scripts
+  data/         data checks
+  hpc/          AutoDL/HPC helpers
+
+src/tensor_crf_jmlr/
+  posterior_event_algebra/
+  event_training/
 ```
 
-核心代码模块：
-
-```text
-posterior_event_algebra/       后验事件代数、DFA、product-transfer、MPO sanity
-event_training/                事件训练信号、local/semi-real/real-source probes、smoke tests
-```
-
-## 安装与检查
-
-建议先用 editable install，使 `python -m tensor_crf_jmlr...` 入口在本地稳定可用：
+## Setup And Checks
 
 ```powershell
 python -m pip install -e ".[dev]"
-```
-
-快速检查：
-
-```powershell
 python -c "import tensor_crf_jmlr; print('tensor_crf_jmlr import ok')"
 python -m pytest
+python -m ruff check src scripts
 ```
 
-查看当前可复现实验 suite：
-
-```powershell
-python scripts/run_experiment_suite.py --suite experiments/suites/current_repro.yaml --dry-run
-```
-
-运行最小本地 smoke：
-
-```powershell
-python scripts/run_experiment_suite.py `
-  --suite experiments/suites/current_repro.yaml `
-  --task r0_controlled_smoke
-```
-
-## 推荐阅读顺序
+Current expected check status:
 
 ```text
-docs/PROJECT_OVERVIEW.md
-docs/THEORY_AND_GUARDRAILS.md
-docs/EVIDENCE_AND_AUDIT.md
-docs/EXPERIMENT_PLAN.md
+pytest: 47 passed
+ruff: All checks passed
 ```
 
-展示项目价值：
+## Recommended Reading Order
 
-```text
-docs/presentation/project_value_presentation_cn.html
-```
+1. `docs/PROJECT_OVERVIEW.md`
+2. `docs/PAPER_POSITIONING.md`
+3. `docs/FINAL_CLAIM_TABLE.md`
+4. `docs/JMLR_METHODS_OUTLINE.md`
+5. `docs/THEORY_PROOF_PROSE.md`
+6. `docs/EXTERNAL_REVIEW_BRIEF.md`
+7. `docs/EVIDENCE_AND_AUDIT.md`
 
-参考材料：
+## AutoDL/HPC
 
-```text
-docs/references/REFERENCE_INDEX.md
-```
+Do not start new HPC jobs by default. Use AutoDL only if a post-review decision explicitly requires more experiments.
 
-## 当前状态
-
-方向、理论对象、实验工程路线已经固定；P3/P4/P5 已通过，AutoDL target-machine smoke 已在 commit `cdc3a5f` 上跑通。论文路线已收缩到 posterior event semantics，P6 前 BIO/NER canonical benchmark 已冻结为 WNUT17，B0-B6 local stress smoke 已跑通，feature viability smoke 已给出非零 entity F1，但 formal two-regime R5 还没跑。
-
-总路线图和进度表见：`docs/PROJECT_OVERVIEW.md` 的“项目路线图与进度”。
-
-已支持：`P_theta(L|x)` 的小规模精确计算、有限 sanity、local/semi-real/real-source probes、baseline fairness 初审、AutoDL 正式实验 gate。
-
-未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
-
-下一步：按 `docs/R5_WNUT17_FORMAL_PROTOCOL.md` 做 R5 formal dry-run / execution decision。
-
-路线修订：`wnut17_bio` 是 primary reviewer-facing structured benchmark；`retail_fields_v1` 保留为辅助 real-source small-field，而不是主 public benchmark。
-
-P5 AutoDL/HPC 工程入口：
+Runbook:
 
 ```text
 docs/AUTODL_HPC_RUNBOOK.md
-scripts/autodl_setup.sh
-experiments/suites/autodl_smoke.yaml
-scripts/hpc/preflight_autodl.py
-scripts/hpc/run_autodl_smoke.sh
 ```
 
-WNUT17 R5 local smoke：
+Raw run outputs should stay under:
 
-```powershell
-python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_smoke.yaml
-python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_viability.yaml
-python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_formal_plan.yaml --dry-run
+```text
+experiments/runs/
+```
+
+Curated, reviewed outputs should go under:
+
+```text
+experiments/results/
 ```

@@ -42,7 +42,7 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | hard constraint 与 posterior training 不同 | supported | constrained metrics, conflict cases | explicit B1/B3 rows preferred |
 | risk diagnostic | partial positive | bottom/top diagnostic | expand all tasks/baselines |
 | B4 empirically superior | not supported | B5/B6 competitive; R5b does not improve NER F1 | stronger baseline block |
-| JMLR-ready empirical package | not yet | R5 formal audited, but full P6 incomplete | R1-R4/R6-R8 formal blocks |
+| JMLR-ready empirical package | not yet | R5/R1/R2/R4/R6a/R8 audited | external review, final tables, proof polish, related work |
 
 ## 3. Evidence Summary
 
@@ -153,7 +153,7 @@ Current evidence can support:
 Current evidence does not support:
 
 - benchmark superiority;
-- JMLR-ready empirical claim;
+- JMLR-ready submission claim;
 - full real-task usefulness;
 - B4 improving NER F1 on WNUT17;
 - comprehensive superiority over hard constraint / WFST / posterior regularization / rule-feature;

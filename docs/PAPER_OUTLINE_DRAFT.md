@@ -5,7 +5,7 @@ Generated: 2026-05-28
 Working title:
 
 ```text
-Tensorized Regular-Language Posterior Algebra for Conditional Random Fields
+Posterior Regular-Language Event Mass for Conditional Random Fields
 ```
 
 Short identity:
@@ -16,7 +16,7 @@ Decoded output legality is not posterior consistency.
 
 ## Abstract Shape
 
-Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the model assigns to rule-consistent structures. We define `P_theta(L|x)`, the posterior mass that a CRF assigns to a regular-language event `L`, and compute it exactly using a product construction between the CRF state and a DFA monitor. This object supports three uses: auditing hidden posterior conflict, training with an event loss, and diagnosing high-risk examples. Experiments on BIO/NER, controlled format tasks, semi-real fields, and real-source small fields show that posterior event mass can expose inconsistency hidden by constrained decoding and can be moved by semi-event training. The strongest claim is posterior-event semantics and auditability, not benchmark superiority.
+Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the model assigns to rule-consistent structures. We define `P_theta(L|x)`, the posterior mass that a CRF assigns to a regular-language event `L`, and compute it exactly using a product construction between the CRF state and a DFA monitor. This object supports three uses: auditing hidden posterior conflict, training with an event loss, and diagnosing high-risk examples. In diagnostic and field-style settings, posterior event mass can expose inconsistency hidden by constrained decoding and can be moved by semi-event training. The strongest claim is posterior-event semantics and auditability, not benchmark superiority.
 
 ## 1. Introduction
 
