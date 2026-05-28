@@ -120,12 +120,12 @@ Forbidden claims:
 Current status:
 
 ```text
-P5 in progress
-AutoDL/HPC engineering prepared locally
+P5 passed
+AutoDL/HPC target-machine smoke passed
 WNUT17 BIO/NER data gate frozen locally
 WNUT17 B0-B6 local stress smoke passed
 WNUT17 feature viability smoke gives nonzero entity F1
-target-machine smoke pending
+R5 formal runs not started
 ```
 
 Roadmap:
@@ -137,7 +137,7 @@ Roadmap:
 | P2 | local mechanism validation | mostly done | controlled/semi-real/real-source probes | not benchmark evidence |
 | P3 | experiment protocol freeze | revised-frozen | frozen protocol plus reviewer-route update; WNUT17 BIO/NER data gate and B0-B6 stress smoke | R5 multi-seed/grid before P6 |
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
-| P5 | AutoDL/HPC engineering | in progress | preflight, runbook, autodl smoke suite, WNUT17 data manifest | target-machine smoke |
+| P5 | AutoDL/HPC engineering | done | target-machine preflight and smoke passed on AutoDL commit `cdc3a5f` | none |
 | P6 | formal runs | not started | R1-R8 planned; R5 data source frozen; B0-B6 smoke positive | WNUT17 multi-seed/grid formal R5 runs |
 | P7 | result-to-claim audit | not started | claim/evidence matrix draft | update after P6 |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limits |

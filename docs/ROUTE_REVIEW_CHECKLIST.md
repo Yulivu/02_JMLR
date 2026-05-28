@@ -61,7 +61,7 @@ Reviewer will ask about:
 
 GO to P6 only if:
 
-- P5 target-machine smoke passes;
+- P5 target-machine smoke passes; done on AutoDL commit `cdc3a5f`
 - BIO/NER slice is frozen and local data audit passes;
 - B0-B6 are implementable for BIO/NER;
 - hidden-conflict metric is defined;

@@ -471,6 +471,25 @@ validation of these scripts is necessary but not sufficient to mark P5 done.
 
 P5 must not launch R1-R8 formal runs. P5 also must not treat retail smoke as a substitute for BIO/NER slice selection.
 
+### P5 Target-Machine Validation Record
+
+验证日期：2026-05-28
+
+| Check | Target / Evidence | Status |
+|---|---|---|
+| AutoDL preflight | `experiments/runs/preflight/autodl_preflight.json`; Linux, Python 3.12.3, Torch 2.8.0+cu128, CUDA available | PASS |
+| Commit | AutoDL run metadata reports `git_commit = cdc3a5f` | PASS |
+| R0 controlled smoke | `experiments/runs/autodl_smoke/r0_controlled_smoke/` | PASS |
+| R0 semi-real smoke | `experiments/runs/autodl_smoke/r0_semi_real_smoke/` | PASS |
+| R0 real-source smoke | `experiments/runs/autodl_smoke/r0_real_source_smoke/` | PASS |
+| Local bundle audit after FileZilla download | `python scripts/analysis/audit_run_bundles.py --runs-dir experiments/runs/autodl_smoke --require r0_controlled_smoke r0_semi_real_smoke r0_real_source_smoke` | PASS |
+
+Conclusion:
+
+```text
+P5 target-machine smoke passed. The project may proceed to R5 formal dry-run / formal execution decision.
+```
+
 ## 10. Go / No-Go
 
 Proceed to AutoDL/HPC engineering only if:

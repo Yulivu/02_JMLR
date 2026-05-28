@@ -61,7 +61,7 @@ MPO/rank membership 只作为 appendix / optional theory support，不作为 pap
 当前阶段：
 
 ```text
-P5/R5-prep in progress: AutoDL/HPC engineering prepared locally; WNUT17 BIO/NER stress + feature viability local checks passed; target-machine smoke pending
+P5 passed: AutoDL target-machine smoke passed; R5 WNUT17 formal protocol frozen; formal R5 not started
 ```
 
 已完成：
@@ -81,7 +81,7 @@ P5/R5-prep in progress: AutoDL/HPC engineering prepared locally; WNUT17 BIO/NER 
 
 - fresh proof-check；
 - JMLR 级完整实验；
-- AutoDL target-machine smoke；
+- R5 formal execution and result audit；
 - B5/B6/WFST-style 更 faithful baseline；
 - 全任务/全 baseline diagnostic aggregation；
 - paper-writing gate。
@@ -91,10 +91,10 @@ P5/R5-prep in progress: AutoDL/HPC engineering prepared locally; WNUT17 BIO/NER 
 当前处在：
 
 ```text
-P5 in progress: AutoDL/HPC 工程入口已本地准备，等待目标机器 smoke
+P5 passed: AutoDL/HPC target-machine smoke 已通过
 ```
 
-更具体地说：主问题、理论对象、代码骨架、初步证据、仓库结构已经稳定；JMLR 前实验协议、retail auxiliary slice、formal run list 和 R0 本地 smoke 已完成冻结与本地验收。根据 review，P6 前必须补 canonical BIO/NER slice；现在已冻结为 WNUT17 Emerging Entities，数据 gate 已通过本地 audit。R5 B0-B6 stress smoke 已显示 hidden posterior conflict；feature viability smoke 已显示 WNUT17 可以学到非零 entity F1，但 event mass 在该 regime 里接近饱和。现在还没有进入论文写作，也还没有进入正式 AutoDL/HPC 大规模实验。当前 P5 仍只做工程适配和 formal-run 前置检查。
+更具体地说：主问题、理论对象、代码骨架、初步证据、仓库结构已经稳定；JMLR 前实验协议、retail auxiliary slice、formal run list 和 R0 本地 smoke 已完成冻结与本地验收。根据 review，P6 前必须补 canonical BIO/NER slice；现在已冻结为 WNUT17 Emerging Entities，数据 gate 已通过本地 audit。R5 B0-B6 stress smoke 已显示 hidden posterior conflict；feature viability smoke 已显示 WNUT17 可以学到非零 entity F1，但 event mass 在该 regime 里接近饱和。AutoDL target-machine smoke 已在 Linux 机器上通过。现在还没有进入论文写作，也还没有开始正式 R5 formal runs。
 
 | Phase | 阶段目标 | 当前状态 | 已有产物 | 还缺什么 | 下一步判定 |
 |---|---|---|---|---|---|
@@ -103,7 +103,7 @@ P5 in progress: AutoDL/HPC 工程入口已本地准备，等待目标机器 smok
 | P2 | 本地机制验证 | mostly done | posterior algebra tests、event CRF tests、controlled/semi-real/real-source local probes | 不能当作正式 benchmark claim | 保留为路线证据 |
 | P3 | JMLR 前实验协议冻结 | revised-frozen | `docs/EXPERIMENT_PLAN.md`、baseline table、formal run list、suite/config scaffold、retail slice v1、WNUT17 BIO/NER data gate、B0-B6 stress smoke、feature viability smoke、R5 two-regime protocol | AutoDL target smoke 未跑 | 进入 P5 target smoke |
 | P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
-| P5 | AutoDL/HPC 工程化 | in progress | `autodl_smoke` suite、preflight、runbook、launcher、WNUT17 data gate 已建立 | 还需要在 AutoDL/HPC 机器上实际通过 | 当前阶段 |
+| P5 | AutoDL/HPC 工程化 | done | `autodl_smoke` suite、preflight、runbook、launcher、WNUT17 data gate；AutoDL Linux smoke passed on commit `cdc3a5f` | 无当前阻塞 | 已通过 |
 | P6 | JMLR formal runs | not started | R1-R8 run list 已规划；WNUT17 B0-B6 local stress smoke 支持 R5 可继续 | R5 多 seed/grid 正式结果未跑完 | 产出完整 evidence package |
 | P7 | result-to-claim audit | not started | claim/evidence matrix 初版 | 需要根据正式结果更新主张边界 | 决定能写到什么强度 |
 | P8 | 论文写作前冻结 | not started | 当前 docs 可作为材料 | 最终实验、图表、反例、限制、复现实验说明 | 通过后进入写论文 |
@@ -112,7 +112,7 @@ P5 in progress: AutoDL/HPC 工程入口已本地准备，等待目标机器 smok
 
 ```text
 项目不是早期想法阶段；已经进入“论文前扎实实验准备阶段”。
-P3/P4 工程门禁已通过；paper route 已根据 review 收缩，P6 前 BIO/NER canonical data gate 已补齐为 WNUT17，并完成 B0-B6 stress smoke 与 feature viability smoke。
+P3/P4/P5 工程门禁已通过；paper route 已根据 review 收缩，P6 前 BIO/NER canonical data gate 已补齐为 WNUT17，并完成 B0-B6 stress smoke 与 feature viability smoke。
 项目还不是 JMLR-ready，也还没有到正式写论文阶段。
 ```
 
@@ -204,8 +204,8 @@ experiments/
 
 按顺序执行：
 
-1. 保持 P5 AutoDL smoke 工程入口；
-2. 在 AutoDL 目标机器上跑 P5 smoke；
-3. 明确 complexity story：CRF x DFA product state、rule complexity、batching/memory；
-4. 将 rank/MPO 降为 appendix；
-5. 只有 R5 local smoke 和 P5 target-machine smoke 都通过后，才进入 P6 formal runs。
+1. 按 `docs/R5_WNUT17_FORMAL_PROTOCOL.md` 执行 R5 formal dry-run；
+2. 明确是否正式启动 R5a/R5b AutoDL formal runs；
+3. formal 结果下载后先本地 audit，再进入 result-to-claim 更新；
+4. 明确 complexity story：CRF x DFA product state、rule complexity、batching/memory；
+5. 将 rank/MPO 保持为 appendix support。

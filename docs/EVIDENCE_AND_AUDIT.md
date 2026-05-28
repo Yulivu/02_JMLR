@@ -171,12 +171,12 @@ Current evidence does not support:
 GO: continue pre-paper formal validation planning.
 GO: P3 protocol/run list revised around posterior event semantics.
 GO: P4 local CPU smoke passed.
-GO: P5 AutoDL/HPC smoke engineering may proceed.
+GO: P5 AutoDL/HPC target-machine smoke passed.
 GO: WNUT17 BIO/NER data gate and B0-B6 local stress smoke passed.
 GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: P6 formal AutoDL runs until P5 target-machine smoke passes.
+HOLD: broad P6 formal AutoDL runs until R5 formal dry-run is explicitly approved and audited.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```
