@@ -321,7 +321,7 @@ negative/tradeoff cases
 | R5 | WNUT17 BIO/NER two-regime slice | R5a diagnostic stress + R5b feature viability | B0-B6; B7 design-if-feasible | 10 | completed and audited |
 | R6 | diagnostic full | R6a field-style diagnostic, then optional WNUT/controlled extension | B0, B4 sample-level diagnostic | 10 | R6a config frozen |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
-| R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | sequence length / DFA states / batch size |
+| R8 | complexity scaling | reference product-transfer scaling | product transfer only | 3 | sequence length / labels / DFA states / context order |
 
 Default settings:
 
@@ -525,12 +525,13 @@ Current gate update:
 ```text
 GO: R5 WNUT17 formal runs completed and audited.
 GO: R1/R2/R4 formal runs completed and audited.
+GO: R6a diagnostic formal run completed and audited.
 GO: R5a supports hidden posterior conflict.
 GO: R5b supports task viability.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: treating R5 as the full P6 package.
-HOLD: diagnostic claim until R6a is completed and audited.
+HOLD: complexity/scaling claim until R8 is completed and audited.
 ```
 
 ## 11. JMLR Decision Standard

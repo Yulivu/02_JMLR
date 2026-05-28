@@ -1,0 +1,5 @@
+id: r8_complexity_scaling_formal
+module: tensor_crf_jmlr.event_training.complexity_scaling_probe
+args:
+  seed_count: 3
+  repeats: 5

@@ -1,0 +1,11 @@
+id: p6_r8_complexity_formal_plan
+description: >
+  R8 product-transfer complexity scaling block. Measures reference CPU
+  wall-clock scaling with sequence length, label count, DFA states, and
+  context order. Raw output stays under experiments/runs/autodl_jmlr_block/p6_r8_complexity/.
+tasks:
+  - id: r8_complexity_scaling_formal
+    enabled: true
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp8/r8_complexity_scaling_formal.yaml
+    output_subdir: autodl_jmlr_block/p6_r8_complexity/r8_complexity_scaling_formal

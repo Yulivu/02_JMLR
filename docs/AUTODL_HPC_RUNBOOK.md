@@ -323,6 +323,52 @@ semi-real and real-source field-style tasks. WNUT hidden-conflict evidence is
 handled by R5a; R6a should not be used to claim benchmark superiority.
 ```
 
+## P6 R8 Complexity Formal Block
+
+After R6a is downloaded and audited, run R8 complexity scaling:
+
+```text
+experiments/suites/p6_r8_complexity_formal_plan.yaml
+```
+
+Dry-run:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r8_complexity_formal_plan.yaml \
+  --dry-run
+```
+
+Formal execution:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r8_complexity_formal_plan.yaml
+```
+
+Bundle audit:
+
+```bash
+python scripts/analysis/audit_run_bundles.py \
+  --runs-dir experiments/runs/autodl_jmlr_block/p6_r8_complexity \
+  --require r8_complexity_scaling_formal
+```
+
+Download with FileZilla after completion:
+
+```text
+server: /root/autodl-tmp/02_JMLR/experiments/runs/autodl_jmlr_block/p6_r8_complexity/
+local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\runs\autodl_jmlr_block\p6_r8_complexity\
+```
+
+Scope boundary:
+
+```text
+R8 measures reference CPU product-transfer scaling with sequence length, label
+count, DFA states, and context order. It must not be described as an optimized
+runtime benchmark, GPU result, arbitrary low-rank result, or superiority claim.
+```
+
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.
