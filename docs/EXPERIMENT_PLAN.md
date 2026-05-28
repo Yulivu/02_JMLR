@@ -526,12 +526,14 @@ Current gate update:
 GO: R5 WNUT17 formal runs completed and audited.
 GO: R1/R2/R4 formal runs completed and audited.
 GO: R6a diagnostic formal run completed and audited.
+GO: R8 complexity formal run completed and audited.
 GO: R5a supports hidden posterior conflict.
 GO: R5b supports task viability.
+GO: pause HPC and enter local pre-paper evidence gate.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: treating R5 as the full P6 package.
-HOLD: complexity/scaling claim until R8 is completed and audited.
+HOLD: new HPC jobs until deciding whether R3/R7/B7 is necessary.
 ```
 
 ## 11. JMLR Decision Standard

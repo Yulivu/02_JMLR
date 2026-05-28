@@ -108,7 +108,7 @@ R5 audited: WNUT17 BIO/NER formal block 已完成审计；完整 P6 还没完成
 | P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
 | P5 | AutoDL/HPC 工程化 | done | `autodl_smoke` suite、preflight、runbook、launcher、WNUT17 data gate；AutoDL Linux smoke passed on commit `cdc3a5f` | 无当前阻塞 | 已通过 |
 | R5 | WNUT17 BIO/NER formal block | done-with-boundary | R5a/R5b 10-seed AutoDL formal runs；`R5_RESULT_TO_CLAIM_AUDIT.md` | 只支持 posterior-conflict / viability，不支持 F1 superiority | 纳入 P6 证据包 |
-| P6 | JMLR formal runs | partial | R5、R1/R2/R4、R6a 已完成并审计；R8 run list 已规划 | complexity formal block 未完成 | 产出完整 evidence package |
+| P6 | JMLR formal runs | mostly done / route-review needed | R5、R1/R2/R4、R6a、R8 已完成并审计 | 是否补 R3/R7/B7 需要本地路线判断 | 进入 pre-paper evidence gate |
 | P7 | result-to-claim audit | partial | R5 claim audit 已完成 | 需要根据全部 formal 结果更新主张边界 | 决定能写到什么强度 |
 | P8 | 论文写作前冻结 | not started | 当前 docs 可作为材料 | 最终实验、图表、反例、限制、复现实验说明 | 通过后进入写论文 |
 
@@ -210,6 +210,6 @@ experiments/
 
 1. 固定 R5 审计边界：R5a 讲 hidden posterior conflict，R5b 讲 task viability，不讲 F1 superiority；
 2. 执行 R1/R2/R4，补 controlled、semi-real、real-source formal evidence；
-3. 执行 R8 complexity scaling，明确 CRF x DFA product state、rule complexity、batching/memory；
-4. 根据 R5/R1/R2/R4/R6a/R8 汇总 final pre-paper gate；
-5. 设计 B7 或写清楚为什么 WFST-style baseline 暂不纳入主实验。
+3. 阅读 `docs/PRE_PAPER_EVIDENCE_GATE.md`，完成本地 pre-paper route review；
+4. 判断是否需要补 R3/R7/B7；
+5. fresh proof-check / theory consistency audit。

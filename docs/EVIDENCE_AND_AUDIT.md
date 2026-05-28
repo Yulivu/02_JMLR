@@ -62,6 +62,7 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | P6 R2 semi-real formal | B4 raises posterior event mass across amount/date/dose/product_code | task metrics vary; no superiority claim |
 | P6 R4 real-source formal | B4 raises posterior event mass across invoice/stock small fields | legal rate is saturated or near-saturated |
 | P6 R6a diagnostic formal | bottom event-mass quantile has higher exact/char error than top quantile across field-style tasks | diagnostic evidence only; not task-superiority evidence |
+| P6 R8 complexity formal | reference product-transfer scaling measured across length/labels/DFA states/context order | not optimized benchmark, GPU, or low-rank evidence |
 
 ## 4. Important Numbers
 
@@ -186,10 +187,12 @@ GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
 GO: R5 WNUT17 formal AutoDL runs completed and audited.
 GO: P6 R1/R2/R4 formal AutoDL runs completed and audited.
 GO: P6 R6a diagnostic AutoDL run completed and audited.
+GO: P6 R8 complexity AutoDL run completed and audited.
+GO: pause HPC and enter local pre-paper evidence gate.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
 HOLD: treating R5 as sufficient for full P6/JMLR empirical package.
-HOLD: complexity/scaling claim until R8 is completed and audited.
+HOLD: new HPC jobs until R3/R7/B7 need is decided locally.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

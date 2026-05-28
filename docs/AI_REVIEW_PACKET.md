@@ -89,6 +89,8 @@ P5 passed.
 AutoDL target-machine smoke passed.
 R5 WNUT17 formal AutoDL runs completed and downloaded.
 R5 result-to-claim audit completed locally.
+P6 R1/R2/R4/R6a/R8 formal blocks completed and audited.
+HPC is paused pending local pre-paper route review.
 The project is still pre-paper; it is not JMLR-ready yet.
 ```
 
@@ -103,8 +105,8 @@ Roadmap:
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
 | P5 | AutoDL/HPC engineering | done | target-machine preflight and smoke passed | none |
 | R5 | WNUT17 BIO/NER formal slice | audited | R5a/R5b 10-seed AutoDL outputs and claim audit | use only within its claim boundaries |
-| P6 | full formal runs | partial / next | R5 done; R1-R4/R6-R8 still planned | controlled, semi-real, real-source, diagnostic, complexity formal blocks |
-| P7 | full result-to-claim audit | not started | R5 audit exists | requires all formal blocks |
+| P6 | full formal runs | mostly done / route-review needed | R5, R1/R2/R4, R6a, R8 audited | decide whether R3/R7/B7 are necessary |
+| P7 | full result-to-claim audit | partial | block-level audits exist | final synthesis and proof audit |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limitations/repro package |
 
 ## 6. R5 Formal Result Summary
@@ -198,19 +200,16 @@ If B5/B6 are competitive or stronger, the paper should not claim empirical domin
 The defensible positioning becomes posterior-event algebra, auditability, and diagnostic value.
 ```
 
-## 9. Next Formal Work
+## 9. Remaining Work
 
-The next work should not expand concepts. It should complete the evidence package:
+The next work should not run more HPC by default. It should complete the local pre-paper route review:
 
-| Block | Purpose | Priority |
+| Item | Purpose | Priority |
 |---|---|---|
-| R1 controlled robustness | show mechanism stability across synthetic regular languages | high |
-| R2 semi-real main | test B0-B6 under field-like formats | high |
-| R3 low-label/unlabeled sensitivity | show when event training helps | medium |
-| R4 real-source small auxiliary | keep retail fields as auxiliary evidence | medium |
-| R6 diagnostic full | test whether low event mass predicts error/conflict | high |
-| R8 complexity scaling | answer DFA x CRF cost questions | high |
-| B7 design | handle WFST/constrained-method reviewer pressure | medium |
+| final claim table | decide exactly what the paper can claim | high |
+| proof/theory audit | check product transfer and guardrails before writing | high |
+| B7 decision | decide whether WFST-style baseline is mandatory | medium |
+| R3/R7 decision | decide whether sensitivity runs are necessary | medium |
 
 ## 10. Key Risks
 
@@ -219,8 +218,8 @@ The next work should not expand concepts. It should complete the evidence packag
 | reviewer sees this as constrained decoding variant | paper identity weakens | emphasize posterior event mass, not decode-time repair |
 | B4 does not improve task F1 | no superiority claim | position around posterior consistency and diagnostics |
 | B5/B6 are competitive | empirical novelty weaker | compare what each baseline can and cannot audit |
-| diagnostic fails outside R5a | remove or narrow diagnostic claim | run R6 before writing |
-| complexity story missing | reviewer will question scalability | run R8 and write CRF x DFA product complexity clearly |
+| diagnostic fails outside R5a | remove or narrow diagnostic claim | R6a currently supports field-style risk signal |
+| complexity story missing | reviewer will question scalability | R8 now supports conservative reference scaling only |
 | proof-check fails | theory section blocked | repair before paper drafting |
 
 ## 11. Minimal Repository Pointers
@@ -240,6 +239,6 @@ src/tensor_crf_jmlr/event_training/
 
 ## 12. Current Bottom Line
 
-The project is no longer only an idea. It has a clear research object, theory/code sanity, local mechanism evidence, an organized repo, AutoDL workflow, and one audited canonical BIO/NER formal block.
+The project is no longer only an idea. It has a clear research object, theory/code sanity, organized repo, AutoDL workflow, and audited formal blocks covering WNUT BIO/NER, controlled formats, semi-real fields, real-source small fields, field-style diagnostics, and reference complexity scaling.
 
-It is still not ready for paper writing. The next decision is how to complete P6 without overclaiming: use R5 as evidence for posterior conflict and task viability, then run controlled/semi-real/real-source/diagnostic/complexity blocks to decide whether the final paper is a JMLR-strength methods paper or a narrower posterior-event algebra and auditability paper.
+It is still not ready for paper writing. The next decision is local, not HPC: perform the pre-paper evidence gate, decide whether R3/R7/B7 are necessary, and run a fresh proof/claim audit before drafting.
