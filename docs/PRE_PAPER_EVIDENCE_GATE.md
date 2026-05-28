@@ -70,5 +70,7 @@ Paper-outline planning materials are now drafted:
 docs/THEORY_PROOF_PROSE.md
 docs/JMLR_METHODS_OUTLINE.md
 docs/INTRO_REBUTTAL_PARAGRAPH.md
+Diagnostic reanalysis is now complete:
+experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/P6_R6A_DIAGNOSTIC_REANALYSIS.md
 Next step is external review, not HPC.
 ```

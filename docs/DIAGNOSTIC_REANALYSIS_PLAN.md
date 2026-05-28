@@ -70,6 +70,41 @@ P_theta(L|x) universally predicts errors.
 ## Decision
 
 ```text
-Do this locally before paper writing if diagnostic becomes a main contribution.
-No AutoDL run is required.
+DONE locally.
+No AutoDL run was required.
+```
+
+## Completed Reanalysis
+
+Output files:
+
+```text
+experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/diagnostic_ranking_metrics.csv
+experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/diagnostic_risk_curve.csv
+experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/P6_R6A_DIAGNOSTIC_REANALYSIS.md
+```
+
+Key results:
+
+| Metric | Value |
+|---|---:|
+| cases | 21000 |
+| overall AUROC for exact error | 0.7088 |
+| overall AUPRC for exact error | 0.8470 |
+| Spearman risk vs char error | 0.2869 |
+| bottom risk decile exact error | 0.8862 |
+| top risk decile exact error | 0.2624 |
+
+Updated claim:
+
+```text
+P_theta(L|x) provides a useful ranking/risk signal for the audited field-style tasks.
+```
+
+Still not allowed:
+
+```text
+P_theta(L|x) is calibrated.
+P_theta(L|x) universally predicts errors.
+P_theta(L|x) proves benchmark superiority.
 ```

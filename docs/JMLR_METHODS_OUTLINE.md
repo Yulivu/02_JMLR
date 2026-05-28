@@ -280,6 +280,15 @@ Claim:
 Low event mass predicts higher exact and char error across field-style tasks.
 ```
 
+Key reanalysis:
+
+```text
+AUROC exact error = 0.7088
+AUPRC exact error = 0.8470
+lowest event-mass decile exact error = 0.8862
+highest event-mass decile exact error = 0.2624
+```
+
 Boundary:
 
 ```text
