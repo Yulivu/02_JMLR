@@ -1,0 +1,11 @@
+id: p6_r6_diagnostic_formal_plan
+description: >
+  R6a field-style posterior event diagnostic block. This reruns sample-level
+  diagnostics for semi-real and real-source small-field tasks and writes raw
+  output under experiments/runs/autodl_jmlr_block/p6_r6_diagnostic/.
+tasks:
+  - id: r6a_field_diagnostic_formal
+    enabled: true
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp6/r6a_field_diagnostic_formal.yaml
+    output_subdir: autodl_jmlr_block/p6_r6_diagnostic/r6a_field_diagnostic_formal

@@ -58,6 +58,9 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | Diagnostic | bottom 20% `P_theta(L|x)` samples have higher error than top 20% | representative tasks only |
 | R5a WNUT17 diagnostic stress | B0 `P(BIO|x)=0.0566`, hidden conflict `1.0000`; B4 raises `P(BIO|x)` to `0.3389` | entity F1 remains `0.0000`, diagnostic only |
 | R5b WNUT17 feature viability | B0 entity F1 `0.1660`; WNUT17 is not all-O toy | `P(BIO|x)` saturated around `0.9824`; no B4 F1 gain |
+| P6 R1 controlled formal | B4 raises posterior event mass across controlled formats | controlled structural evidence only |
+| P6 R2 semi-real formal | B4 raises posterior event mass across amount/date/dose/product_code | task metrics vary; no superiority claim |
+| P6 R4 real-source formal | B4 raises posterior event mass across invoice/stock small fields | legal rate is saturated or near-saturated |
 
 ## 4. Important Numbers
 
@@ -180,9 +183,11 @@ GO: P5 AutoDL/HPC target-machine smoke passed.
 GO: WNUT17 BIO/NER data gate and B0-B6 local stress smoke passed.
 GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
 GO: R5 WNUT17 formal AutoDL runs completed and audited.
+GO: P6 R1/R2/R4 formal AutoDL runs completed and audited.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
 HOLD: treating R5 as sufficient for full P6/JMLR empirical package.
+HOLD: diagnostic/calibration claim until R6 is audited.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

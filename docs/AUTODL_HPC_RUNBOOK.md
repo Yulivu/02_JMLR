@@ -276,6 +276,53 @@ local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\r
 Do not copy these raw outputs into `experiments/results/` until a local
 result-to-claim audit script has been run.
 
+## P6 R6 Diagnostic Formal Block
+
+After R1/R2/R4 are downloaded and audited, the next AutoDL block is R6a
+field-style posterior event diagnostic:
+
+```text
+experiments/suites/p6_r6_diagnostic_formal_plan.yaml
+```
+
+Dry-run:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r6_diagnostic_formal_plan.yaml \
+  --dry-run
+```
+
+Formal execution:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r6_diagnostic_formal_plan.yaml
+```
+
+Bundle audit:
+
+```bash
+python scripts/analysis/audit_run_bundles.py \
+  --runs-dir experiments/runs/autodl_jmlr_block/p6_r6_diagnostic \
+  --require r6a_field_diagnostic_formal
+```
+
+Download with FileZilla after completion:
+
+```text
+server: /root/autodl-tmp/02_JMLR/experiments/runs/autodl_jmlr_block/p6_r6_diagnostic/
+local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\runs\autodl_jmlr_block\p6_r6_diagnostic\
+```
+
+Scope boundary:
+
+```text
+R6a tests whether low P_theta(L|x) is a sample-level diagnostic signal on
+semi-real and real-source field-style tasks. WNUT hidden-conflict evidence is
+handled by R5a; R6a should not be used to claim benchmark superiority.
+```
+
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.

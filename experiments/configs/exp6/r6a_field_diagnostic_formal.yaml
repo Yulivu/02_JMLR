@@ -1,0 +1,13 @@
+id: r6a_field_diagnostic_formal
+module: tensor_crf_jmlr.event_training.posterior_event_diagnostic
+args:
+  seed_count: 10
+  semi_tasks:
+    - amount
+    - date
+    - dose
+    - product_code
+  real_tasks:
+    - invoice_6d
+    - invoice_c6d
+    - stock_5d

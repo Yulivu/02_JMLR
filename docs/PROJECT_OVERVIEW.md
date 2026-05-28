@@ -108,7 +108,7 @@ R5 audited: WNUT17 BIO/NER formal block 已完成审计；完整 P6 还没完成
 | P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
 | P5 | AutoDL/HPC 工程化 | done | `autodl_smoke` suite、preflight、runbook、launcher、WNUT17 data gate；AutoDL Linux smoke passed on commit `cdc3a5f` | 无当前阻塞 | 已通过 |
 | R5 | WNUT17 BIO/NER formal block | done-with-boundary | R5a/R5b 10-seed AutoDL formal runs；`R5_RESULT_TO_CLAIM_AUDIT.md` | 只支持 posterior-conflict / viability，不支持 F1 superiority | 纳入 P6 证据包 |
-| P6 | JMLR formal runs | partial | R5 已完成；R1-R4/R6-R8 run list 已规划 | controlled、semi-real、real-source、diagnostic、complexity formal blocks 未完成 | 产出完整 evidence package |
+| P6 | JMLR formal runs | partial | R5 已完成；R1/R2/R4 已完成并审计；R6/R8 run list 已规划 | diagnostic、complexity formal blocks 未完成 | 产出完整 evidence package |
 | P7 | result-to-claim audit | partial | R5 claim audit 已完成 | 需要根据全部 formal 结果更新主张边界 | 决定能写到什么强度 |
 | P8 | 论文写作前冻结 | not started | 当前 docs 可作为材料 | 最终实验、图表、反例、限制、复现实验说明 | 通过后进入写论文 |
 

@@ -319,7 +319,7 @@ negative/tradeoff cases
 | R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
 | R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
 | R5 | WNUT17 BIO/NER two-regime slice | R5a diagnostic stress + R5b feature viability | B0-B6; B7 design-if-feasible | 10 | completed and audited |
-| R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
+| R6 | diagnostic full | R6a field-style diagnostic, then optional WNUT/controlled extension | B0, B4 sample-level diagnostic | 10 | R6a config frozen |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
 | R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | sequence length / DFA states / batch size |
 
@@ -524,11 +524,13 @@ Current gate update:
 
 ```text
 GO: R5 WNUT17 formal runs completed and audited.
+GO: R1/R2/R4 formal runs completed and audited.
 GO: R5a supports hidden posterior conflict.
 GO: R5b supports task viability.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: treating R5 as the full P6 package.
+HOLD: diagnostic claim until R6a is completed and audited.
 ```
 
 ## 11. JMLR Decision Standard
