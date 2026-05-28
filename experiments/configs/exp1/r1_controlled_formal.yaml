@@ -1,0 +1,9 @@
+id: r1_controlled_formal
+module: tensor_crf_jmlr.event_training.formal_validation_runner
+args:
+  seed_count: 20
+  tasks:
+    - DATE
+    - DDDLL
+    - LL-DDD
+    - LLDDD

@@ -1,0 +1,21 @@
+id: p6_r1_r2_r4_formal_plan
+description: >
+  First post-R5 P6 formal block. Runs controlled robustness, semi-real main,
+  and real-source small-field auxiliary experiments. Raw outputs stay under
+  experiments/runs/autodl_jmlr_block/p6_r1_r2_r4/.
+tasks:
+  - id: r1_controlled_formal
+    enabled: true
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp1/r1_controlled_formal.yaml
+    output_subdir: autodl_jmlr_block/p6_r1_r2_r4/r1_controlled_formal
+  - id: r2_semi_real_formal
+    enabled: true
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp2/r2_semi_real_formal.yaml
+    output_subdir: autodl_jmlr_block/p6_r1_r2_r4/r2_semi_real_formal
+  - id: r4_real_source_formal
+    enabled: true
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp3/r4_real_source_formal.yaml
+    output_subdir: autodl_jmlr_block/p6_r1_r2_r4/r4_real_source_formal

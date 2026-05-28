@@ -1,0 +1,9 @@
+id: r2_semi_real_formal
+module: tensor_crf_jmlr.event_training.semi_real_format_probe
+args:
+  seed_count: 10
+  tasks:
+    - amount
+    - date
+    - dose
+    - product_code

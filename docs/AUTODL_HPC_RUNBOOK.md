@@ -216,6 +216,66 @@ local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\r
 After downloading results, audit locally before copying anything into
 `experiments/results/`.
 
+## P6 R1/R2/R4 Formal Block
+
+After R5 is audited, the next AutoDL block is controlled/semi-real/real-source
+formal evidence:
+
+```text
+experiments/suites/p6_r1_r2_r4_formal_plan.yaml
+```
+
+Run only after pulling the commit that contains this suite.
+
+Dry-run:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r1_r2_r4_formal_plan.yaml \
+  --dry-run
+```
+
+Formal execution:
+
+```bash
+python scripts/run_experiment_suite.py \
+  --suite experiments/suites/p6_r1_r2_r4_formal_plan.yaml
+```
+
+Equivalent one-by-one commands:
+
+```bash
+python scripts/exp1/run_event_training_task.py \
+  --config experiments/configs/exp1/r1_controlled_formal.yaml \
+  --out-dir experiments/runs/autodl_jmlr_block/p6_r1_r2_r4/r1_controlled_formal
+
+python scripts/exp1/run_event_training_task.py \
+  --config experiments/configs/exp2/r2_semi_real_formal.yaml \
+  --out-dir experiments/runs/autodl_jmlr_block/p6_r1_r2_r4/r2_semi_real_formal
+
+python scripts/exp1/run_event_training_task.py \
+  --config experiments/configs/exp3/r4_real_source_formal.yaml \
+  --out-dir experiments/runs/autodl_jmlr_block/p6_r1_r2_r4/r4_real_source_formal
+```
+
+Bundle audit:
+
+```bash
+python scripts/analysis/audit_run_bundles.py \
+  --runs-dir experiments/runs/autodl_jmlr_block/p6_r1_r2_r4 \
+  --require r1_controlled_formal r2_semi_real_formal r4_real_source_formal
+```
+
+Download with FileZilla after completion:
+
+```text
+server: /root/autodl-tmp/02_JMLR/experiments/runs/autodl_jmlr_block/p6_r1_r2_r4/
+local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\runs\autodl_jmlr_block\p6_r1_r2_r4\
+```
+
+Do not copy these raw outputs into `experiments/results/` until a local
+result-to-claim audit script has been run.
+
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.

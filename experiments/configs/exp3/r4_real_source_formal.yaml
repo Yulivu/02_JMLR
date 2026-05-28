@@ -1,0 +1,8 @@
+id: r4_real_source_formal
+module: tensor_crf_jmlr.event_training.real_small_data_retail_probe
+args:
+  seed_count: 10
+  tasks:
+    - invoice_6d
+    - invoice_c6d
+    - stock_5d
