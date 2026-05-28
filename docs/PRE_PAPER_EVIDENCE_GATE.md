@@ -66,5 +66,9 @@ The current evidence is enough to stop running AutoDL jobs temporarily and do a 
 ```text
 Do not start another HPC job now.
 Local pre-paper route review and proof/claim audit are now complete at the document level.
-Next step is paper-outline planning or external review, not HPC.
+Paper-outline planning materials are now drafted:
+docs/THEORY_PROOF_PROSE.md
+docs/JMLR_METHODS_OUTLINE.md
+docs/INTRO_REBUTTAL_PARAGRAPH.md
+Next step is external review, not HPC.
 ```
