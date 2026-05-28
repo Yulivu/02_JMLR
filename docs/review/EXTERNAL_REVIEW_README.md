@@ -23,7 +23,7 @@ Decoded output legality is not posterior consistency. This project defines and c
 5. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 6. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
 7. `docs/paper/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
-8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_PLAN.md`
+8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
 
 ## What To Judge
 
@@ -32,8 +32,8 @@ Decoded output legality is not posterior consistency. This project defines and c
 | Is the contribution defensible if CRF x automaton marginal inference is acknowledged as known? | main novelty risk |
 | Is the boundary against posterior regularization, especially Ganchev et al. (2010), clear enough? | closest related-work risk |
 | Is R5a acceptable as diagnostic-stress evidence despite zero entity F1? | empirical framing risk |
-| Is R6a strong enough as risk-ranking evidence after accounting for base exact-error rate? | diagnostic claim strength |
-| Does R6a need uncertainty-baseline rerun before manuscript submission? | reviewer-pressure diagnostic risk |
+| Is R6a strong enough as rule-specific risk-ranking evidence after accounting for base exact-error rate and stronger uncertainty baselines? | diagnostic claim strength |
+| Does the paper avoid claiming superiority over entropy, margin, or max-probability uncertainty? | reviewer-pressure diagnostic risk |
 | Can B7 remain design-only if the paper avoids superiority claims against WFST/constrained methods? | baseline risk |
 | Are the theorem assumptions and proof prose complete enough for a methods/theory paper draft? | theory risk |
 

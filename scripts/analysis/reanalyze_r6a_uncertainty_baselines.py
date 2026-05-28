@@ -197,6 +197,12 @@ def write_report(path: Path, rows: list[dict[str, object]]) -> None:
     lines.extend(
         [
             "",
+            "## Interpretation",
+            "",
+            "The event-risk score has positive exact-error ranking signal, but standard uncertainty baselines are stronger overall in this rerun.",
+            "Therefore the paper should not claim diagnostic superiority over entropy, margin, or max-probability uncertainty.",
+            "The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal that can rank risk, not a universal or dominant uncertainty score.",
+            "",
             "Boundary: this is ranking evidence only, not calibration and not benchmark superiority.",
             "",
         ]

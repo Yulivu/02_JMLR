@@ -69,7 +69,7 @@ One might object that `P_theta(L|x)` is merely standard marginal inference after
 2. Prove exact finite product-transfer computation.
 3. Distinguish the posterior-event object from constrained decoding and constrained CRFs.
 4. Derive event-loss gradient as a computable expectation-difference training signal.
-5. Provide diagnostic evidence that low event mass ranks risk in audited field-style settings.
+5. Provide diagnostic evidence that low event mass is a rule-specific risk signal in audited field-style settings.
 6. Provide conservative reference product-state scaling.
 
 Event training is a secondary contribution. It shows the event object can be used as a training signal and can move posterior event mass; it is not framed as an accuracy method.
@@ -242,6 +242,8 @@ Use `P_theta(L|x)` to rank examples:
 - low event mass;
 - bottom/top quantile errors;
 - hidden conflict cases where constrained decoding is legal but posterior mass is low.
+- compare against uncertainty baselines where available;
+- do not claim event risk dominates entropy, margin, or max-probability uncertainty.
 
 ## 5. Experiments
 

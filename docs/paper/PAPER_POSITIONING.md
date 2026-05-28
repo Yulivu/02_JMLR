@@ -140,8 +140,8 @@ not benchmark superiority
 R6a:
 
 ```text
-field-style risk diagnostic evidence
-not calibration or universal error theorem
+field-style rule-specific risk diagnostic evidence
+not calibration, universal error theorem, or stronger-than-uncertainty claim
 ```
 
 R8:
