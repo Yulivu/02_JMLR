@@ -2,7 +2,7 @@
 
 Generated: 2026-05-28
 
-This document converts `docs/FRESH_PROOF_THEORY_AUDIT.md` into formal prose suitable for a methods/theory paper draft. It keeps the main theorem spine limited to finite posterior event mass and exact product transfer. Conditional rank/MPO material remains appendix-only.
+This document converts `docs/audits/FRESH_PROOF_THEORY_AUDIT.md` into formal prose suitable for a methods/theory paper draft. It keeps the main theorem spine limited to finite posterior event mass and exact product transfer. Conditional rank/MPO material remains appendix-only.
 
 ## 1. Finite Posterior Event Setup
 

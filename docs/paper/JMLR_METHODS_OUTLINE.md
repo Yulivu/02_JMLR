@@ -159,7 +159,7 @@ u_0 M_1^L ... M_T^L b_L = Z_{theta,L}(x).
 Proof source:
 
 ```text
-docs/THEORY_PROOF_PROSE.md
+docs/paper/THEORY_PROOF_PROSE.md
 ```
 
 ## 4. Method

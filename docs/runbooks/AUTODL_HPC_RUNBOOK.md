@@ -5,7 +5,7 @@ Status: P5 engineering preparation.
 This runbook is only for environment validation and smoke execution. It must not
 change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 
-This runbook adapts the general `docs/GITHUB_AUTODL_FILEZILLA_WORKFLOW.md`
+This runbook adapts the general `docs/runbooks/GITHUB_AUTODL_FILEZILLA_WORKFLOW.md`
 process to this repository.
 
 ## Project Values
@@ -171,7 +171,7 @@ all pass on the AutoDL/HPC machine.
 After P5 target-machine smoke passes, review the frozen R5 protocol:
 
 ```text
-docs/R5_WNUT17_FORMAL_PROTOCOL.md
+docs/protocols/R5_WNUT17_FORMAL_PROTOCOL.md
 ```
 
 Dry-run the formal plan first:
@@ -372,7 +372,7 @@ runtime benchmark, GPU result, arbitrary low-rank result, or superiority claim.
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.
-- Do not edit `docs/EXPERIMENT_PLAN.md` after seeing smoke results unless making
+- Do not edit `docs/protocols/EXPERIMENT_PLAN.md` after seeing smoke results unless making
   an explicit protocol revision.
 - Do not start R1-R8 formal runs during P5.
 - Do not run `r5_wnut17_formal_plan.yaml` before P5 target-machine smoke passes.

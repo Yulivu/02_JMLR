@@ -57,17 +57,13 @@ Not supported:
 
 ```text
 docs/
+  README.md
   PROJECT_OVERVIEW.md
-  PAPER_POSITIONING.md
-  FINAL_CLAIM_TABLE.md
-  JMLR_METHODS_OUTLINE.md
-  THEORY_PROOF_PROSE.md
-  EXTERNAL_REVIEW_README.md
-  EXTERNAL_REVIEW_PACKET_V2.md
-  EVIDENCE_AND_AUDIT.md
-  EXPERIMENT_PLAN.md
-  PRE_PAPER_EVIDENCE_GATE.md
-  presentation/
+  paper/       claim table, paper positioning, outline, theory prose, related work
+  review/      external review entrypoint and packet
+  protocols/   experiment, diagnostic, and baseline protocols
+  audits/      evidence, theory guardrails, and proof audits
+  runbooks/    AutoDL and FileZilla operational notes
   references/
 
 data/
@@ -110,19 +106,19 @@ ruff: All checks passed
 
 For external review, start here:
 
-1. `docs/EXTERNAL_REVIEW_README.md`
-2. `docs/EXTERNAL_REVIEW_PACKET_V2.md`
-3. `docs/FINAL_CLAIM_TABLE.md`
-4. `docs/RELATED_WORK_DRAFT.md`
-5. `docs/THEORY_PROOF_PROSE.md`
+1. `docs/review/EXTERNAL_REVIEW_README.md`
+2. `docs/review/EXTERNAL_REVIEW_PACKET_V2.md`
+3. `docs/paper/FINAL_CLAIM_TABLE.md`
+4. `docs/paper/RELATED_WORK_DRAFT.md`
+5. `docs/paper/THEORY_PROOF_PROSE.md`
 6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal project orientation:
 
 1. `docs/PROJECT_OVERVIEW.md`
-2. `docs/PAPER_POSITIONING.md`
-3. `docs/JMLR_METHODS_OUTLINE.md`
-4. `docs/EVIDENCE_AND_AUDIT.md`
+2. `docs/paper/PAPER_POSITIONING.md`
+3. `docs/paper/JMLR_METHODS_OUTLINE.md`
+4. `docs/audits/EVIDENCE_AND_AUDIT.md`
 
 ## AutoDL/HPC
 
@@ -131,7 +127,7 @@ Do not start new HPC jobs by default. Use AutoDL only if a post-review decision 
 Runbook:
 
 ```text
-docs/AUTODL_HPC_RUNBOOK.md
+docs/runbooks/AUTODL_HPC_RUNBOOK.md
 ```
 
 Raw run outputs should stay under:

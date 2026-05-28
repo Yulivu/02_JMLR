@@ -17,7 +17,7 @@ This table defines what the project can currently claim before paper drafting. I
 
 | Claim ID | Claim | Level | Evidence | Boundary |
 |---|---|---|---|---|
-| C1 | `P_theta(L|x)` is a well-defined CRF posterior event probability for finite `Y,T` and regular language `L` | Main | `THEORY_AND_GUARDRAILS.md`; posterior algebra tests | requires finite sequence length and finite label set |
+| C1 | `P_theta(L|x)` is a well-defined CRF posterior event probability for finite `Y,T` and regular language `L` | Main | `docs/audits/THEORY_AND_GUARDRAILS.md`; posterior algebra tests | requires finite sequence length and finite label set |
 | C2 | Product automaton transfer computes `Z_{theta,L}(x)` exactly | Main | product transfer tests match brute force for accept-all, empty, exact-pattern, parity, low-probability events | reference implementation is finite/sanity scale |
 | C3 | Hard-constrained decoding and posterior consistency are different objects | Main | R5a: constrained legality can be 1 while B0 `P(BIO|x)=0.0566`; B1 does not alter posterior mass | do not say hard constraints are useless |
 | C4 | Semi-event training can raise posterior event mass | Main-with-boundary | R5a, R1, R2, R4 all show positive B4 event-mass movement | not always task-metric dominant; not benchmark superiority |
@@ -26,8 +26,8 @@ This table defines what the project can currently claim before paper drafting. I
 | C7 | Low `P_theta(L|x)` is a field-style risk signal | Main-with-boundary | R6a bottom/top gaps plus reanalysis: AUROC `0.7088`, AUPRC `0.8470`, risk-decile error falls from `0.8862` to `0.2624` | field-style tasks only; not calibration or all structured prediction |
 | C8 | Hidden conflict concentrates at low event mass in semi-real diagnostics | Main-with-boundary | R6a hidden-conflict gaps strongest on amount/date/product_code; R5a supports WNUT hidden conflict | real-source fields mostly saturated |
 | C9 | Reference product-transfer scaling can be discussed via product-state count | Main-with-boundary | R8 varies sequence length, label count, DFA states, context order | reference CPU sanity only; no speed superiority |
-| C10 | Conditional nonnegative MPO/rank membership can be stated under explicit assumptions | Appendix | MPO sanity tests; `THEORY_AND_GUARDRAILS.md` T2 | not arbitrary low-rank advantage |
-| C11 | Positive-cone approximation bounds can be stated under nonnegativity and positivity assumptions | Appendix | `THEORY_AND_GUARDRAILS.md` T3 | posterior/log versions need denominator and strict positivity control |
+| C10 | Conditional nonnegative MPO/rank membership can be stated under explicit assumptions | Appendix | MPO sanity tests; `docs/audits/THEORY_AND_GUARDRAILS.md` T2 | not arbitrary low-rank advantage |
+| C11 | Positive-cone approximation bounds can be stated under nonnegativity and positivity assumptions | Appendix | `docs/audits/THEORY_AND_GUARDRAILS.md` T3 | posterior/log versions need denominator and strict positivity control |
 
 ## Not Supported Claims
 

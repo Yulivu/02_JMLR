@@ -12,7 +12,7 @@ from typing import Iterable
 
 DEFAULT_RESULTS = Path("experiments/results/event_training/formal_pre_paper")
 DEFAULT_OUTPUT = Path("experiments/results/paper_tables")
-DEFAULT_CLAIMS = Path("docs/FINAL_CLAIM_TABLE.md")
+DEFAULT_CLAIMS = Path("docs/paper/FINAL_CLAIM_TABLE.md")
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:

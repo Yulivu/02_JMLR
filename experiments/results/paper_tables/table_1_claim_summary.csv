@@ -1,5 +1,5 @@
 claim_id,claim,level,evidence,boundary
-C1,"`P_theta(L|x)` is a well-defined CRF posterior event probability for finite `Y,T` and regular language `L`",Main,`THEORY_AND_GUARDRAILS.md`; posterior algebra tests,requires finite sequence length and finite label set
+C1,"`P_theta(L|x)` is a well-defined CRF posterior event probability for finite `Y,T` and regular language `L`",Main,`docs/audits/THEORY_AND_GUARDRAILS.md`; posterior algebra tests,requires finite sequence length and finite label set
 C2,"Product automaton transfer computes `Z_{theta,L}(x)` exactly",Main,"product transfer tests match brute force for accept-all, empty, exact-pattern, parity, low-probability events",reference implementation is finite/sanity scale
 C3,Hard-constrained decoding and posterior consistency are different objects,Main,R5a: constrained legality can be 1 while B0 `P(BIO|x)=0.0566`; B1 does not alter posterior mass,do not say hard constraints are useless
 C4,Semi-event training can raise posterior event mass,Main-with-boundary,"R5a, R1, R2, R4 all show positive B4 event-mass movement",not always task-metric dominant; not benchmark superiority

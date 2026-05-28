@@ -53,12 +53,12 @@ Posterior Regular-Language Event Mass for Conditional Random Fields
 ## Files To Review
 
 ```text
-docs/FINAL_CLAIM_TABLE.md
-docs/JMLR_METHODS_OUTLINE.md
-docs/THEORY_PROOF_PROSE.md
-docs/RELATED_WORK_DRAFT.md
-docs/B7_WFST_DESIGN_NOTE.md
-docs/DIAGNOSTIC_REANALYSIS_PLAN.md
+docs/paper/FINAL_CLAIM_TABLE.md
+docs/paper/JMLR_METHODS_OUTLINE.md
+docs/paper/THEORY_PROOF_PROSE.md
+docs/paper/RELATED_WORK_DRAFT.md
+docs/protocols/B7_WFST_DESIGN_NOTE.md
+docs/protocols/DIAGNOSTIC_REANALYSIS_PLAN.md
 experiments/results/paper_tables/PAPER_TABLES_INDEX.md
 ```
 

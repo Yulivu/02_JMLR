@@ -1,13 +1,13 @@
 # External Review README
 
-Generated: 2026-05-28
+Updated: 2026-05-29
 
 Use this file as the entry point for an external AI/researcher review. The goal is to stress-test the project before manuscript writing, not to polish prose.
 
-Current review commit:
+Review commit:
 
 ```text
-ffdb667
+Use the latest `origin/master` commit after documentation cleanup.
 ```
 
 ## One-Sentence Thesis
@@ -16,13 +16,13 @@ Decoded output legality is not posterior consistency. This project defines and c
 
 ## Recommended Review Order
 
-1. `docs/EXTERNAL_REVIEW_PACKET_V2.md`
-2. `docs/FINAL_CLAIM_TABLE.md`
-3. `docs/RELATED_WORK_DRAFT.md`
-4. `docs/THEORY_PROOF_PROSE.md`
+1. `docs/review/EXTERNAL_REVIEW_PACKET_V2.md`
+2. `docs/paper/FINAL_CLAIM_TABLE.md`
+3. `docs/paper/RELATED_WORK_DRAFT.md`
+4. `docs/paper/THEORY_PROOF_PROSE.md`
 5. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
-6. `docs/B7_WFST_DESIGN_NOTE.md`
-7. `docs/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
+6. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
+7. `docs/paper/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
 
 ## What To Judge
 
