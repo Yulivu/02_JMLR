@@ -19,6 +19,7 @@ docs/
   EVIDENCE_AND_AUDIT.md        当前证据、baseline audit、claim gate
   EXPERIMENT_PLAN.md           JMLR 前实验协议、run list、AutoDL gate
   BIO_NER_SLICE_PROTOCOL.md    WNUT17 BIO/NER canonical slice 协议
+  R5_WNUT17_FORMAL_PROTOCOL.md WNUT17 two-regime formal R5 协议
   presentation/                HTML 展示页
   references/                  参考论文与 reading notes
 
@@ -95,7 +96,7 @@ docs/references/REFERENCE_INDEX.md
 
 未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
 
-下一步：冻结 WNUT17 R5 two-regime plan：diagnostic stress 用来证明 hidden posterior conflict，feature viability 用来证明任务不是纯 all-O toy；然后再决定 AutoDL formal runs。
+下一步：先在 AutoDL 上跑 P5 target-machine smoke；通过后再按 `docs/R5_WNUT17_FORMAL_PROTOCOL.md` 执行 R5 formal plan。
 
 路线修订：`wnut17_bio` 是 primary reviewer-facing structured benchmark；`retail_fields_v1` 保留为辅助 real-source small-field，而不是主 public benchmark。
 
@@ -112,4 +113,6 @@ WNUT17 R5 local smoke：
 
 ```powershell
 python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_smoke.yaml
+python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_viability.yaml
+python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_formal_plan.yaml --dry-run
 ```

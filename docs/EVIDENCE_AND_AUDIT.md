@@ -177,6 +177,6 @@ GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: P6 formal AutoDL runs until WNUT17 two-regime formal plan is frozen.
+HOLD: P6 formal AutoDL runs until P5 target-machine smoke passes.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

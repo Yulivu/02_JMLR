@@ -1,0 +1,32 @@
+suite: r5_wnut17_formal_plan
+description: Frozen R5 WNUT17 two-regime formal plan. Dry-run locally; run on AutoDL only after P5 target smoke passes.
+tasks:
+  - id: r5a_wnut17_diagnostic_stress
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp5/wnut17_r5a_diagnostic_formal.yaml
+    output_subdir: autodl_jmlr_block/r5_wnut17/r5a_diagnostic_stress
+    tags:
+      - exp5
+      - wnut17
+      - bio-ner
+      - diagnostic-stress
+      - formal-plan
+      - machine:autodl
+      - needs:data/raw/wnut17/train.conll
+      - needs:data/raw/wnut17/dev.conll
+    enabled: false
+
+  - id: r5b_wnut17_feature_viability
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp5/wnut17_r5b_feature_formal.yaml
+    output_subdir: autodl_jmlr_block/r5_wnut17/r5b_feature_viability
+    tags:
+      - exp5
+      - wnut17
+      - bio-ner
+      - feature-crf
+      - formal-plan
+      - machine:autodl
+      - needs:data/raw/wnut17/train.conll
+      - needs:data/raw/wnut17/dev.conll
+    enabled: false

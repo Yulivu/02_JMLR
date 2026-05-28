@@ -16,3 +16,4 @@ Available suites:
 | `autodl_smoke.yaml` | P5 AutoDL/HPC engineering smoke suite |
 | `r5_wnut17_smoke.yaml` | WNUT17 BIO/NER R5 local stress smoke |
 | `r5_wnut17_viability.yaml` | WNUT17 feature-based nonzero-F1 viability check |
+| `r5_wnut17_formal_plan.yaml` | Frozen R5 two-regime AutoDL formal plan, disabled by default |

@@ -162,12 +162,26 @@ Do not launch formal AutoDL R5 yet.
 First freeze R5 as a two-regime design: diagnostic stress + task viability.
 ```
 
+Formal protocol:
+
+```text
+docs/R5_WNUT17_FORMAL_PROTOCOL.md
+```
+
+Frozen formal-plan configs:
+
+```text
+experiments/configs/exp5/wnut17_r5a_diagnostic_formal.yaml
+experiments/configs/exp5/wnut17_r5b_feature_formal.yaml
+experiments/suites/r5_wnut17_formal_plan.yaml
+```
+
 仍需在 R5 implementation 前完成：
 
 | Item | Remaining |
 |---|---|
-| max length / batching policy | local smoke cap currently `max_len=40`; formal cap still needs timing/coverage decision |
-| B0-B6 implementation | local stress smoke exists for B0-B6; formal multi-seed/grid package still pending |
+| max length / batching policy | frozen for R5 first formal pass: `max_len=40` |
+| B0-B6 implementation | local stress/viability smoke exists; formal configs frozen but not run |
 | B7 WFST-style | design-if-feasible |
 | hidden conflict dev smoke | stress smoke passed: B0 `mean_p_event=0.0591`, constrained legal rate `1.0`, hidden conflict rate `1.0`; B4 raises `mean_p_event` to `0.3454`; B5/B6 also raise event mass but less than B4 |
 
@@ -296,7 +310,7 @@ negative/tradeoff cases
 | R2 | semi-real main | amount, date, dose, product_code | B0-B6 | 10 | B5/B6 grid |
 | R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
 | R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
-| R5 | canonical BIO/NER public slice | frozen BIO/NER sequence labeling task | B0-B7 if feasible | 10 | default + best grids |
+| R5 | WNUT17 BIO/NER two-regime slice | R5a diagnostic stress + R5b feature viability | B0-B6; B7 design-if-feasible | 10 | frozen configs in `experiments/configs/exp5/` |
 | R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
 | R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | sequence length / DFA states / batch size |

@@ -97,10 +97,28 @@ python -m ruff check src scripts
 P5 passes only when preflight, dry-run, smoke run, bundle audit, tests, and lint
 all pass on the AutoDL/HPC machine.
 
+## R5 WNUT17 Formal Plan
+
+After P5 target-machine smoke passes, review the frozen R5 protocol:
+
+```text
+docs/R5_WNUT17_FORMAL_PROTOCOL.md
+```
+
+Dry-run the formal plan first:
+
+```bash
+python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_formal_plan.yaml --dry-run
+```
+
+The formal-plan suite is disabled by default. Do not enable or run it until the
+user explicitly approves formal R5 execution on AutoDL.
+
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.
 - Do not edit `docs/EXPERIMENT_PLAN.md` after seeing smoke results unless making
   an explicit protocol revision.
 - Do not start R1-R8 formal runs during P5.
+- Do not run `r5_wnut17_formal_plan.yaml` before P5 target-machine smoke passes.
 - Do not interpret P5 smoke metrics as paper evidence.

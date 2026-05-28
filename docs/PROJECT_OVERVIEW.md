@@ -81,7 +81,7 @@ P5/R5-prep in progress: AutoDL/HPC engineering prepared locally; WNUT17 BIO/NER 
 
 - fresh proof-check；
 - JMLR 级完整实验；
-- WNUT17 R5 two-regime formal plan：diagnostic stress + task viability；
+- AutoDL target-machine smoke；
 - B5/B6/WFST-style 更 faithful baseline；
 - 全任务/全 baseline diagnostic aggregation；
 - paper-writing gate。
@@ -101,7 +101,7 @@ P5 in progress: AutoDL/HPC 工程入口已本地准备，等待目标机器 smok
 | P0 | 立项与问题定义 | done | 主线固定为 `Tensorized Regular-Language Posterior Algebra for CRFs` | 无关键缺口 | 已通过 |
 | P1 | 理论对象最小闭环 | mostly done | `P_theta(L|x)` 定义、DFA/product-transfer reference code、theory tests | fresh proof-check 和论文级证明文本 | 补 proof audit |
 | P2 | 本地机制验证 | mostly done | posterior algebra tests、event CRF tests、controlled/semi-real/real-source local probes | 不能当作正式 benchmark claim | 保留为路线证据 |
-| P3 | JMLR 前实验协议冻结 | revised-frozen | `docs/EXPERIMENT_PLAN.md`、baseline table、formal run list、suite/config scaffold、retail slice v1、WNUT17 BIO/NER data gate、B0-B6 stress smoke、feature viability smoke | R5 two-regime formal plan 还未冻结 | 冻结 R5 formal design |
+| P3 | JMLR 前实验协议冻结 | revised-frozen | `docs/EXPERIMENT_PLAN.md`、baseline table、formal run list、suite/config scaffold、retail slice v1、WNUT17 BIO/NER data gate、B0-B6 stress smoke、feature viability smoke、R5 two-regime protocol | AutoDL target smoke 未跑 | 进入 P5 target smoke |
 | P4 | 本地正式 smoke | done | `r0_controlled_smoke`、`r0_semi_real_smoke`、`r0_real_source_smoke` 全部通过；schema audit 通过 | R0 是 smoke，不是正式结论 | 已通过 |
 | P5 | AutoDL/HPC 工程化 | in progress | `autodl_smoke` suite、preflight、runbook、launcher、WNUT17 data gate 已建立 | 还需要在 AutoDL/HPC 机器上实际通过 | 当前阶段 |
 | P6 | JMLR formal runs | not started | R1-R8 run list 已规划；WNUT17 B0-B6 local stress smoke 支持 R5 可继续 | R5 多 seed/grid 正式结果未跑完 | 产出完整 evidence package |
@@ -205,7 +205,7 @@ experiments/
 按顺序执行：
 
 1. 保持 P5 AutoDL smoke 工程入口；
-2. 冻结 WNUT17 R5 two-regime formal run：diagnostic stress + task viability；
+2. 在 AutoDL 目标机器上跑 P5 smoke；
 3. 明确 complexity story：CRF x DFA product state、rule complexity、batching/memory；
 4. 将 rank/MPO 降为 appendix；
 5. 只有 R5 local smoke 和 P5 target-machine smoke 都通过后，才进入 P6 formal runs。
