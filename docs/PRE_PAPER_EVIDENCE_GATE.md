@@ -47,11 +47,11 @@ The current evidence is enough to stop running AutoDL jobs temporarily and do a 
 
 | Step | Action | HPC Needed |
 |---|---|---:|
-| G1 | update `AI_REVIEW_PACKET.md` with R1/R2/R4/R6/R8 audited status | no |
-| G2 | write final claim table for paper route | no |
-| G3 | decide whether B7 WFST-style baseline is mandatory | no |
-| G4 | decide whether R3/R7 sensitivity is needed | no |
-| G5 | fresh proof-check / theory consistency audit | no |
+| G1 | update `AI_REVIEW_PACKET.md` with R1/R2/R4/R6/R8 audited status | no; done |
+| G2 | write final claim table for paper route | no; done in `docs/FINAL_CLAIM_TABLE.md` |
+| G3 | decide whether B7 WFST-style baseline is mandatory | no; done in `docs/B7_R3_R7_ROUTE_DECISION.md` |
+| G4 | decide whether R3/R7 sensitivity is needed | no; done in `docs/B7_R3_R7_ROUTE_DECISION.md` |
+| G5 | fresh proof-check / theory consistency audit | no; done in `docs/FRESH_PROOF_THEORY_AUDIT.md` |
 
 ## Possible Next HPC Only If Needed
 
@@ -65,5 +65,6 @@ The current evidence is enough to stop running AutoDL jobs temporarily and do a 
 
 ```text
 Do not start another HPC job now.
-First complete local pre-paper route review and proof/claim audit.
+Local pre-paper route review and proof/claim audit are now complete at the document level.
+Next step is paper-outline planning or external review, not HPC.
 ```
