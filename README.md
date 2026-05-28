@@ -62,7 +62,8 @@ docs/
   FINAL_CLAIM_TABLE.md
   JMLR_METHODS_OUTLINE.md
   THEORY_PROOF_PROSE.md
-  EXTERNAL_REVIEW_BRIEF.md
+  EXTERNAL_REVIEW_README.md
+  EXTERNAL_REVIEW_PACKET_V2.md
   EVIDENCE_AND_AUDIT.md
   EXPERIMENT_PLAN.md
   PRE_PAPER_EVIDENCE_GATE.md
@@ -107,13 +108,21 @@ ruff: All checks passed
 
 ## Recommended Reading Order
 
+For external review, start here:
+
+1. `docs/EXTERNAL_REVIEW_README.md`
+2. `docs/EXTERNAL_REVIEW_PACKET_V2.md`
+3. `docs/FINAL_CLAIM_TABLE.md`
+4. `docs/RELATED_WORK_DRAFT.md`
+5. `docs/THEORY_PROOF_PROSE.md`
+6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+
+For internal project orientation:
+
 1. `docs/PROJECT_OVERVIEW.md`
 2. `docs/PAPER_POSITIONING.md`
-3. `docs/FINAL_CLAIM_TABLE.md`
-4. `docs/JMLR_METHODS_OUTLINE.md`
-5. `docs/THEORY_PROOF_PROSE.md`
-6. `docs/EXTERNAL_REVIEW_BRIEF.md`
-7. `docs/EVIDENCE_AND_AUDIT.md`
+3. `docs/JMLR_METHODS_OUTLINE.md`
+4. `docs/EVIDENCE_AND_AUDIT.md`
 
 ## AutoDL/HPC
 
