@@ -124,6 +124,7 @@ P5 in progress
 AutoDL/HPC engineering prepared locally
 WNUT17 BIO/NER data gate frozen locally
 WNUT17 B0-B6 local stress smoke passed
+WNUT17 feature viability smoke gives nonzero entity F1
 target-machine smoke pending
 ```
 
@@ -285,7 +286,7 @@ Local stress-smoke signal:
 | B5 | 0.1635 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
 | B6 | 0.1697 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
 
-Interpretation: WNUT17 can expose posterior BIO inconsistency under a low-resource stress setting, and semi-event training moves posterior mass upward more than the current B5/B6 smoke baselines. It does not yet show entity-level task usefulness.
+Interpretation: WNUT17 can expose posterior BIO inconsistency under a low-resource stress setting, and semi-event training moves posterior mass upward more than the current B5/B6 smoke baselines. A separate feature-based viability check gives nonzero B0 entity F1 around 0.17 over three seeds, but in that regime `P(BIO|x)` is already near 0.98 and hidden conflict is weak. R5 should therefore be designed as two regimes, not one overloaded benchmark.
 
 Data policy:
 

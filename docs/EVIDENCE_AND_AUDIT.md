@@ -160,6 +160,7 @@ Current evidence does not support:
 | explicit B1/B3 rows | constrained metrics are currently implicit | add rows or preserve clear flags |
 | B5/B6 grids | B5/B6 pressure decides empirical strength | freeze and run grids |
 | canonical BIO/NER public slice | WNUT17 data gate frozen; B0-B6 stress smoke shows hidden conflict and baseline ordering | run multi-seed/grid formal R5 before P6 claims |
+| WNUT17 task viability | feature CRF gives nonzero B0 entity F1 around 0.17 over 3 seeds | task regime saturates `P(BIO|x)`, so keep separate from hidden-conflict stress |
 | retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
 | AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
@@ -172,9 +173,10 @@ GO: P3 protocol/run list revised around posterior event semantics.
 GO: P4 local CPU smoke passed.
 GO: P5 AutoDL/HPC smoke engineering may proceed.
 GO: WNUT17 BIO/NER data gate and B0-B6 local stress smoke passed.
+GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: P6 formal AutoDL runs until P5 target-machine smoke and WNUT17 multi-seed/grid plan pass.
+HOLD: P6 formal AutoDL runs until WNUT17 two-regime formal plan is frozen.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

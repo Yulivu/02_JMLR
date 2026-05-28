@@ -15,3 +15,4 @@ Available suites:
 | `current_repro.yaml` | Local P4 R0 smoke suite |
 | `autodl_smoke.yaml` | P5 AutoDL/HPC engineering smoke suite |
 | `r5_wnut17_smoke.yaml` | WNUT17 BIO/NER R5 local stress smoke |
+| `r5_wnut17_viability.yaml` | WNUT17 feature-based nonzero-F1 viability check |

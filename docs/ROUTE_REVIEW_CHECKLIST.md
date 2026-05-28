@@ -81,5 +81,6 @@ Current BIO/NER data gate:
 ```text
 WNUT17 data source, split, local files, manifest hashes, and strict BIO audit are frozen.
 B0-B6 local stress smoke shows hidden conflict and event-mass movement.
-Formal multi-seed/grid R5 evidence is still pending.
+Feature-based viability smoke shows nonzero entity F1 but weak hidden conflict.
+Formal R5 must be two-regime rather than one-regime.
 ```

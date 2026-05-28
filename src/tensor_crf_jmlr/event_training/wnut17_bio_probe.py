@@ -16,8 +16,9 @@ from statistics import mean
 from typing import Sequence
 
 import torch
+from torch import nn
 
-from .bio_event import NEG_INF, bio_sequence_allowed, extract_strict_bio_spans
+from .bio_event import NEG_INF, bio_sequence_allowed, extract_strict_bio_spans, make_bio_masks
 from .data_utils import (
     SequenceDataset,
     build_label_vocab,
@@ -35,6 +36,8 @@ from .run_probe import set_seed
 REPO_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATA_DIR = REPO_ROOT / "data" / "raw" / "wnut17"
 DEFAULT_HIDDEN_CONFLICT_THRESHOLD = 0.7
+PAD_FEAT = "<PAD_FEAT>"
+UNK_FEAT = "<UNK_FEAT>"
 
 
 @dataclass(frozen=True)
@@ -114,10 +117,115 @@ class WnutCase:
     hidden_conflict: bool
 
 
+class FeatureLinearChainCRF(nn.Module):
+    """Linear-chain CRF with additive token feature emissions."""
+
+    def __init__(self, feature_vocab_size: int, label_names: Sequence[str]):
+        super().__init__()
+        self.label_names = tuple(label_names)
+        self.num_labels = len(self.label_names)
+        self.feature_emissions = nn.Embedding(feature_vocab_size, self.num_labels, padding_idx=0)
+        self.start = nn.Parameter(torch.zeros(self.num_labels))
+        self.transitions = nn.Parameter(torch.zeros(self.num_labels, self.num_labels))
+        start_allowed, transition_allowed = make_bio_masks(self.label_names)
+        self.register_buffer("_bio_start_allowed", torch.tensor(start_allowed, dtype=torch.bool))
+        self.register_buffer("_bio_transition_allowed", torch.tensor(transition_allowed, dtype=torch.bool))
+        self.reset_parameters()
+
+    def reset_parameters(self) -> None:
+        nn.init.normal_(self.feature_emissions.weight, mean=0.0, std=0.03)
+        with torch.no_grad():
+            self.feature_emissions.weight[0].zero_()
+        nn.init.normal_(self.start, mean=0.0, std=0.02)
+        nn.init.normal_(self.transitions, mean=0.0, std=0.02)
+
+    def assert_cpu_only(self) -> None:
+        devices = {param.device.type for param in self.parameters()}
+        if devices != {"cpu"}:
+            raise RuntimeError(f"probe must remain CPU-only, got devices={devices}")
+
+    def emission_scores(self, word_ids: Sequence[int] | Sequence[Sequence[int]] | torch.Tensor) -> torch.Tensor:
+        if isinstance(word_ids, torch.Tensor):
+            feature_ids = word_ids.to(self.feature_emissions.weight.device)
+        elif word_ids and isinstance(word_ids[0], (list, tuple)):  # type: ignore[index]
+            feature_ids = torch.tensor(word_ids, dtype=torch.long, device=self.feature_emissions.weight.device)
+        else:
+            feature_ids = torch.tensor([[int(item)] for item in word_ids], dtype=torch.long, device=self.feature_emissions.weight.device)
+        return self.feature_emissions(feature_ids).sum(dim=1)
+
+
 def load_split(data_dir: Path, split: str, *, max_len: int) -> SequenceDataset:
     filename = {"train": "train.conll", "dev": "dev.conll", "test": "test.conll"}[split]
     dataset = normalize_bio_dataset(read_conll(data_dir / filename))
     return filter_dataset_by_length(dataset, max_len=max_len)
+
+
+def token_shape(token: str) -> str:
+    chars: list[str] = []
+    for char in token:
+        if char.isupper():
+            chars.append("X")
+        elif char.islower():
+            chars.append("x")
+        elif char.isdigit():
+            chars.append("d")
+        else:
+            chars.append(char)
+    compact: list[str] = []
+    for char in chars:
+        if not compact or compact[-1] != char:
+            compact.append(char)
+    return "".join(compact)[:12]
+
+
+def token_features(tokens: Sequence[str], idx: int) -> list[str]:
+    token = tokens[idx]
+    lower = token.lower()
+    prev_lower = tokens[idx - 1].lower() if idx > 0 else "<BOS>"
+    next_lower = tokens[idx + 1].lower() if idx + 1 < len(tokens) else "<EOS>"
+    features = [
+        "bias",
+        f"tok.lower={lower}",
+        f"shape={token_shape(token)}",
+        f"prev.lower={prev_lower}",
+        f"next.lower={next_lower}",
+        f"len={min(len(token), 12)}",
+        f"prefix1={lower[:1]}",
+        f"prefix2={lower[:2]}",
+        f"suffix1={lower[-1:]}",
+        f"suffix2={lower[-2:]}",
+        f"is_title={token.istitle()}",
+        f"is_upper={token.isupper()}",
+        f"has_digit={any(char.isdigit() for char in token)}",
+        f"has_hyphen={'-' in token}",
+        f"is_punct={all(not char.isalnum() for char in token)}",
+    ]
+    return features
+
+
+def build_feature_vocab(datasets: Sequence[SequenceDataset]) -> dict[str, int]:
+    vocab = {PAD_FEAT: 0, UNK_FEAT: 1}
+    for dataset in datasets:
+        for tokens in dataset.tokens:
+            for idx in range(len(tokens)):
+                for feature in token_features(tokens, idx):
+                    if feature not in vocab:
+                        vocab[feature] = len(vocab)
+    return vocab
+
+
+def encode_feature_dataset(
+    dataset: SequenceDataset,
+    feature_to_idx: dict[str, int],
+    label_to_idx: dict[str, int],
+) -> list[tuple[list[list[int]], list[int]]]:
+    unk = feature_to_idx[UNK_FEAT]
+    encoded = []
+    for tokens, labels in zip(dataset.tokens, dataset.labels):
+        word_ids = [[feature_to_idx.get(feature, unk) for feature in token_features(tokens, idx)] for idx in range(len(tokens))]
+        label_ids = [label_to_idx[label] for label in labels]
+        encoded.append((word_ids, label_ids))
+    return encoded
 
 
 def rule_biased_start(model: TinyLinearChainCRF, *, rule_bias: float) -> torch.Tensor:
@@ -254,8 +362,8 @@ def pr_style_loss(model: TinyLinearChainCRF, word_ids: Sequence[int], *, variant
 
 
 def train_model(
-    labeled: list[tuple[list[int], list[int]]],
-    unlabeled: list[list[int]],
+    labeled: list[tuple[list[int] | list[list[int]], list[int]]],
+    unlabeled: list[list[int] | list[list[int]]],
     *,
     vocab_size: int,
     label_names: Sequence[str],
@@ -263,9 +371,11 @@ def train_model(
     seed: int,
     epochs: int,
     lr: float,
-) -> TinyLinearChainCRF:
+    use_features: bool,
+) -> TinyLinearChainCRF | FeatureLinearChainCRF:
     set_seed(seed)
-    model = TinyLinearChainCRF(vocab_size, label_names)
+    model: TinyLinearChainCRF | FeatureLinearChainCRF
+    model = FeatureLinearChainCRF(vocab_size, label_names) if use_features else TinyLinearChainCRF(vocab_size, label_names)
     model.assert_cpu_only()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     for _epoch in range(epochs):
@@ -327,9 +437,15 @@ def decode(label_names: Sequence[str], label_ids: Sequence[int]) -> list[str]:
     return [label_names[idx] for idx in label_ids]
 
 
+def render_word_ids(word_ids: Sequence[int] | Sequence[Sequence[int]], id_to_token: dict[int, str]) -> str:
+    if word_ids and isinstance(word_ids[0], (list, tuple)):  # type: ignore[index]
+        return " ".join("<FEATS>" for _ in word_ids)
+    return " ".join(id_to_token.get(int(token_id), "<UNK>") for token_id in word_ids)  # type: ignore[arg-type]
+
+
 def evaluate_model(
-    model: TinyLinearChainCRF,
-    dev: list[tuple[list[int], list[int]]],
+    model: TinyLinearChainCRF | FeatureLinearChainCRF,
+    dev: list[tuple[list[int] | list[list[int]], list[int]]],
     *,
     label_names: Sequence[str],
     variant: VariantConfig,
@@ -342,6 +458,7 @@ def evaluate_model(
     vocab_size: int,
     hidden_conflict_threshold: float,
     id_to_token: dict[int, str],
+    token_lookup: dict[int, str],
 ) -> tuple[WnutRun, list[WnutCase]]:
     p_values: list[float] = []
     nlls: list[float] = []
@@ -397,7 +514,7 @@ def evaluate_model(
                     case_id=f"wnut17_dev_{seed}_{idx:04d}",
                     variant=variant.name,
                     seed=seed,
-                    tokens=" ".join(id_to_token.get(token_id, "<UNK>") for token_id in word_ids),
+                    tokens=token_lookup.get(idx, render_word_ids(word_ids, id_to_token)),
                     gold=" ".join(gold_labels),
                     unconstrained_pred=" ".join(pred_labels),
                     constrained_pred=" ".join(c_pred_labels),
@@ -556,7 +673,7 @@ def run_smoke(
     *,
     data_dir: Path,
     output_dir: Path,
-    seed: int,
+    seeds: Sequence[int],
     train_size: int,
     unlabeled_size: int,
     dev_size: int,
@@ -565,6 +682,7 @@ def run_smoke(
     lr: float,
     hidden_conflict_threshold: float,
     variant_names: Sequence[str],
+    use_features: bool,
 ) -> None:
     train_full = load_split(data_dir, "train", max_len=max_len)
     dev_full = load_split(data_dir, "dev", max_len=max_len)
@@ -572,50 +690,63 @@ def run_smoke(
     unlabeled_ds = take_dataset(train_full, start=train_size, count=unlabeled_size, name="wnut17_train_unlabeled")
     dev_ds = take_dataset(dev_full, start=0, count=dev_size, name="wnut17_dev_smoke")
 
-    vocab = build_vocab(labeled_ds.tokens + unlabeled_ds.tokens)
     label_to_idx = build_label_vocab(train_full.labels)
     label_names = [label for label, _idx in sorted(label_to_idx.items(), key=lambda item: item[1])]
-    labeled = encode_dataset(labeled_ds, vocab, label_to_idx)
-    unlabeled = [word_ids for word_ids, _labels in encode_dataset(unlabeled_ds, vocab, label_to_idx)]
-    dev = encode_dataset(dev_ds, vocab, label_to_idx)
-    id_to_token = {idx: token for token, idx in vocab.items()}
+    if use_features:
+        feature_vocab = build_feature_vocab([labeled_ds, unlabeled_ds])
+        labeled = encode_feature_dataset(labeled_ds, feature_vocab, label_to_idx)
+        unlabeled = [word_ids for word_ids, _labels in encode_feature_dataset(unlabeled_ds, feature_vocab, label_to_idx)]
+        dev = encode_feature_dataset(dev_ds, feature_vocab, label_to_idx)
+        vocab_size = len(feature_vocab)
+        id_to_token = {}
+    else:
+        vocab = build_vocab(labeled_ds.tokens + unlabeled_ds.tokens)
+        labeled = encode_dataset(labeled_ds, vocab, label_to_idx)
+        unlabeled = [word_ids for word_ids, _labels in encode_dataset(unlabeled_ds, vocab, label_to_idx)]
+        dev = encode_dataset(dev_ds, vocab, label_to_idx)
+        vocab_size = len(vocab)
+        id_to_token = {idx: token for token, idx in vocab.items()}
+    token_lookup = {idx: " ".join(tokens) for idx, tokens in enumerate(dev_ds.tokens)}
 
     variants = [VARIANTS[name] for name in variant_names]
     runs: list[WnutRun] = []
     cases: list[WnutCase] = []
-    trained_models: dict[str, TinyLinearChainCRF] = {}
-    for variant in variants:
-        if variant.training_source != "self" and variant.training_source in trained_models:
-            model = trained_models[variant.training_source]
-        else:
-            model = train_model(
-                labeled,
-                unlabeled,
-                vocab_size=len(vocab),
+    for seed in seeds:
+        trained_models: dict[str, TinyLinearChainCRF | FeatureLinearChainCRF] = {}
+        for variant in variants:
+            if variant.training_source != "self" and variant.training_source in trained_models:
+                model = trained_models[variant.training_source]
+            else:
+                model = train_model(
+                    labeled,
+                    unlabeled,
+                    vocab_size=vocab_size,
+                    label_names=label_names,
+                    variant=variant,
+                    seed=seed,
+                    epochs=epochs,
+                    lr=lr,
+                    use_features=use_features,
+                )
+            trained_models[variant.name] = model
+            run, variant_cases = evaluate_model(
+                model,
+                dev,
                 label_names=label_names,
                 variant=variant,
                 seed=seed,
+                train_sentences=len(labeled),
+                unlabeled_sentences=len(unlabeled),
+                max_len=max_len,
                 epochs=epochs,
                 lr=lr,
+                vocab_size=vocab_size,
+                hidden_conflict_threshold=hidden_conflict_threshold,
+                id_to_token=id_to_token,
+                token_lookup=token_lookup,
             )
-        trained_models[variant.name] = model
-        run, variant_cases = evaluate_model(
-            model,
-            dev,
-            label_names=label_names,
-            variant=variant,
-            seed=seed,
-            train_sentences=len(labeled),
-            unlabeled_sentences=len(unlabeled),
-            max_len=max_len,
-            epochs=epochs,
-            lr=lr,
-            vocab_size=len(vocab),
-            hidden_conflict_threshold=hidden_conflict_threshold,
-            id_to_token=id_to_token,
-        )
-        runs.append(run)
-        cases.extend(variant_cases)
+            runs.append(run)
+            cases.extend(variant_cases)
     write_outputs(output_dir, runs, cases)
 
 
@@ -624,6 +755,7 @@ def main() -> None:
     parser.add_argument("--data-dir", default=str(DEFAULT_DATA_DIR))
     parser.add_argument("--output-dir", default="experiments/runs/local_checks/r5_wnut17_bio_smoke")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seeds", nargs="*", type=int)
     parser.add_argument("--train-size", type=int, default=200)
     parser.add_argument("--unlabeled-size", type=int, default=300)
     parser.add_argument("--dev-size", type=int, default=120)
@@ -632,6 +764,7 @@ def main() -> None:
     parser.add_argument("--lr", type=float, default=0.05)
     parser.add_argument("--hidden-conflict-threshold", type=float, default=DEFAULT_HIDDEN_CONFLICT_THRESHOLD)
     parser.add_argument("--variants", nargs="*", default=list(VARIANTS))
+    parser.add_argument("--use-features", action="store_true")
     args = parser.parse_args()
     unknown_variants = sorted(set(args.variants) - set(VARIANTS))
     if unknown_variants:
@@ -640,7 +773,7 @@ def main() -> None:
     run_smoke(
         data_dir=Path(args.data_dir),
         output_dir=Path(args.output_dir),
-        seed=args.seed,
+        seeds=args.seeds if args.seeds is not None else [args.seed],
         train_size=args.train_size,
         unlabeled_size=args.unlabeled_size,
         dev_size=args.dev_size,
@@ -649,6 +782,7 @@ def main() -> None:
         lr=args.lr,
         hidden_conflict_threshold=args.hidden_conflict_threshold,
         variant_names=args.variants,
+        use_features=args.use_features,
     )
 
 

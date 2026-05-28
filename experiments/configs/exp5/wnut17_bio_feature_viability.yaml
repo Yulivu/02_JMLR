@@ -1,0 +1,21 @@
+id: wnut17_bio_feature_viability
+module: tensor_crf_jmlr.event_training.wnut17_bio_probe
+args:
+  data_dir: data/raw/wnut17
+  seeds:
+    - 0
+    - 1
+    - 2
+  train_size: 500
+  unlabeled_size: 500
+  dev_size: 300
+  max_len: 40
+  epochs: 5
+  lr: 0.03
+  hidden_conflict_threshold: 0.7
+  use_features: true
+  variants:
+    - B0_unconstrained
+    - B4_semi_event_0.1
+    - B5_rule_feature_0.8
+    - B6_pr_style_tau0.7

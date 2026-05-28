@@ -1,0 +1,17 @@
+suite: r5_wnut17_viability
+description: Local WNUT17 feature-based viability check for nonzero entity F1; not formal evidence.
+tasks:
+  - id: r5_wnut17_feature_viability
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp5/wnut17_bio_feature_viability.yaml
+    output_subdir: local_checks/r5_wnut17_feature_viability
+    tags:
+      - exp5
+      - wnut17
+      - bio-ner
+      - feature-crf
+      - viability
+      - machine:cpu
+      - needs:data/raw/wnut17/train.conll
+      - needs:data/raw/wnut17/dev.conll
+    enabled: true

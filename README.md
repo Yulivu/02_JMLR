@@ -87,7 +87,7 @@ docs/references/REFERENCE_INDEX.md
 
 ## 当前状态
 
-方向、理论对象、实验工程路线已经固定；P3/P4 已本地通过，当前处在 P5/R5-prep：AutoDL/HPC 工程入口已本地准备，但目标机器 smoke 还没跑。论文路线已收缩到 posterior event semantics，P6 前 BIO/NER canonical benchmark 已冻结为 WNUT17，B0-B6 local stress smoke 已跑通，formal 多 seed/grid 还没跑。
+方向、理论对象、实验工程路线已经固定；P3/P4 已本地通过，当前处在 P5/R5-prep：AutoDL/HPC 工程入口已本地准备，但目标机器 smoke 还没跑。论文路线已收缩到 posterior event semantics，P6 前 BIO/NER canonical benchmark 已冻结为 WNUT17，B0-B6 local stress smoke 已跑通，feature viability smoke 已给出非零 entity F1，但 formal two-regime R5 还没跑。
 
 总路线图和进度表见：`docs/PROJECT_OVERVIEW.md` 的“项目路线图与进度”。
 
@@ -95,7 +95,7 @@ docs/references/REFERENCE_INDEX.md
 
 未支持：JMLR-ready empirical claim、benchmark superiority、任意 CRF/DFA 的低秩优势、全面优于 hard constraint / WFST / posterior regularization。
 
-下一步：把 WNUT17 R5 BIO/NER 从 one-seed smoke 扩展到多 seed/grid plan，再做 AutoDL target-machine smoke；两者都通过后再进入 formal runs。
+下一步：冻结 WNUT17 R5 two-regime plan：diagnostic stress 用来证明 hidden posterior conflict，feature viability 用来证明任务不是纯 all-O toy；然后再决定 AutoDL formal runs。
 
 路线修订：`wnut17_bio` 是 primary reviewer-facing structured benchmark；`retail_fields_v1` 保留为辅助 real-source small-field，而不是主 public benchmark。
 

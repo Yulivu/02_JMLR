@@ -137,6 +137,31 @@ max length / batching policy
 | split | upstream train/dev/test annotated |
 | BIO data audit | train/dev/test gold labels pass strict BIO legality |
 
+### WNUT17 R5 Viability Update
+
+本地验证显示 WNUT17 需要拆成两个 regime，而不是用一个配置同时承担所有 claim：
+
+| Regime | Setting | What It Shows | Limitation |
+|---|---|---|---|
+| diagnostic stress | word-id tiny CRF, 25 labeled, 1 epoch | constrained outputs can be legal while `P(BIO|x)` is very low; B4 raises posterior event mass | entity F1 remains 0, so no NER usefulness claim |
+| task viability | feature CRF, 500 labeled, 5 epochs, 3 seeds | B0 learns nonzero entity F1 around 0.17 | `P(BIO|x)` saturates around 0.98, so hidden conflict is weak |
+
+Feature viability 3-seed averages:
+
+| Variant | mean `P(BIO|x)` | delta vs B0 | hidden conflict | token acc | entity F1 |
+|---|---:|---:|---:|---:|---:|
+| B0 | 0.9822 | 0.0000 | 0.0067 | 0.8779 | 0.1728 |
+| B4 | 0.9896 | 0.0074 | 0.0022 | 0.8747 | 0.1541 |
+| B5 | 0.9861 | 0.0039 | 0.0056 | 0.8773 | 0.1699 |
+| B6 | 0.9895 | 0.0073 | 0.0000 | 0.8632 | 0.1298 |
+
+Decision:
+
+```text
+Do not launch formal AutoDL R5 yet.
+First freeze R5 as a two-regime design: diagnostic stress + task viability.
+```
+
 仍需在 R5 implementation 前完成：
 
 | Item | Remaining |
