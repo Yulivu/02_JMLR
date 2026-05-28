@@ -5,6 +5,19 @@ Status: P5 engineering preparation.
 This runbook is only for environment validation and smoke execution. It must not
 change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 
+This runbook adapts the general `docs/GITHUB_AUTODL_FILEZILLA_WORKFLOW.md`
+process to this repository.
+
+## Project Values
+
+```text
+PROJECT: 02_jmlr
+GitHub SSH URL: git@github.com:Yulivu/02_JMLR.git
+branch: master
+server repo dir: /root/autodl-tmp/02_JMLR
+local repo: C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR
+```
+
 ## Preconditions
 
 - P3/P4 passed locally.
@@ -12,6 +25,64 @@ change the frozen P3 protocol and must not be treated as formal JMLR evidence.
 - `data/raw/online_retail.xlsx` and `data/raw/wnut17/*.conll` are present on the machine.
 - Python 3.10+ is available.
 - No formal experiment should be launched until the smoke suite passes.
+
+## Server Bootstrap
+
+Create an AutoDL machine-specific SSH key. Do not copy a local private key to
+AutoDL.
+
+```bash
+mkdir -p /root/.ssh /root/autodl-tmp
+chmod 700 /root/.ssh
+
+ssh-keygen -t ed25519 \
+  -C "autodl_02_jmlr_$(date +%Y%m%d_%H%M)" \
+  -f /root/.ssh/id_ed25519_02_jmlr \
+  -N ""
+
+cat > /root/.ssh/config <<'EOF'
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile /root/.ssh/id_ed25519_02_jmlr
+  IdentitiesOnly yes
+EOF
+
+chmod 600 /root/.ssh/config /root/.ssh/id_ed25519_02_jmlr
+chmod 644 /root/.ssh/id_ed25519_02_jmlr.pub
+cat /root/.ssh/id_ed25519_02_jmlr.pub
+```
+
+Add the printed public key to GitHub as a deploy key:
+
+```text
+Yulivu/02_JMLR -> Settings -> Deploy keys -> Add deploy key
+```
+
+Usually do not enable write access. Then test:
+
+```bash
+ssh -T git@github.com
+```
+
+Clone or update:
+
+```bash
+cd /root/autodl-tmp
+git clone git@github.com:Yulivu/02_JMLR.git
+cd /root/autodl-tmp/02_JMLR
+git checkout master
+git rev-parse --short HEAD
+git status --short
+```
+
+If the repo already exists:
+
+```bash
+cd /root/autodl-tmp/02_JMLR
+git pull --ff-only
+git rev-parse --short HEAD
+```
 
 ## Data Policy
 
@@ -41,9 +112,7 @@ AutoDL.
 ## First Command On Machine
 
 ```bash
-python -m pip install -e ".[dev]"
-python scripts/data/verify_data.py --strict
-python scripts/data/audit_bio_ner_slice.py --data-dir data/raw/wnut17
+bash scripts/autodl_setup.sh
 ```
 
 ## Preflight
@@ -114,6 +183,39 @@ python scripts/run_experiment_suite.py --suite experiments/suites/r5_wnut17_form
 The formal-plan suite is disabled by default. Do not enable or run it until the
 user explicitly approves formal R5 execution on AutoDL.
 
+## FileZilla Paths
+
+Current required data is tracked in Git, so no FileZilla upload is needed for
+P5 smoke or R5 WNUT17 first formal pass.
+
+If a future dataset is too large for GitHub, upload only the missing data files
+to the expected path, for example:
+
+```text
+server: /root/autodl-tmp/02_JMLR/data/raw/
+server: /root/autodl-tmp/02_JMLR/data/processed/
+```
+
+Do not upload the whole local repository over the server clone, and do not
+upload `.git/`.
+
+Download result folders after runs:
+
+```text
+server: /root/autodl-tmp/02_JMLR/experiments/runs/autodl_smoke/
+local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\runs\autodl_smoke\
+```
+
+For later R5 formal runs:
+
+```text
+server: /root/autodl-tmp/02_JMLR/experiments/runs/autodl_jmlr_block/r5_wnut17/
+local:  C:\Users\debuf\Desktop\research_projects\2_Tensor_CRF_JMLR\experiments\runs\autodl_jmlr_block\r5_wnut17\
+```
+
+After downloading results, audit locally before copying anything into
+`experiments/results/`.
+
 ## Do Not
 
 - Do not write smoke output into `experiments/results/`.
@@ -122,3 +224,6 @@ user explicitly approves formal R5 execution on AutoDL.
 - Do not start R1-R8 formal runs during P5.
 - Do not run `r5_wnut17_formal_plan.yaml` before P5 target-machine smoke passes.
 - Do not interpret P5 smoke metrics as paper evidence.
+- Do not use FileZilla to overwrite the whole repo or sync `.git/`.
+- Do not hand-edit server code for formal experiments; change locally, commit,
+  push, then `git pull --ff-only` on AutoDL.

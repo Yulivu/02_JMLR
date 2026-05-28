@@ -20,6 +20,7 @@ docs/
   EXPERIMENT_PLAN.md           JMLR 前实验协议、run list、AutoDL gate
   BIO_NER_SLICE_PROTOCOL.md    WNUT17 BIO/NER canonical slice 协议
   R5_WNUT17_FORMAL_PROTOCOL.md WNUT17 two-regime formal R5 协议
+  GITHUB_AUTODL_FILEZILLA_WORKFLOW.md 通用 GitHub/AutoDL/FileZilla 流程
   presentation/                HTML 展示页
   references/                  参考论文与 reading notes
 
@@ -104,6 +105,7 @@ P5 AutoDL/HPC 工程入口：
 
 ```text
 docs/AUTODL_HPC_RUNBOOK.md
+scripts/autodl_setup.sh
 experiments/suites/autodl_smoke.yaml
 scripts/hpc/preflight_autodl.py
 scripts/hpc/run_autodl_smoke.sh
