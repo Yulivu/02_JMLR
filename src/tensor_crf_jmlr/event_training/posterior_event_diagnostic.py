@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from statistics import mean
@@ -29,8 +30,10 @@ from .semi_real_format_probe import (
     ProbeSetting,
     build_vocab,
     encode,
+    emission_scores,
     labels_follow_pattern,
     log_event_probability,
+    log_partition_from_emissions,
     make_dataset as make_semi_dataset,
     train_model,
     viterbi,
@@ -51,6 +54,12 @@ class DiagnosticCase:
     event_constrained_pred: str
     baseline_p_event: float
     event_p_event: float
+    baseline_viterbi_log_prob: float
+    baseline_neg_log_viterbi_prob: float
+    baseline_max_sequence_prob: float
+    baseline_viterbi_margin: float
+    baseline_token_marginal_entropy: float
+    baseline_sequence_entropy: float
     baseline_legal: bool
     event_legal: bool
     baseline_exact: bool
@@ -77,6 +86,78 @@ def char_acc(pred: list[int], gold: list[int]) -> float:
 
 def decode(label_names: tuple[str, ...], ids: list[int]) -> str:
     return "".join(label_names[idx] for idx in ids)
+
+
+def _top2_viterbi_scores(model, emissions: torch.Tensor) -> tuple[float, float]:
+    neg_inf = -1.0e30
+    top2 = torch.stack([model.start + emissions[0], torch.full_like(model.start, neg_inf)], dim=1)
+    for pos in range(1, emissions.shape[0]):
+        candidates: list[list[float]] = [[] for _ in range(emissions.shape[1])]
+        for prev in range(emissions.shape[1]):
+            for rank in range(2):
+                prev_score = float(top2[prev, rank].detach().cpu().item())
+                if prev_score <= neg_inf / 2:
+                    continue
+                for curr in range(emissions.shape[1]):
+                    score = (
+                        prev_score
+                        + float(model.transitions[prev, curr].detach().cpu().item())
+                        + float(emissions[pos, curr].detach().cpu().item())
+                    )
+                    candidates[curr].append(score)
+        next_top2 = torch.full_like(top2, neg_inf)
+        for curr, scores in enumerate(candidates):
+            best = sorted(scores, reverse=True)[:2]
+            for rank, score in enumerate(best):
+                next_top2[curr, rank] = score
+        top2 = next_top2
+    best_scores = sorted((float(value) for value in top2.flatten().detach().cpu().tolist()), reverse=True)
+    best = best_scores[0]
+    second = best_scores[1] if len(best_scores) > 1 else neg_inf
+    return best, second
+
+
+def uncertainty_summary(model, task, word_ids: list[int]) -> dict[str, float]:
+    emissions = emission_scores(model, task, word_ids)
+    log_z = log_partition_from_emissions(model, emissions)
+    best_score, second_score = _top2_viterbi_scores(model, emissions)
+    log_z_value = float(log_z.detach().cpu().item())
+    viterbi_log_prob = best_score - log_z_value
+    max_sequence_prob = math.exp(min(0.0, viterbi_log_prob))
+    margin = best_score - second_score if second_score > -1.0e29 else float("inf")
+
+    alpha: list[torch.Tensor] = [model.start + emissions[0]]
+    for pos in range(1, emissions.shape[0]):
+        scores = alpha[-1][:, None] + model.transitions + emissions[pos][None, :]
+        alpha.append(torch.logsumexp(scores, dim=0))
+
+    beta: list[torch.Tensor] = [torch.zeros_like(model.start) for _ in range(emissions.shape[0])]
+    for pos in range(emissions.shape[0] - 2, -1, -1):
+        scores = model.transitions + emissions[pos + 1][None, :] + beta[pos + 1][None, :]
+        beta[pos] = torch.logsumexp(scores, dim=1)
+
+    token_entropy = 0.0
+    expected_score = 0.0
+    for pos in range(emissions.shape[0]):
+        marg = torch.exp(alpha[pos] + beta[pos] - log_z)
+        token_entropy += float((-(marg * torch.log(torch.clamp(marg, min=1.0e-12))).sum()).detach().cpu().item())
+        expected_score += float((marg * emissions[pos]).sum().detach().cpu().item())
+        if pos == 0:
+            expected_score += float((marg * model.start).sum().detach().cpu().item())
+    for pos in range(1, emissions.shape[0]):
+        pair_log = alpha[pos - 1][:, None] + model.transitions + emissions[pos][None, :] + beta[pos][None, :] - log_z
+        pair_marg = torch.exp(pair_log)
+        expected_score += float((pair_marg * model.transitions).sum().detach().cpu().item())
+
+    sequence_entropy = max(0.0, log_z_value - expected_score)
+    return {
+        "baseline_viterbi_log_prob": viterbi_log_prob,
+        "baseline_neg_log_viterbi_prob": -viterbi_log_prob,
+        "baseline_max_sequence_prob": max_sequence_prob,
+        "baseline_viterbi_margin": margin,
+        "baseline_token_marginal_entropy": token_entropy,
+        "baseline_sequence_entropy": sequence_entropy,
+    }
 
 
 def evaluate_cases(*, source: str, task, labeled, unlabeled, dev, vocab: dict[str, int], seed: int) -> list[DiagnosticCase]:
@@ -110,6 +191,7 @@ def evaluate_cases(*, source: str, task, labeled, unlabeled, dev, vocab: dict[st
             base_c_pred, _ = viterbi(baseline, task, word_ids, constrained=True)
             event_pred, _ = viterbi(event_model, task, word_ids)
             event_c_pred, _ = viterbi(event_model, task, word_ids, constrained=True)
+            uncertainty = uncertainty_summary(baseline, task, word_ids)
         base_legal = labels_follow_pattern(task, baseline.label_names, base_pred)
         base_c_legal = labels_follow_pattern(task, baseline.label_names, base_c_pred)
         event_legal = labels_follow_pattern(task, event_model.label_names, event_pred)
@@ -127,6 +209,7 @@ def evaluate_cases(*, source: str, task, labeled, unlabeled, dev, vocab: dict[st
                 event_constrained_pred=decode(tuple(task.label_names), event_c_pred),
                 baseline_p_event=base_p,
                 event_p_event=event_p,
+                **uncertainty,
                 baseline_legal=base_legal,
                 event_legal=event_legal,
                 baseline_exact=tuple(base_pred) == tuple(gold),

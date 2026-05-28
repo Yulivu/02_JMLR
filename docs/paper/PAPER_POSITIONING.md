@@ -97,11 +97,14 @@ Main paper spine:
 
 | Part | Role |
 |---|---|
-| Exact posterior event algebra | define `P_theta(L|x)` and compute it via CRF x DFA product transfer |
-| Event training | use `-log P_theta(L|x)` as a computable event signal |
-| Hidden conflict diagnostic | show legal decoded output can coexist with low posterior event mass |
-| Field-style risk diagnostic | show low event mass predicts higher errors in audited field-style tasks |
+| Posterior regular-language event mass | define the object `P_theta(L|x)` under the original CRF posterior |
+| Exact product transfer | compute `Z_{theta,L}(x)` via CRF x DFA product transfer |
+| Distinction from constrained decoding / constrained CRF | show the object answers posterior mass, not best legal output or support restriction |
+| Event-loss gradient / training signal | show `-log P_theta(L|x)` has a finite expectation-difference gradient under explicit assumptions |
+| Risk diagnostic evidence | show low event mass can rank high-risk field-style examples |
 | Complexity sanity | report conservative product-state scaling |
+
+Event training should be framed as a secondary contribution. It demonstrates that the event object is trainable and can move posterior mass; it is not an accuracy method and should not be sold as the main empirical result.
 
 Appendix-only:
 
@@ -163,11 +166,14 @@ If a section does not serve one of these, move it to appendix or remove it.
 Do not claim:
 
 - benchmark superiority;
+- WFST replacement;
 - B4 improves WNUT17 NER F1;
 - B4 dominates B5/B6 overall;
 - hard constraints are useless;
+- calibration;
 - event training generally preserves or improves task metrics;
 - arbitrary low-rank advantage;
+- tensor rank / MPO as main paper identity;
 - optimized runtime superiority;
 - JMLR-ready without external proof/positioning review.
 

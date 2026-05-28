@@ -60,6 +60,7 @@ docs/paper/RELATED_WORK_DRAFT.md
 docs/protocols/B7_WFST_DESIGN_NOTE.md
 docs/protocols/DIAGNOSTIC_REANALYSIS_PLAN.md
 experiments/results/paper_tables/PAPER_TABLES_INDEX.md
+experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_PLAN.md
 ```
 
 ## Review Questions
@@ -68,10 +69,11 @@ experiments/results/paper_tables/PAPER_TABLES_INDEX.md
 2. Is the distinction from Ganchev et al. 2010 / posterior regularization clear enough?
 3. Is R5a acceptable as diagnostic-stress evidence despite zero entity F1?
 4. Does R6a make the diagnostic contribution strong enough for a methods/auditability paper?
-5. Is B7 implementation mandatory if we avoid superiority claims?
-6. Are R3/R7 still optional if we do not claim robustness over label/unlabeled/lambda regimes?
-7. Is the proposed title too narrow, too broad, or appropriate?
-8. What exact claim would you delete before submission?
+5. Is uncertainty-baseline rerun mandatory before submission?
+6. Is B7 implementation mandatory if we avoid superiority claims?
+7. Are R3/R7 still optional if we do not claim robustness over label/unlabeled/lambda regimes?
+8. Is the proposed title too narrow, too broad, or appropriate?
+9. What exact claim would you delete before submission?
 
 ## Desired Output
 

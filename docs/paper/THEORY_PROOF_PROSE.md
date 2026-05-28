@@ -208,13 +208,65 @@ If `Z_{theta,L}(x)=0`, the event probability is zero and the log loss is infinit
 
 This corollary is only a computability statement. It is not a theorem that optimizing the event loss improves task accuracy.
 
-## 7. Diagnostic Corollary
+## 7. Event-Loss Gradient Proposition
+
+Assume the finite setup above, finite differentiable scores `S_theta(x,y)`, and `Z_{theta,L}(x)>0`. Because `Y^T` is finite, sums over sequences are finite and differentiation may be exchanged with summation. Define
+
+```text
+ell_event(theta; x) = -log P_theta(L|x)
+                    = log Z_theta(x) - log Z_{theta,L}(x).
+```
+
+Then
+
+```text
+grad_theta ell_event(theta; x)
+= E_{p_theta(y|x)}[grad_theta S_theta(x,y)]
+  - E_{p_theta(y|x, y in L)}[grad_theta S_theta(x,y)].
+```
+
+Here
+
+```text
+p_theta(y|x) = exp(S_theta(x,y)) / Z_theta(x)
+```
+
+is the original CRF posterior, and
+
+```text
+p_theta(y|x, y in L)
+= exp(S_theta(x,y)) 1[y in L_T] / Z_{theta,L}(x)
+```
+
+is the event-conditioned posterior.
+
+**Proof.** Since the sequence space is finite,
+
+```text
+grad_theta log Z_theta(x)
+= (1 / Z_theta(x)) sum_{y in Y^T} exp(S_theta(x,y)) grad_theta S_theta(x,y)
+= E_{p_theta(y|x)}[grad_theta S_theta(x,y)].
+```
+
+Similarly, using `Z_{theta,L}(x)>0`,
+
+```text
+grad_theta log Z_{theta,L}(x)
+= (1 / Z_{theta,L}(x)) sum_{y in L_T} exp(S_theta(x,y)) grad_theta S_theta(x,y)
+= E_{p_theta(y|x, y in L)}[grad_theta S_theta(x,y)].
+```
+
+Subtracting these two identities gives the proposition.
+
+This proposition explains the training signal: event loss pulls the unconstrained posterior sufficient-statistic expectation toward the event-conditioned posterior expectation. It is still only a computable training signal. It does not imply that task accuracy, benchmark F1, calibration, or constrained-decoding performance must improve.
+
+## 8. Diagnostic Corollary
 
 The scalar `P_theta(L|x)` is a posterior-level statistic attached to the model distribution itself. It can be evaluated independently of the decoded output. Therefore it can distinguish cases where constrained decoding returns a legal output but the original posterior assigns low mass to the legal event.
 
 This is a semantic distinction, not a universal error theorem. Empirical diagnostics are required to test whether low event mass correlates with task error or hidden conflict.
 
-## 8. Appendix-Only Conditional MPO Statement
+## 9. Appendix-Only Conditional MPO Statement
 
 The product transfer `M_t^L` is a nonnegative finite tensor under a fixed mode order. Suppose the following objects admit nonnegative MPO representations under a compatible augmented mode order:
 
@@ -226,7 +278,7 @@ Then their pointwise product has an MPO representation whose bond dimension is b
 
 This is a conditional membership statement. It does not imply that arbitrary CRFs, arbitrary DFAs, or arbitrary regular languages admit useful low-rank event transfers. It should remain appendix-only.
 
-## 9. Appendix-Only Positive-Cone Approximation Bound
+## 10. Appendix-Only Positive-Cone Approximation Bound
 
 Let `M_t` be the exact nonnegative event transfer and let `hat M_t` be a nonnegative approximation. If for each `t`
 
@@ -244,7 +296,7 @@ prod_t(1-rho_t) Z_{theta,L}(x)
 
 Posterior probability and log-probability versions require additional control of the denominator `Z_theta(x)` and strict positivity of the event mass. Without those assumptions, no posterior/log corollary should be stated.
 
-## 10. Remaining Proof Gaps
+## 11. Remaining Proof Gaps
 
 No unclosable gap is currently identified in the main finite theorem spine.
 

@@ -67,16 +67,22 @@ One might object that `P_theta(L|x)` is merely standard marginal inference after
 
 1. Define regular-language posterior event mass for CRFs.
 2. Prove exact finite product-transfer computation.
-3. Introduce event loss for posterior event training.
-4. Show hidden posterior conflict that hard decoding masks.
-5. Provide diagnostic evidence that low event mass predicts risk.
-6. Provide conservative reference complexity scaling.
+3. Distinguish the posterior-event object from constrained decoding and constrained CRFs.
+4. Derive event-loss gradient as a computable expectation-difference training signal.
+5. Provide diagnostic evidence that low event mass ranks risk in audited field-style settings.
+6. Provide conservative reference product-state scaling.
+
+Event training is a secondary contribution. It shows the event object can be used as a training signal and can move posterior event mass; it is not framed as an accuracy method.
 
 Explicit non-contributions:
 
 - no benchmark superiority claim;
+- no WFST replacement claim;
+- no NER F1 improvement claim;
+- no calibration claim;
 - no claim that hard constraints are useless;
-- no arbitrary low-rank theorem.
+- no arbitrary low-rank theorem;
+- no tensor-rank/MPO main identity.
 
 ## 2. Related Work
 
@@ -94,7 +100,20 @@ Required boundary:
 - do not claim constrained decoding is bad;
 - emphasize the difference between decoded legality and posterior consistency.
 
-### 2.2 Posterior Regularization And Ganchev et al. 2010
+### 2.2 Regular-Constrained CRFs / RegCCRF
+
+RegCCRF and "Constraining Linear-chain CRFs to Regular Languages" should be discussed directly.
+
+Boundary:
+
+| RegCCRF / constrained CRF | This Work |
+|---|---|
+| changes the model support so illegal sequences receive zero probability | keeps the original CRF posterior and measures its mass on `L` |
+| answers how to train/infer under regular-language constraints | answers how much unconstrained posterior mass satisfies a rule |
+| can improve constrained structured prediction performance | does not claim constrained-method superiority |
+| denominator is the constrained model normalizer | denominator remains `Z_theta(x)` from the original model |
+
+### 2.3 Posterior Regularization And Ganchev et al. 2010
 
 Ganchev et al. 2010 introduced posterior regularization as a framework for incorporating indirect supervision through constraints on posterior distributions. The boundary argument should be explicit:
 
@@ -111,7 +130,23 @@ Text to include:
 Posterior regularization is the closest conceptual neighbor, but our object is not a projected posterior or a constraint penalty by itself. It is the event probability assigned by the model's original posterior to a regular language. This makes it directly auditable: hard-constrained decoding can return a legal output while `P_theta(L|x)` remains low.
 ```
 
-### 2.3 Confidence Calibration
+### 2.4 Generalized Expectation Criteria
+
+Boundary:
+
+```text
+Generalized expectation criteria match model expectations to weak supervision targets. This work reports an explicit regular-language event mass under the original posterior; event loss is only one use of that object.
+```
+
+### 2.5 Semantic Loss
+
+Boundary:
+
+```text
+Semantic Loss is a broad logic-based differentiable loss. This work is narrower: finite CRF posterior event semantics for regular-language label events, with exact CRF x DFA transfer and an audit interpretation.
+```
+
+### 2.6 Confidence Calibration
 
 Boundary:
 
@@ -121,7 +156,7 @@ Calibration usually concerns whether reported probabilities match empirical corr
 
 R6a can be mentioned only as diagnostic evidence, not calibration evidence.
 
-### 2.4 Lagrangian Relaxation
+### 2.7 Lagrangian Relaxation
 
 Boundary:
 
@@ -129,7 +164,7 @@ Boundary:
 Lagrangian relaxation optimizes constrained objectives. Our object measures an event under the CRF posterior and can be computed without changing the decoder.
 ```
 
-### 2.5 Tensor Networks / uMPS
+### 2.8 Tensor Networks / uMPS
 
 Boundary:
 
@@ -186,6 +221,19 @@ Semi-event setup:
 - labeled examples use supervised NLL;
 - unlabeled inputs can supply rule-event pressure;
 - no theorem that this improves task accuracy.
+
+Gradient proposition:
+
+```text
+grad[-log P_theta(L|x)]
+= E_{p_theta(y|x)}[grad S_theta(x,y)]
+  - E_{p_theta(y|x, y in L)}[grad S_theta(x,y)].
+```
+
+Interpretation:
+
+- event loss pulls the unconstrained posterior expectation toward the event-conditioned posterior expectation;
+- this is a training-signal statement, not an accuracy guarantee.
 
 ### 4.3 Diagnostic Use
 
