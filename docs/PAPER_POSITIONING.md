@@ -116,7 +116,7 @@ Appendix-only:
 R5a:
 
 ```text
-existence proof of hidden posterior BIO conflict
+diagnostic-stress evidence of hidden posterior BIO conflict
 not an NER performance result
 ```
 

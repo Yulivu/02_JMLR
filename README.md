@@ -27,7 +27,7 @@ Completed audited blocks:
 
 | Block | Role |
 |---|---|
-| R5 WNUT17 BIO/NER | hidden posterior conflict existence proof and task viability boundary |
+| R5 WNUT17 BIO/NER | hidden posterior conflict diagnostic evidence and task viability boundary |
 | R1 controlled | controlled format robustness |
 | R2 semi-real | field-like semi-real tasks |
 | R4 real-source small | invoice/stock auxiliary small-field evidence |

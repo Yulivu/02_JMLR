@@ -40,7 +40,7 @@ This table defines what the project can currently claim before paper drafting. I
 | Hard constraints are useless | hard constraints repair decoded outputs; they answer a different question |
 | WFST/constrained methods are beaten | B7 not implemented as a faithful related-work baseline |
 | Arbitrary CRF/DFA/regular languages have low-rank event transfers | only conditional appendix membership is supported |
-| R8 proves optimized runtime | R8 is reference CPU scaling only |
+| R8 establishes optimized runtime | R8 is reference CPU scaling only |
 
 ## Recommended Paper Position
 

@@ -44,10 +44,10 @@ Posterior Regular-Language Event Mass for Conditional Random Fields
 | Block | Main Evidence | Boundary |
 |---|---|---|
 | Theory | finite posterior event mass and exact product transfer | fixed finite `Y,T`, complete DFA |
-| R5a | B0 `P(BIO|x)=0.0566` while constrained legality is 1; B4 raises event mass to `0.3389` | existence proof, not NER performance |
+| R5a | B0 `P(BIO|x)=0.0566` while constrained legality is 1; B4 raises event mass to `0.3389` | diagnostic-stress evidence, not NER performance |
 | R5b | B0 entity F1 `0.1660` | no B4 F1 improvement |
 | R1/R2/R4 | B4 raises event mass across controlled, semi-real, and real-source blocks | not uniformly task-metric dominant |
-| R6a | AUROC `0.7088`, AUPRC `0.8470`; risk decile exact error drops from `0.8862` to `0.2624` | risk ranking, not calibration |
+| R6a | base exact-error rate `0.7359`; AUROC `0.7088`, AUPRC `0.8470`; risk decile exact error drops from `0.8862` to `0.2624` | risk ranking, not calibration |
 | R8 | reference product-transfer scaling measured | not optimized runtime or low-rank evidence |
 
 ## Files To Review
@@ -66,7 +66,7 @@ experiments/results/paper_tables/PAPER_TABLES_INDEX.md
 
 1. Is the novelty defensible if we openly admit product automaton marginal inference is a known computational primitive?
 2. Is the distinction from Ganchev et al. 2010 / posterior regularization clear enough?
-3. Is R5a acceptable as an existence proof despite zero entity F1?
+3. Is R5a acceptable as diagnostic-stress evidence despite zero entity F1?
 4. Does R6a make the diagnostic contribution strong enough for a methods/auditability paper?
 5. Is B7 implementation mandatory if we avoid superiority claims?
 6. Are R3/R7 still optional if we do not claim robustness over label/unlabeled/lambda regimes?

@@ -106,5 +106,5 @@ Still not allowed:
 ```text
 P_theta(L|x) is calibrated.
 P_theta(L|x) universally predicts errors.
-P_theta(L|x) proves benchmark superiority.
+P_theta(L|x) establishes benchmark superiority.
 ```

@@ -211,10 +211,10 @@ Report:
 
 ### 5.2 R5 WNUT17 BIO/NER
 
-Frame R5a as existence proof:
+Frame R5a as diagnostic-stress evidence:
 
 ```text
-R5a is an existence proof of hidden posterior conflict, not a performance result.
+R5a provides diagnostic-stress evidence of hidden posterior conflict, not a performance result.
 ```
 
 Include:
@@ -332,7 +332,7 @@ Must include:
 - missing R7 broader lambda/rule sensitivity;
 - pending B7 faithful WFST-style baseline;
 - no benchmark superiority;
-- WNUT R5a is existence proof, not performance result;
+- WNUT R5a is diagnostic-stress evidence, not a performance result;
 - R8 is reference CPU scaling only;
 - rank/MPO appendix only;
 - final proof prose needs external review.

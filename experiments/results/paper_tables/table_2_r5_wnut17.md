@@ -2,11 +2,11 @@
 
 | block | variant | seeds | P_event | delta_P | hidden_conflict | entity_F1 | claim_use |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| r5a_diagnostic_stress | B0_unconstrained | 10.0000 | 0.0566 | 0.0000 | 1.0000 | 0.0000 | hidden-conflict existence |
-| r5a_diagnostic_stress | B4_semi_event_0.1 | 10.0000 | 0.3389 | 0.2822 | 0.9963 | 0.0000 | hidden-conflict existence |
-| r5a_diagnostic_stress | B5_rule_feature_0.8 | 10.0000 | 0.1608 | 0.1042 | 1.0000 | 0.0000 | hidden-conflict existence |
-| r5a_diagnostic_stress | B6_pr_style_tau0.7 | 10.0000 | 0.1703 | 0.1137 | 1.0000 | 0.0000 | hidden-conflict existence |
-| r5b_feature_viability | B0_unconstrained | 10.0000 | 0.9824 | 0.0000 | 0.0088 | 0.1660 | task viability boundary |
-| r5b_feature_viability | B4_semi_event_0.1 | 10.0000 | 0.9865 | 0.0041 | 0.0074 | 0.1522 | task viability boundary |
-| r5b_feature_viability | B5_rule_feature_0.8 | 10.0000 | 0.9864 | 0.0040 | 0.0058 | 0.1645 | task viability boundary |
-| r5b_feature_viability | B6_pr_style_tau0.7 | 10.0000 | 0.9868 | 0.0044 | 0.0060 | 0.1463 | task viability boundary |
+| r5a_diagnostic_stress | B0_unconstrained | 10 | 0.0566 | 0.0000 | 1.0000 | 0.0000 | hidden-conflict diagnostic evidence |
+| r5a_diagnostic_stress | B4_semi_event_0.1 | 10 | 0.3389 | 0.2822 | 0.9963 | 0.0000 | hidden-conflict diagnostic evidence |
+| r5a_diagnostic_stress | B5_rule_feature_0.8 | 10 | 0.1608 | 0.1042 | 1.0000 | 0.0000 | hidden-conflict diagnostic evidence |
+| r5a_diagnostic_stress | B6_pr_style_tau0.7 | 10 | 0.1703 | 0.1137 | 1.0000 | 0.0000 | hidden-conflict diagnostic evidence |
+| r5b_feature_viability | B0_unconstrained | 10 | 0.9824 | 0.0000 | 0.0088 | 0.1660 | task viability boundary |
+| r5b_feature_viability | B4_semi_event_0.1 | 10 | 0.9865 | 0.0041 | 0.0074 | 0.1522 | task viability boundary |
+| r5b_feature_viability | B5_rule_feature_0.8 | 10 | 0.9864 | 0.0040 | 0.0058 | 0.1645 | task viability boundary |
+| r5b_feature_viability | B6_pr_style_tau0.7 | 10 | 0.9868 | 0.0044 | 0.0060 | 0.1463 | task viability boundary |

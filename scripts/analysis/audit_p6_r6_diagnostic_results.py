@@ -98,7 +98,7 @@ def write_markdown(path: Path, rows: list[dict[str, object]]) -> None:
             "|---|---|---|---|",
             "| Low `P_theta(L|x)` is a risk signal | supported in R6a | bottom event-mass quantile has higher exact and char error than top quantile on all audited field tasks | field-style diagnostic, not all structured prediction |",
             "| Hidden conflict concentrates at low event mass | partially supported | semi-real tasks show clear hidden-conflict gaps; real-source tasks are mostly saturated | keep separate from R5a WNUT hidden-conflict evidence |",
-            "| Diagnostic proves task improvement | not supported | diagnostic and training improvement are different claims | do not claim benchmark superiority |",
+            "| Diagnostic establishes task improvement | not supported | diagnostic and training improvement are different claims | do not claim benchmark superiority |",
             "",
             "## Decision",
             "",

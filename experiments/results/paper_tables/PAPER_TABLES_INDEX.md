@@ -1,6 +1,6 @@
 # Paper Tables Index
 
-Generated from curated audit CSVs at commit `24c46e2`.
+Generated from curated audit CSVs at commit `3bf4f8b`.
 
 | Table | CSV | Markdown |
 |---|---|---|

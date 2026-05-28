@@ -28,10 +28,10 @@ P_theta(L|x) 暴露模型后验里是否仍有大量非法结构概率质量。
 不把实验目标设成：
 
 ```text
-证明 B4 全面优于所有 baseline；
-证明真实 benchmark superiority；
+支持 B4 全面优于所有 baseline；
+支持真实 benchmark superiority；
 证明任意 CRF/DFA 都低秩；
-证明 hard constraint 没用。
+支持 hard constraint 没用。
 ```
 
 ## 2. 方法与 Baseline
