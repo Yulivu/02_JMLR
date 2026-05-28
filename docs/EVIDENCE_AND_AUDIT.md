@@ -38,11 +38,11 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | 条件非负 MPO rank membership | appendix-only / conditional | T2, MPO sanity | no arbitrary low-rank claim; not paper identity |
 | positive-cone event-mass error | supported | T3 | posterior/log needs extra assumptions |
 | `P_theta(L|x)` 可作为训练信号 | locally supported | gradient, controlled, semi-real, real-source | larger formal evidence |
-| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive; WNUT17 B0-B6 stress smoke positive for posterior event mass | WNUT17 multi-seed/grid formal evidence |
+| weak/semi-supervised format signal | partial | semi-real/real-source B4 positive; WNUT17 R5a formal positive for posterior BIO mass | broader formal blocks beyond R5 |
 | hard constraint 与 posterior training 不同 | supported | constrained metrics, conflict cases | explicit B1/B3 rows preferred |
 | risk diagnostic | partial positive | bottom/top diagnostic | expand all tasks/baselines |
-| B4 empirically superior | not supported | B5/B6 competitive | stronger baseline block |
-| JMLR-ready empirical package | not yet | local evidence only | AutoDL/formal block |
+| B4 empirically superior | not supported | B5/B6 competitive; R5b does not improve NER F1 | stronger baseline block |
+| JMLR-ready empirical package | not yet | R5 formal audited, but full P6 incomplete | R1-R4/R6-R8 formal blocks |
 
 ## 3. Evidence Summary
 
@@ -56,6 +56,8 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | Semi-real fields | amount/date/dose/product_code all positive in posterior mass | B5/B6 competitive |
 | Real-source small fields | invoice/stock fields positive in posterior mass and some task metrics | local small-field, not public benchmark |
 | Diagnostic | bottom 20% `P_theta(L|x)` samples have higher error than top 20% | representative tasks only |
+| R5a WNUT17 diagnostic stress | B0 `P(BIO|x)=0.0566`, hidden conflict `1.0000`; B4 raises `P(BIO|x)` to `0.3389` | entity F1 remains `0.0000`, diagnostic only |
+| R5b WNUT17 feature viability | B0 entity F1 `0.1660`; WNUT17 is not all-O toy | `P(BIO|x)` saturated around `0.9824`; no B4 F1 gain |
 
 ## 4. Important Numbers
 
@@ -138,6 +140,8 @@ Current evidence can support:
 5. Semi-real and real-source small-field probes provide partial positive evidence.
 6. Hard constraint and posterior event training answer different questions.
 7. Low posterior event mass is a local risk/hidden-conflict signal.
+8. R5a supports hidden posterior BIO conflict on WNUT17 under diagnostic stress.
+9. R5b supports WNUT17 task viability, with nonzero baseline entity F1.
 
 ## 7. Unsupported Claims
 
@@ -146,6 +150,7 @@ Current evidence does not support:
 - benchmark superiority;
 - JMLR-ready empirical claim;
 - full real-task usefulness;
+- B4 improving NER F1 on WNUT17;
 - comprehensive superiority over hard constraint / WFST / posterior regularization / rule-feature;
 - arbitrary CRF / DFA / regular language low-rank advantage;
 - best lambda;
@@ -159,8 +164,8 @@ Current evidence does not support:
 | fresh proof-check | theory prose before paper must be externally/freshly audited | run proof-check before drafting |
 | explicit B1/B3 rows | constrained metrics are currently implicit | add rows or preserve clear flags |
 | B5/B6 grids | B5/B6 pressure decides empirical strength | freeze and run grids |
-| canonical BIO/NER public slice | WNUT17 data gate frozen; B0-B6 stress smoke shows hidden conflict and baseline ordering | run multi-seed/grid formal R5 before P6 claims |
-| WNUT17 task viability | feature CRF gives nonzero B0 entity F1 around 0.17 over 3 seeds | task regime saturates `P(BIO|x)`, so keep separate from hidden-conflict stress |
+| canonical BIO/NER public slice | WNUT17 R5 formal audited; R5a supports hidden conflict and R5b supports viability | do not overclaim NER superiority |
+| WNUT17 task viability | feature CRF gives B0 entity F1 `0.1660` over 10 formal seeds | task regime saturates `P(BIO|x)`, so keep separate from hidden-conflict stress |
 | retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
 | AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
@@ -174,9 +179,10 @@ GO: P4 local CPU smoke passed.
 GO: P5 AutoDL/HPC target-machine smoke passed.
 GO: WNUT17 BIO/NER data gate and B0-B6 local stress smoke passed.
 GO: WNUT17 feature-based viability smoke shows nonzero entity F1.
+GO: R5 WNUT17 formal AutoDL runs completed and audited.
 HOLD: paper-writing.
 HOLD: benchmark superiority.
 HOLD: JMLR-ready claim.
-HOLD: broad P6 formal AutoDL runs until R5 formal dry-run is explicitly approved and audited.
+HOLD: treating R5 as sufficient for full P6/JMLR empirical package.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

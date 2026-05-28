@@ -1,81 +1,73 @@
 # AI Review Packet
 
-生成时间：2026-05-27
+Generated: 2026-05-28
 
-用途：把项目 idea、理论对象、已有证据、实验路线、当前阶段和主要风险合并成一个文件，供外部 AI / researcher reviewer 快速审核。
+Purpose: one-file external review packet for the project idea, theory object, current evidence, experiment route, stage, and main risks.
 
-请 reviewer 重点判断：
+Reviewer should judge:
 
-1. 这个 idea 是否有足够独立性；
-2. 当前 claim 是否过强或过弱；
-3. P6 formal run design 是否足够支撑 JMLR 路线；
-4. baseline / diagnostic / BIO-NER slice 是否还有明显缺口；
-5. 如果结果不理想，论文定位应该如何降级。
+1. whether the posterior-event object is distinct enough from constrained decoding, rule features, and posterior regularization;
+2. whether current claims are too strong or too weak;
+3. whether the pre-paper formal experiment route is enough for a JMLR submission path;
+4. whether the BIO/NER slice, baselines, diagnostics, and complexity story still have obvious gaps;
+5. how to position the paper if B4 is useful diagnostically but not empirically dominant.
 
 ## 1. One-Sentence Idea
 
-本项目研究：
+This project studies:
 
 ```text
 Tensorized Regular-Language Posterior Algebra for CRFs
 ```
 
-最简解释：
+Plain version:
 
 ```text
-不要只看 CRF 最终输出是否满足规则；
-而是计算 CRF 整个后验分布里，有多少概率质量真的落在规则语言 L 中。
+Do not only ask whether the final CRF output satisfies a rule.
+Compute how much probability mass the whole CRF posterior assigns to rule-satisfying outputs:
+P_theta(L | x).
 ```
 
-核心信号：
+Core distinction:
 
 ```text
-P_theta(L | x)
-```
-
-直观含义：
-
-```text
-模型内部到底有多少概率相信这个 regular-language rule？
+decoded output legality != posterior consistency
 ```
 
 ## 2. Motivation
 
-传统 hard-constrained decoding 只能保证最后输出合法，但可能掩盖模型内部冲突。例如模型最高分答案被修成合法输出，但模型后验的大部分概率质量仍然在非法结构上。
+Hard-constrained decoding can repair the final output, but it can hide model uncertainty or internal conflict. A model may output a legal sequence after constrained decoding while most of its posterior probability still sits on illegal structures.
 
-本项目把规则从“输出后的过滤器”变成“后验分布里的可计算事件”：
+This project turns a rule from an output-time filter into a posterior event:
 
-| 用途 | 含义 |
+| Use | Meaning |
 |---|---|
-| Audit | 最高分输出合法但 `P_theta(L|x)` 很低，说明模型并不真正相信规则 |
-| Training | 用 `-log P_theta(L|x)` 作为 event loss，推动后验质量进入合法集合 |
-| Diagnostic | 低 `P_theta(L|x)` 样本可能是错误或 hidden conflict |
-| Theory | 用 product automaton transfer 精确表示 event mass；rank/MPO 仅作 appendix support |
+| Audit | legal top output but low `P_theta(L|x)` means the model does not strongly believe the rule |
+| Training | `-log P_theta(L|x)` can be used as an event loss |
+| Diagnostic | low `P_theta(L|x)` can expose hidden conflict or risk |
+| Theory | product automaton transfer computes event mass exactly; rank/MPO material is appendix-only support |
 
 ## 3. Relation To uMPS
 
-一句话：
+One sentence:
 
 ```text
-uMPS 告诉我们，正则语言可以成为概率模型里的可计算事件；
-我们把这个视角接到 CRF 条件后验上，研究 P_theta(y in L | x)。
+uMPS shows that regular languages can be computable events inside probabilistic sequence models; this project connects that view to CRF conditional posteriors and studies P_theta(y in L | x).
 ```
 
-| uMPS | 本项目 |
+| uMPS | This Project |
 |---|---|
-| 生成式序列模型 | 条件 CRF 后验 |
-| 问生成字符串是否落入 regex event | 问标签后验是否相信 regular-language rule |
-| 关注 u-MPS 张量网络模型 | 关注 CRF posterior event mass |
+| generative sequence model | conditional CRF posterior |
+| asks whether generated strings fall in a regex event | asks whether tag posteriors believe a regular-language rule |
+| focuses on u-MPS tensor-network models | focuses on CRF posterior event mass |
 | `P(s in R)` | `P_theta(y in L | x)` |
 
 ## 4. Theory Object
 
-固定有限标签集、有限长度、输入 `x`、CRF-style score、regular language `L`，以及识别 `L` 的 complete DFA。
-
-核心对象：
+Given finite labels, fixed sequence length, input `x`, CRF-style scores, regular language `L`, and a complete DFA recognizing `L`, the core object is:
 
 ```text
-Z_theta(x)       = total CRF posterior normalizer
+Z_theta(x)       = total CRF normalizer
 Z_{theta,L}(x)   = mass of sequences accepted by L
 P_theta(L | x)   = Z_{theta,L}(x) / Z_theta(x)
 ```
@@ -83,49 +75,21 @@ P_theta(L | x)   = Z_{theta,L}(x) / Z_theta(x)
 Product automaton idea:
 
 ```text
-CRF local context state × DFA state
+CRF local context state x DFA state
 ```
 
-每条 accepted product path 对应一条满足规则的 label sequence；路径权重对应 CRF sequence score 的 exponentiated weight。因此 summing accepted paths gives event mass.
+Accepted product paths correspond to label sequences satisfying the rule, so summing those path weights gives the event mass.
 
-## 5. Theory Package And Guardrails
-
-| ID | Statement | Status | Scope |
-|---|---|---|---|
-| T0 | finite posterior setup is well-defined | provable | finite labels/length/score |
-| T1 | product automaton transfer computes event mass exactly | provable | complete DFA, fixed convention |
-| T2 | event transfer has conditional nonnegative MPO rank membership | appendix / optional | needs explicit rank assumptions |
-| T3 | positive-cone transfer approximation controls event mass multiplicatively | provable | nonnegative matrices and boundary vectors |
-| C1 | posterior probability control | conditional | needs numerator and denominator control |
-| C2 | log event/posterior control | conditional | needs strict positivity |
-
-Allowed claims:
-
-- `P_theta(L|x)` is a well-defined CRF posterior event signal;
-- product automaton transfer computes event mass;
-- event loss can be studied as a training signal;
-- low event mass can be tested as diagnostic signal;
-- conditional rank membership under explicit assumptions.
-
-Forbidden claims:
-
-- JMLR-ready already;
-- benchmark superiority already;
-- arbitrary CRF/DFA/regular language low-rank advantage;
-- hard constraints are useless;
-- current tests prove real-world usefulness.
-
-## 6. Current Stage
+## 5. Current Stage
 
 Current status:
 
 ```text
-P5 passed
-AutoDL/HPC target-machine smoke passed
-WNUT17 BIO/NER data gate frozen locally
-WNUT17 B0-B6 local stress smoke passed
-WNUT17 feature viability smoke gives nonzero entity F1
-R5 formal runs not started
+P5 passed.
+AutoDL target-machine smoke passed.
+R5 WNUT17 formal AutoDL runs completed and downloaded.
+R5 result-to-claim audit completed locally.
+The project is still pre-paper; it is not JMLR-ready yet.
 ```
 
 Roadmap:
@@ -135,51 +99,84 @@ Roadmap:
 | P0 | problem definition | done | mainline fixed | none |
 | P1 | theory object closed loop | mostly done | posterior algebra, DFA/product-transfer tests | fresh proof-check |
 | P2 | local mechanism validation | mostly done | controlled/semi-real/real-source probes | not benchmark evidence |
-| P3 | experiment protocol freeze | revised-frozen | frozen protocol plus reviewer-route update; WNUT17 BIO/NER data gate and B0-B6 stress smoke | R5 multi-seed/grid before P6 |
+| P3 | experiment protocol freeze | done | frozen protocol, baseline table, run list, WNUT17 data gate | revise only through explicit protocol updates |
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
-| P5 | AutoDL/HPC engineering | done | target-machine preflight and smoke passed on AutoDL commit `cdc3a5f` | none |
-| P6 | formal runs | not started | R1-R8 planned; R5 data source frozen; B0-B6 smoke positive | WNUT17 multi-seed/grid formal R5 runs |
-| P7 | result-to-claim audit | not started | claim/evidence matrix draft | update after P6 |
-| P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limits |
+| P5 | AutoDL/HPC engineering | done | target-machine preflight and smoke passed | none |
+| R5 | WNUT17 BIO/NER formal slice | audited | R5a/R5b 10-seed AutoDL outputs and claim audit | use only within its claim boundaries |
+| P6 | full formal runs | partial / next | R5 done; R1-R4/R6-R8 still planned | controlled, semi-real, real-source, diagnostic, complexity formal blocks |
+| P7 | full result-to-claim audit | not started | R5 audit exists | requires all formal blocks |
+| P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limitations/repro package |
 
-## 7. Existing Evidence
+## 6. R5 Formal Result Summary
 
-Existing evidence supports entering formal validation. It does not yet support final paper claims.
-
-| Evidence | Positive Signal | Boundary |
-|---|---|---|
-| Core algebra tests | finite posterior algebra and product transfer align | small finite sanity only |
-| Event CRF tests | event probability and gradients work in tiny CRF setting | not benchmark |
-| Gradient mechanism | illegal BIO gradients are penalized | not training evidence alone |
-| Controlled format probes | event training raises posterior event mass on format tasks | limited seeds, incomplete baselines |
-| Semi-real field probes | amount/date/dose/product_code show positive posterior-mass trends | B5/B6 competitive |
-| Real-source small fields | invoice/stock fields show positive posterior mass and some exact/char gains | small-field, not general OCR |
-| Diagnostic probes | bottom `P_theta(L|x)` samples have higher error than top samples | representative tasks only |
-
-Important local numbers:
-
-| Block | Task | Delta `P_theta(L|x)` / Risk Signal |
-|---|---|---:|
-| semi-real | amount | +0.1422 |
-| semi-real | date | +0.1953 |
-| semi-real | dose | +0.0608 |
-| semi-real | product_code | +0.1642 |
-| real-source | invoice_6d | +0.0573 |
-| real-source | invoice_c6d | +0.0661 |
-| real-source | stock_5d | +0.0543 |
-| diagnostic | bottom vs top event mass | bottom samples have much higher error |
-
-Current supported claim:
+Curated audit output:
 
 ```text
-P_theta(L|x) is a computable, auditable, trainable CRF posterior event signal.
+experiments/results/event_training/formal_pre_paper/r5_wnut17/R5_RESULT_TO_CLAIM_AUDIT.md
+experiments/results/event_training/formal_pre_paper/r5_wnut17/r5_wnut17_audit_summary.csv
 ```
 
-Current unsupported claim:
+### R5a Diagnostic Stress
+
+10 seeds, word-id CRF, low-resource stress.
+
+Key audited means:
+
+| Variant | `P(BIO|x)` | delta vs B0 | hidden conflict | entity F1 |
+|---|---:|---:|---:|---:|
+| B0 | 0.0566 | 0.0000 | 1.0000 | 0.0000 |
+| B4 | 0.3389 | 0.2822 | 0.9963 | 0.0000 |
+| B5 | 0.1608 | 0.1042 | 1.0000 | 0.0000 |
+| B6 | 0.1703 | 0.1137 | 1.0000 | 0.0000 |
+
+Interpretation:
 
 ```text
-B4 is empirically superior to all baselines on real benchmarks.
+R5a supports hidden posterior conflict and shows semi-event training can raise posterior BIO mass.
+R5a does not support NER task usefulness because entity F1 is zero.
 ```
+
+### R5b Feature Viability
+
+10 seeds, feature CRF, larger train/unlabeled/dev setting.
+
+Key audited means:
+
+| Variant | `P(BIO|x)` | delta vs B0 | hidden conflict | entity F1 |
+|---|---:|---:|---:|---:|
+| B0 | 0.9824 | 0.0000 | 0.0088 | 0.1660 |
+| B4 | 0.9865 | 0.0041 | 0.0074 | 0.1522 |
+| B5 | 0.9864 | 0.0040 | 0.0058 | 0.1645 |
+| B6 | 0.9868 | 0.0044 | 0.0060 | 0.1463 |
+
+Interpretation:
+
+```text
+R5b shows WNUT17 is not an all-O toy because B0 gets nonzero entity F1.
+R5b does not support a B4 NER F1 improvement claim.
+Posterior BIO mass is already saturated, so hidden-conflict conclusions belong to R5a.
+```
+
+## 7. Supported And Unsupported Claims
+
+Currently supported:
+
+1. `P_theta(L|x)` is a computable CRF posterior event signal.
+2. Product automaton transfer computes event mass in finite sanity tests.
+3. Event loss has meaningful local gradients.
+4. Controlled/semi-real/real-source probes support posterior event training as a route.
+5. R5a supports the hidden posterior conflict narrative on a canonical BIO/NER slice.
+6. R5b supports WNUT17 task viability but not method superiority.
+
+Currently unsupported:
+
+- JMLR-ready empirical package;
+- benchmark superiority;
+- B4 improving NER F1;
+- B4 dominating B5/B6 overall;
+- hard constraints being useless;
+- arbitrary low-rank advantage for all CRF/DFA/regular-language cases;
+- full diagnostic/calibration claim.
 
 ## 8. Baselines
 
@@ -188,7 +185,7 @@ B4 is empirically superior to all baselines on real benchmarks.
 | B0 | unconstrained CRF | original baseline | yes |
 | B1 | B0 + hard-constrained decoding | distinguish output repair from posterior training | yes |
 | B2 | labeled event training | event term on labeled samples | yes |
-| B3 | event training + hard constraint | complementarity with hard decoding | yes |
+| B3 | event training + hard constraint | check complementarity with hard decoding | yes |
 | B4 | semi-event training | main method | yes |
 | B5 | rule-feature CRF | rule-as-feature baseline | yes |
 | B6 | posterior-regularization-style | posterior constraint baseline | yes |
@@ -197,150 +194,36 @@ B4 is empirically superior to all baselines on real benchmarks.
 Reviewer pressure point:
 
 ```text
-If B5/B6 dominate B4, the paper should pivot from empirical superiority
-to posterior-event algebra + auditability + diagnostic value.
+If B5/B6 are competitive or stronger, the paper should not claim empirical dominance.
+The defensible positioning becomes posterior-event algebra, auditability, and diagnostic value.
 ```
 
-## 9. P6 Formal Run Design
+## 9. Next Formal Work
 
-Formal runs are R1-R8. R0 is only smoke and already passed locally.
+The next work should not expand concepts. It should complete the evidence package:
 
-| Run ID | Stage | Tasks | Systems | Seeds | Grid |
-|---|---|---|---|---:|---|
-| R1 | controlled robustness | DATE, DDDLL, LL-DDD, LLDDD | B0-B4 | 20 | lambda grid |
-| R2 | semi-real main | amount, date, dose, product_code | B0-B6 | 10 | B5/B6 grid |
-| R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
-| R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
-| R5 | canonical BIO/NER public slice | frozen BIO/NER task | B0-B7 if feasible | 10 | default + best grids |
-| R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
-| R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
-| R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | length / DFA states / batch size |
+| Block | Purpose | Priority |
+|---|---|---|
+| R1 controlled robustness | show mechanism stability across synthetic regular languages | high |
+| R2 semi-real main | test B0-B6 under field-like formats | high |
+| R3 low-label/unlabeled sensitivity | show when event training helps | medium |
+| R4 real-source small auxiliary | keep retail fields as auxiliary evidence | medium |
+| R6 diagnostic full | test whether low event mass predicts error/conflict | high |
+| R8 complexity scaling | answer DFA x CRF cost questions | high |
+| B7 design | handle WFST/constrained-method reviewer pressure | medium |
 
-Primary metrics:
-
-```text
-mean_p_event
-delta_p_event
-unconstrained_legal_rate
-char_accuracy
-exact_sequence_accuracy
-bottom/top exact error gap
-```
-
-Secondary metrics:
-
-```text
-mean_nll
-hidden_conflict_rate
-low_p_event_rate
-diagnostic correlation / AUC
-lambda-task tradeoff
-```
-
-Decision standard:
-
-- maintain JMLR route if B4 posterior event mass is stable across controlled/semi-real/real-source;
-- B5/B6 do not fully dominate B4;
-- public/real slice gives at least partial positive evidence;
-- diagnostic bottom/top separation is clear;
-- fresh proof-check does not fail.
-
-## 10. Public / Real Slice
-
-Current auxiliary frozen v1:
-
-| Slice ID | Source | Fields | Rule IDs | Claim Boundary |
-|---|---|---|---|---|
-| `retail_fields_v1` | UCI Online Retail local copy | `InvoiceNo`, `StockCode` | `invoice_6d`, `invoice_c6d`, `stock_5d` | auxiliary real-source small-field evidence only, not primary benchmark |
-
-BIO/NER data gate now frozen before P6:
-
-```text
-canonical BIO/NER public structured prediction slice = WNUT17 Emerging Entities
-```
-
-The BIO/NER slice should demonstrate hidden posterior conflict:
-
-```text
-constrained decoded output legal, but baseline P_theta(BIO-legal|x) low.
-```
-
-Local data artifacts:
-
-```text
-docs/BIO_NER_SLICE_PROTOCOL.md
-data/raw/wnut17/train.conll
-data/raw/wnut17/dev.conll
-data/raw/wnut17/test.conll
-```
-
-Important data note: `test.conll` is copied from upstream `emerging.test.annotated`; upstream `emerging.test.conll` is not used because it contains comma-separated multi-annotation labels.
-
-Local stress-smoke signal:
-
-| System | `mean_p_event` | constrained legal rate | hidden conflict rate | token acc | entity F1 |
-|---|---:|---:|---:|---:|---:|
-| B0 | 0.0591 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
-| B2 | 0.0603 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
-| B4 | 0.3454 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
-| B5 | 0.1635 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
-| B6 | 0.1697 | 1.0000 | 1.0000 | 0.8731 | 0.0000 |
-
-Interpretation: WNUT17 can expose posterior BIO inconsistency under a low-resource stress setting, and semi-event training moves posterior mass upward more than the current B5/B6 smoke baselines. A separate feature-based viability check gives nonzero B0 entity F1 around 0.17 over three seeds, but in that regime `P(BIO|x)` is already near 0.98 and hidden conflict is weak. R5 should therefore be designed as two regimes, not one overloaded benchmark.
-
-Data policy:
-
-- AutoDL/HPC is treated as offline except for GitHub access.
-- Current required data is tracked in repo: `data/raw/online_retail.xlsx`.
-- Data hash is recorded in `data/DATA_MANIFEST.md`.
-- Future large data must be uploaded manually to `data/raw/` and added to manifest.
-
-## 11. P5 AutoDL/HPC Status
-
-P5 is engineering only, not evidence.
-
-Artifacts:
-
-| Artifact | Purpose |
-|---|---|
-| `docs/AUTODL_HPC_RUNBOOK.md` | target-machine runbook |
-| `experiments/suites/autodl_smoke.yaml` | AutoDL smoke suite |
-| `scripts/hpc/preflight_autodl.py` | environment/data/suite preflight |
-| `scripts/hpc/run_autodl_smoke.sh` | preflight + dry-run + smoke + audit + tests |
-| `scripts/data/verify_data.py` | offline data verification |
-
-P5 passes only if the target AutoDL/HPC machine passes:
-
-```bash
-python scripts/data/verify_data.py --strict
-python scripts/hpc/preflight_autodl.py --suite experiments/suites/autodl_smoke.yaml
-bash scripts/hpc/run_autodl_smoke.sh
-```
-
-## 12. Key Risks
+## 10. Key Risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| B5/B6 dominate B4 | cannot claim empirical superiority | pivot to algebra/auditability/diagnostic |
-| missing BIO/NER implementation | reviewer may see task as engineered field extraction | implement WNUT17 R5 runner and hidden-conflict smoke before P6 |
-| public slice too weak | JMLR empirical strength weaker | downgrade before spending formal-run budget |
-| B7 not implemented | reviewer may ask about WFST/constrained structured methods | design if feasible, or clearly scope |
-| diagnostic weak | remove or downgrade diagnostic claim | do full R6 before writing |
-| proof-check fails | theory section blocked | repair theory before paper writing |
-| current CRF too tiny | reviewer may see toy-only evidence | strengthen public/semi-real formal runs |
+| reviewer sees this as constrained decoding variant | paper identity weakens | emphasize posterior event mass, not decode-time repair |
+| B4 does not improve task F1 | no superiority claim | position around posterior consistency and diagnostics |
+| B5/B6 are competitive | empirical novelty weaker | compare what each baseline can and cannot audit |
+| diagnostic fails outside R5a | remove or narrow diagnostic claim | run R6 before writing |
+| complexity story missing | reviewer will question scalability | run R8 and write CRF x DFA product complexity clearly |
+| proof-check fails | theory section blocked | repair before paper drafting |
 
-## 13. Questions For Reviewer
-
-1. Is the core idea meaningfully distinct from hard-constrained decoding, rule features, and posterior regularization?
-2. Is `P_theta(L|x)` as posterior event mass a useful enough object for a methods/theory paper?
-3. Are C1/C2/C3 the right claims, or should one be removed before formal runs?
-4. Are B0-B6 sufficient, or is B7/WFST-style baseline mandatory?
-5. Is R1-R8 strong enough for JMLR if results are positive?
-6. Is WNUT17 strong enough as the primary BIO/NER public benchmark, or should a second BIO/NER slice be added?
-7. If B4 is not empirically dominant but diagnostic signal is strong, what is the right paper positioning?
-8. Are the theory guardrails appropriately conservative, especially around conditional MPO rank membership?
-
-## 14. Minimal Repository Pointers
+## 11. Minimal Repository Pointers
 
 ```text
 docs/PROJECT_OVERVIEW.md
@@ -349,30 +232,14 @@ docs/ROUTE_REVIEW_CHECKLIST.md
 docs/EXPERIMENT_PLAN.md
 docs/EVIDENCE_AND_AUDIT.md
 docs/THEORY_AND_GUARDRAILS.md
-docs/AUTODL_HPC_RUNBOOK.md
+docs/R5_WNUT17_FORMAL_PROTOCOL.md
+experiments/results/event_training/formal_pre_paper/r5_wnut17/R5_RESULT_TO_CLAIM_AUDIT.md
 src/tensor_crf_jmlr/posterior_event_algebra/
 src/tensor_crf_jmlr/event_training/
-experiments/suites/current_repro.yaml
-experiments/suites/autodl_smoke.yaml
 ```
 
-## 15. Current Bottom Line
+## 12. Current Bottom Line
 
-The project is past idea-only stage. It has:
+The project is no longer only an idea. It has a clear research object, theory/code sanity, local mechanism evidence, an organized repo, AutoDL workflow, and one audited canonical BIO/NER formal block.
 
-- fixed posterior-event object;
-- local theory/code sanity;
-- preliminary controlled/semi-real/real-source positive evidence;
-- frozen P3/P4 protocol and smoke;
-- frozen WNUT17 BIO/NER data gate plus B0-B6 stress smoke;
-- P5 AutoDL/HPC engineering prepared locally.
-
-It does not yet have:
-
-- fresh external proof-check;
-- WNUT17 multi-seed/grid R5 formal runs;
-- JMLR-ready empirical package;
-- benchmark superiority claim;
-- full diagnostic coverage.
-
-Reviewer should judge whether the current plan is strong enough to proceed into P6 formal runs, and what should be strengthened before spending AutoDL/HPC budget.
+It is still not ready for paper writing. The next decision is how to complete P6 without overclaiming: use R5 as evidence for posterior conflict and task viability, then run controlled/semi-real/real-source/diagnostic/complexity blocks to decide whether the final paper is a JMLR-strength methods paper or a narrower posterior-event algebra and auditability paper.

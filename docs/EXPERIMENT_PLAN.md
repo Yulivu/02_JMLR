@@ -137,29 +137,39 @@ max length / batching policy
 | split | upstream train/dev/test annotated |
 | BIO data audit | train/dev/test gold labels pass strict BIO legality |
 
-### WNUT17 R5 Viability Update
+### WNUT17 R5 Formal Audit Update
 
-本地验证显示 WNUT17 需要拆成两个 regime，而不是用一个配置同时承担所有 claim：
+本地验证显示 WNUT17 需要拆成两个 regime，而不是用一个配置同时承担所有 claim。AutoDL formal R5 已按该设计完成并审计：
 
 | Regime | Setting | What It Shows | Limitation |
 |---|---|---|---|
-| diagnostic stress | word-id tiny CRF, 25 labeled, 1 epoch | constrained outputs can be legal while `P(BIO|x)` is very low; B4 raises posterior event mass | entity F1 remains 0, so no NER usefulness claim |
-| task viability | feature CRF, 500 labeled, 5 epochs, 3 seeds | B0 learns nonzero entity F1 around 0.17 | `P(BIO|x)` saturates around 0.98, so hidden conflict is weak |
+| diagnostic stress | word-id tiny CRF, 25 labeled, 1 epoch, 10 seeds | constrained outputs can be legal while `P(BIO|x)` is very low; B4 raises posterior event mass | entity F1 remains 0, so no NER usefulness claim |
+| task viability | feature CRF, 500 labeled, 5 epochs, 10 seeds | B0 learns nonzero entity F1 | `P(BIO|x)` saturates around 0.98, so hidden conflict is weak |
 
-Feature viability 3-seed averages:
+Formal R5a diagnostic-stress 10-seed averages:
 
 | Variant | mean `P(BIO|x)` | delta vs B0 | hidden conflict | token acc | entity F1 |
 |---|---:|---:|---:|---:|---:|
-| B0 | 0.9822 | 0.0000 | 0.0067 | 0.8779 | 0.1728 |
-| B4 | 0.9896 | 0.0074 | 0.0022 | 0.8747 | 0.1541 |
-| B5 | 0.9861 | 0.0039 | 0.0056 | 0.8773 | 0.1699 |
-| B6 | 0.9895 | 0.0073 | 0.0000 | 0.8632 | 0.1298 |
+| B0 | 0.0566 | 0.0000 | 1.0000 | 0.8711 | 0.0000 |
+| B4 | 0.3389 | 0.2822 | 0.9963 | 0.8711 | 0.0000 |
+| B5 | 0.1608 | 0.1042 | 1.0000 | 0.8711 | 0.0000 |
+| B6 | 0.1703 | 0.1137 | 1.0000 | 0.8711 | 0.0000 |
+
+Formal R5b feature-viability 10-seed averages:
+
+| Variant | mean `P(BIO|x)` | delta vs B0 | hidden conflict | token acc | entity F1 |
+|---|---:|---:|---:|---:|---:|
+| B0 | 0.9824 | 0.0000 | 0.0088 | 0.8859 | 0.1660 |
+| B4 | 0.9865 | 0.0041 | 0.0074 | 0.8819 | 0.1522 |
+| B5 | 0.9864 | 0.0040 | 0.0058 | 0.8859 | 0.1645 |
+| B6 | 0.9868 | 0.0044 | 0.0060 | 0.8804 | 0.1463 |
 
 Decision:
 
 ```text
-Do not launch formal AutoDL R5 yet.
-First freeze R5 as a two-regime design: diagnostic stress + task viability.
+R5 supports posterior-event diagnostic story, not NER benchmark superiority.
+Use R5a for hidden posterior conflict.
+Use R5b for WNUT17 task viability.
 ```
 
 Formal protocol:
@@ -176,14 +186,12 @@ experiments/configs/exp5/wnut17_r5b_feature_formal.yaml
 experiments/suites/r5_wnut17_formal_plan.yaml
 ```
 
-仍需在 R5 implementation 前完成：
+Curated audit:
 
-| Item | Remaining |
-|---|---|
-| max length / batching policy | frozen for R5 first formal pass: `max_len=40` |
-| B0-B6 implementation | local stress/viability smoke exists; formal configs frozen but not run |
-| B7 WFST-style | design-if-feasible |
-| hidden conflict dev smoke | stress smoke passed: B0 `mean_p_event=0.0591`, constrained legal rate `1.0`, hidden conflict rate `1.0`; B4 raises `mean_p_event` to `0.3454`; B5/B6 also raise event mass but less than B4 |
+```text
+experiments/results/event_training/formal_pre_paper/r5_wnut17/R5_RESULT_TO_CLAIM_AUDIT.md
+experiments/results/event_training/formal_pre_paper/r5_wnut17/r5_wnut17_audit_summary.csv
+```
 
 ### Controlled Format
 
@@ -310,7 +318,7 @@ negative/tradeoff cases
 | R2 | semi-real main | amount, date, dose, product_code | B0-B6 | 10 | B5/B6 grid |
 | R3 | semi-real low-label | amount, product_code | B0, B4, best B5, best B6 | 10 | labeled/unlabeled grid |
 | R4 | real-source small auxiliary | invoice_6d, invoice_c6d, stock_5d | B0-B6 | 10 | B5/B6 grid |
-| R5 | WNUT17 BIO/NER two-regime slice | R5a diagnostic stress + R5b feature viability | B0-B6; B7 design-if-feasible | 10 | frozen configs in `experiments/configs/exp5/` |
+| R5 | WNUT17 BIO/NER two-regime slice | R5a diagnostic stress + R5b feature viability | B0-B6; B7 design-if-feasible | 10 | completed and audited |
 | R6 | diagnostic full | all tasks from R1-R5 | B0, B1, B4, B5, B6 | 10 | best-dev |
 | R7 | sensitivity | selected positive tasks | B0, B4 | 10 | lambda/unlabeled/rule complexity |
 | R8 | complexity scaling | selected controlled + BIO/NER lengths/rules | B0, B4 | 3 | sequence length / DFA states / batch size |
@@ -487,7 +495,9 @@ P5 must not launch R1-R8 formal runs. P5 also must not treat retail smoke as a s
 Conclusion:
 
 ```text
-P5 target-machine smoke passed. The project may proceed to R5 formal dry-run / formal execution decision.
+P5 target-machine smoke passed.
+R5 formal AutoDL runs have now completed and been audited.
+The project may proceed to the remaining P6 formal blocks, but R5 alone is not enough for JMLR-ready evidence.
 ```
 
 ## 10. Go / No-Go
@@ -510,12 +520,23 @@ metrics are not fixed;
 result-to-claim mapping is unclear.
 ```
 
+Current gate update:
+
+```text
+GO: R5 WNUT17 formal runs completed and audited.
+GO: R5a supports hidden posterior conflict.
+GO: R5b supports task viability.
+HOLD: paper-writing.
+HOLD: benchmark superiority.
+HOLD: treating R5 as the full P6 package.
+```
+
 ## 11. JMLR Decision Standard
 
 Maintain JMLR route only if:
 
 - fresh proof-check does not fail;
-- canonical BIO/NER slice demonstrates hidden posterior conflict;
+- canonical BIO/NER slice demonstrates hidden posterior conflict; R5a currently satisfies this within diagnostic-stress scope;
 - B4 posterior event mass is stable across controlled/semi-real/real-source;
 - B5/B6 do not fully dominate B4;
 - retail small-field slice gives at least auxiliary positive evidence;
