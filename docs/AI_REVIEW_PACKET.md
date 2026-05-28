@@ -90,7 +90,8 @@ AutoDL target-machine smoke passed.
 R5 WNUT17 formal AutoDL runs completed and downloaded.
 R5 result-to-claim audit completed locally.
 P6 R1/R2/R4/R6a/R8 formal blocks completed and audited.
-HPC is paused pending local pre-paper route review.
+Local final claim table, B7/R3/R7 route decision, and fresh proof/theory audit completed.
+HPC is paused.
 The project is still pre-paper; it is not JMLR-ready yet.
 ```
 
@@ -105,8 +106,8 @@ Roadmap:
 | P4 | local R0 smoke | done | controlled/semi-real/real-source smoke + schema audit | smoke only |
 | P5 | AutoDL/HPC engineering | done | target-machine preflight and smoke passed | none |
 | R5 | WNUT17 BIO/NER formal slice | audited | R5a/R5b 10-seed AutoDL outputs and claim audit | use only within its claim boundaries |
-| P6 | full formal runs | mostly done / route-review needed | R5, R1/R2/R4, R6a, R8 audited | decide whether R3/R7/B7 are necessary |
-| P7 | full result-to-claim audit | partial | block-level audits exist | final synthesis and proof audit |
+| P6 | full formal runs | mostly done / route-review complete | R5, R1/R2/R4, R6a, R8 audited | optional R3/R7/B7 only if positioning demands |
+| P7 | full result-to-claim audit | done at pre-paper level | `FINAL_CLAIM_TABLE.md`, `B7_R3_R7_ROUTE_DECISION.md`, `FRESH_PROOF_THEORY_AUDIT.md` | external review |
 | P8 | pre-writing freeze | not started | docs/code foundation | final figures/tables/limitations/repro package |
 
 ## 6. R5 Formal Result Summary
@@ -166,9 +167,11 @@ Currently supported:
 1. `P_theta(L|x)` is a computable CRF posterior event signal.
 2. Product automaton transfer computes event mass in finite sanity tests.
 3. Event loss has meaningful local gradients.
-4. Controlled/semi-real/real-source probes support posterior event training as a route.
+4. Controlled/semi-real/real-source formal blocks support posterior event training as a route.
 5. R5a supports the hidden posterior conflict narrative on a canonical BIO/NER slice.
 6. R5b supports WNUT17 task viability but not method superiority.
+7. R6a supports low event mass as a field-style risk signal.
+8. R8 supports a conservative product-transfer complexity/scaling discussion.
 
 Currently unsupported:
 
@@ -178,7 +181,7 @@ Currently unsupported:
 - B4 dominating B5/B6 overall;
 - hard constraints being useless;
 - arbitrary low-rank advantage for all CRF/DFA/regular-language cases;
-- full diagnostic/calibration claim.
+- full calibration claim.
 
 ## 8. Baselines
 
@@ -206,10 +209,10 @@ The next work should not run more HPC by default. It should complete the local p
 
 | Item | Purpose | Priority |
 |---|---|---|
-| final claim table | decide exactly what the paper can claim | high |
-| proof/theory audit | check product transfer and guardrails before writing | high |
-| B7 decision | decide whether WFST-style baseline is mandatory | medium |
-| R3/R7 decision | decide whether sensitivity runs are necessary | medium |
+| paper outline | convert evidence package into paper skeleton | high |
+| external review brief | ask an outside AI/researcher to attack positioning and claims | high |
+| proof prose draft | turn theory audit into theorem/proof text | high |
+| B7 design note | only if paper claims against constrained structured methods | conditional |
 
 ## 10. Key Risks
 
@@ -241,4 +244,4 @@ src/tensor_crf_jmlr/event_training/
 
 The project is no longer only an idea. It has a clear research object, theory/code sanity, organized repo, AutoDL workflow, and audited formal blocks covering WNUT BIO/NER, controlled formats, semi-real fields, real-source small fields, field-style diagnostics, and reference complexity scaling.
 
-It is still not ready for paper writing. The next decision is local, not HPC: perform the pre-paper evidence gate, decide whether R3/R7/B7 are necessary, and run a fresh proof/claim audit before drafting.
+It is ready for paper-outline planning and external review. It is not ready for final paper writing until theorem prose and positioning survive review.
