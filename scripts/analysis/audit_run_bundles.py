@@ -36,10 +36,10 @@ def audit_bundle(path: Path) -> list[str]:
         and candidate.name not in REQUIRED_BUNDLE_FILES
         and candidate.suffix in {".json", ".csv", ".md"}
     ]
-    has_runs = any("runs" in file.stem for file in result_files)
+    has_runs = any("runs" in file.stem or "cases" in file.stem for file in result_files)
     has_summary = any("summary" in file.stem for file in result_files)
     if not has_runs:
-        errors.append(f"{path}: missing runner-produced runs file")
+        errors.append(f"{path}: missing runner-produced runs/cases file")
     if not has_summary:
         errors.append(f"{path}: missing runner-produced summary file")
     return errors
