@@ -6,6 +6,8 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 
 ## Start Here
 
+- `HANDOFF_FOR_PAPER_WRITING.md`: main handoff for a supervisor or paper writer.
+- `EXPERIMENT_INVENTORY.md`: experiment block, config, script, result, and claim map.
 - `PROJECT_OVERVIEW.md`: current project state, safe claims, and reading order.
 
 ## Paper Materials
@@ -21,7 +23,6 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 
 - `review/EXTERNAL_REVIEW_README.md`: shortest entrypoint for an external reviewer.
 - `review/EXTERNAL_REVIEW_PACKET_CURRENT.md`: current one-file review packet with latest evidence and uncertainty-baseline result.
-- `review/EXTERNAL_REVIEW_PACKET_V2.md`: compact review packet.
 
 ## Protocols
 
@@ -48,6 +49,6 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 - `references/papers/`: small tracked reference PDFs.
 - `references/reading_notes/`: retained reading notes.
 
-## Removed Old Drafts
+## Cleanup Policy
 
-Early idea packets, obsolete route checklists, duplicate outline drafts, and stale presentation HTML were removed after the project route narrowed to posterior regular-language event mass for CRFs.
+Early idea packets, obsolete route checklists, duplicate outline drafts, stale presentation HTML, raw run clutter, and pre-formal probe result dumps are not kept as top-level documentation. The repo should preserve final theory, protocols, curated result audits, and reproducibility entrypoints.

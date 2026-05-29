@@ -218,7 +218,10 @@ def write_index(output_dir: Path, names: Iterable[str], commit: str) -> None:
     lines = [
         "# Paper Tables Index",
         "",
-        f"Generated from curated audit CSVs at commit `{commit}`.",
+        f"Generated from curated audit CSVs using repository state `{commit}`.",
+        "",
+        "This is table-generation provenance, not a claim that later documentation-only",
+        "handoff commits changed the curated numeric evidence.",
         "",
         "| Table | CSV | Markdown |",
         "|---|---|---|",

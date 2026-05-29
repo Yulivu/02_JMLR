@@ -104,14 +104,15 @@ ruff: All checks passed
 
 ## Recommended Reading Order
 
-For external review, start here:
+For paper-writing handoff, start here:
 
-1. `docs/review/EXTERNAL_REVIEW_README.md`
-2. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
-3. `docs/paper/FINAL_CLAIM_TABLE.md`
-4. `docs/paper/RELATED_WORK_DRAFT.md`
-5. `docs/paper/THEORY_PROOF_PROSE.md`
-6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
+2. `docs/EXPERIMENT_INVENTORY.md`
+3. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+4. `docs/paper/FINAL_CLAIM_TABLE.md`
+5. `docs/paper/RELATED_WORK_DRAFT.md`
+6. `docs/paper/THEORY_PROOF_PROSE.md`
+7. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal project orientation:
 

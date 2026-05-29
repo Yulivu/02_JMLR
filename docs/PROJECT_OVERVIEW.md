@@ -34,7 +34,7 @@ The project is no longer an early idea search. It is in the pre-paper review sta
 | claim table | frozen for review | conservative main/boundary/appendix split |
 | paper positioning | narrowed | methods/theory/auditability, not benchmark superiority |
 | HPC | paused | no new AutoDL job unless review requires a specific experiment |
-| next step | external review | stress-test novelty, proof assumptions, and related work |
+| next step | paper-writer handoff / external review | stress-test novelty, proof assumptions, related work, and empirical framing |
 
 ## Supported Claims
 
@@ -44,7 +44,7 @@ Safe current claims:
 - Product automaton transfer computes the event numerator exactly under the finite setup.
 - Hard-constrained decoding and posterior consistency are different objects.
 - Semi-event training can raise posterior event mass in audited settings.
-- Low event mass is a field-style risk-ranking signal.
+- Low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value, but it is not stronger than generic uncertainty baselines in R6a.
 - Reference product-state scaling can be discussed conservatively.
 
 Do not claim:
@@ -66,7 +66,7 @@ Do not claim:
 | R1 controlled | controlled event-mass movement evidence | not a real benchmark |
 | R2 semi-real | field-like event-mass movement evidence | not general task superiority |
 | R4 real-source small | auxiliary invoice/stock evidence | small-field scope only |
-| R6a diagnostic | risk-ranking evidence from event mass | not calibration |
+| R6a diagnostic | rule-specific risk/audit evidence from event mass | not calibration; not uncertainty-baseline superiority |
 | R8 complexity | product-state scaling evidence | reference CPU only |
 
 ## Directory Map
@@ -104,12 +104,14 @@ scripts/
 
 For external review:
 
-1. `docs/review/EXTERNAL_REVIEW_README.md`
-2. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
-3. `docs/paper/FINAL_CLAIM_TABLE.md`
-4. `docs/paper/RELATED_WORK_DRAFT.md`
-5. `docs/paper/THEORY_PROOF_PROSE.md`
-6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
+2. `docs/review/EXTERNAL_REVIEW_README.md`
+3. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+4. `docs/EXPERIMENT_INVENTORY.md`
+5. `docs/paper/FINAL_CLAIM_TABLE.md`
+6. `docs/paper/RELATED_WORK_DRAFT.md`
+7. `docs/paper/THEORY_PROOF_PROSE.md`
+8. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal orientation:
 
