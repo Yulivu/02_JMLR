@@ -1,18 +1,24 @@
 # External Review README
 
-Updated: 2026-05-29
+Updated: 2026-05-30
 
-Use this file as the entry point for an external AI/researcher review. The goal is to stress-test the project before manuscript writing, not to polish prose.
+Use this file as the entry point for an external AI/researcher review. The purpose is to evaluate the project state before manuscript writing. The reviewer should identify strengths, weaknesses, overclaims, missing citations, proof gaps, and missing experiments.
 
-Review commit:
+Review target:
 
 ```text
-Use the latest `origin/master` commit after documentation cleanup.
+Review the repository HEAD that contains this file.
 ```
 
-## One-Sentence Thesis
+## Project Claim Under Review
 
-Decoded output legality is not posterior consistency. This project defines and computes the posterior mass assigned by the original CRF posterior to a regular-language event, then studies that scalar as an audit, training, and diagnostic object.
+The project defines and computes the posterior mass assigned by the original CRF posterior to a regular-language event:
+
+```text
+P_theta(L|x) = Z_{theta,L}(x) / Z_theta(x)
+```
+
+The repository currently positions this object as separate from constrained decoding and constrained CRF normalization. The review should test whether that distinction is sufficient for a manuscript contribution.
 
 ## Recommended Review Order
 
@@ -25,57 +31,57 @@ Decoded output legality is not posterior consistency. This project defines and c
 7. `docs/manuscript/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
 8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
 
-## What To Judge
+## Review Tasks
 
-| Question | Why it matters |
+Please evaluate the following without assuming the proposed framing is correct:
+
+| Question | Evaluation target |
 |---|---|
-| Is the contribution defensible if CRF x automaton marginal inference is acknowledged as known? | main novelty risk |
-| Is the boundary against posterior regularization, especially Ganchev et al. (2010), clear enough? | closest related-work risk |
-| Is R5a acceptable as diagnostic-stress evidence despite zero entity F1? | empirical framing risk |
-| Is R6a strong enough as rule-specific risk-ranking evidence after accounting for base exact-error rate and stronger uncertainty baselines? | diagnostic claim strength |
-| Does the paper avoid claiming superiority over entropy, margin, or max-probability uncertainty? | reviewer-pressure diagnostic risk |
-| Can B7 remain design-only if the paper avoids superiority claims against WFST/constrained methods? | baseline risk |
-| Are the theorem assumptions and proof prose complete enough for a methods/theory paper draft? | theory risk |
+| Is `P_theta(L|x)` more than a restatement of known CRF x automaton marginal inference? | novelty / significance |
+| Is the distinction from constrained decoding, WFST inference, RegCCRF, and constrained CRFs technically clear? | related-work boundary |
+| Is the distinction from Posterior Regularization, Generalized Expectation, and Semantic Loss technically clear? | related-work boundary |
+| Are the theorem assumptions complete and stated at the right level of generality? | theory soundness |
+| Do R5a/R5b support the empirical claims assigned to them? | empirical framing |
+| Does R6a support only a rule-specific signal, or more than that? | diagnostic claim strength |
+| Does the uncertainty-baseline result require downgrading any claim? | empirical boundary |
+| Is B7 necessary before manuscript writing or only before stronger baseline claims? | baseline sufficiency |
+| Which current claim is most likely to be rejected by a reviewer? | claim discipline |
+| Which experiment, if any, is required before writing begins? | remaining work |
 
-## Safe Positioning
+## Claims To Check For Overstatement
 
-```text
-We define and compute the posterior mass assigned by the original CRF posterior to a regular-language event, and show that this scalar can reveal posterior inconsistency hidden by legal decoded outputs.
-```
-
-## Claims Not Allowed
+The current repository says these claims should not be made. Please verify whether any remaining document still implies them:
 
 - benchmark superiority;
-- NER F1 improvement;
-- WFST/constrained-method replacement;
+- WNUT17 NER F1 improvement by B4;
+- replacement or defeat of WFST / constrained CRF / RegCCRF;
 - hard constraints are useless;
-- posterior event mass is calibrated confidence;
-- optimized runtime or low-rank superiority;
+- calibration;
+- event risk dominates entropy, margin, or max-probability uncertainty;
+- event risk adds robust residual predictive power after controlling for generic uncertainty;
+- optimized runtime superiority;
 - tensor rank / MPO as the main paper identity.
 
 ## Evidence Snapshot
 
-| Block | Use | Boundary |
+| Block | Reported use | Reported boundary |
 |---|---|---|
 | Theory | finite posterior event mass and exact product transfer | fixed finite label set, sequence length, complete DFA |
-| R5a | BIO diagnostic-stress evidence that legal decoding can hide low posterior event mass | entity F1 is zero; not NER usefulness |
-| R5b | nonzero local WNUT17 viability check | no B4 F1 improvement |
-| R1/R2/R4 | event training can move posterior event mass | not uniformly task-metric dominant |
-| R6a | low event mass is a field-style risk-ranking signal | not calibration; Spearman is moderate |
-| R8 | reference product-state scaling evidence | not optimized runtime |
+| R5a | BIO diagnostic-stress evidence | entity F1 is zero; not NER usefulness |
+| R5b | local WNUT17 feature-CRF nonzero-F1 check | no B4 F1 improvement |
+| R1/R2/R4 | event training moves posterior event mass in audited settings | not uniform task-metric dominance |
+| R6a | rule-specific risk-ranking signal | not calibration; generic uncertainty baselines are stronger |
+| R8 | reference product-state scaling | not optimized runtime |
 
-## Desired Reviewer Output
+## Requested Review Output
 
 Please return:
 
-1. verdict on whether this is a viable narrower JMLR methods/auditability paper;
-2. strongest safe abstract framing;
-3. weakest claim to delete or downgrade;
-4. whether B7 must be implemented before submission;
-5. missing citations or related-work risks;
-6. theorem/proof gaps;
-7. any experiment that is necessary before writing begins.
-
-## Current Decision Rule
-
-Do not run more HPC by default. Run new experiments only if external review identifies a specific claim that cannot be defended with the current R5/R1/R2/R4/R6a/R8 evidence package.
+1. overall assessment of manuscript readiness and likely venue fit;
+2. main objection to the contribution;
+3. claim most likely to be overstated or unsupported;
+4. related-work gaps and specific citation needs;
+5. theory/proof gaps;
+6. experiment gaps;
+7. whether B7 should be implemented before writing;
+8. whether the current project should proceed to drafting, run more experiments first, or be reframed.
