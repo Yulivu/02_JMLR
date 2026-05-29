@@ -20,6 +20,7 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 ## External Review
 
 - `review/EXTERNAL_REVIEW_README.md`: shortest entrypoint for an external reviewer.
+- `review/EXTERNAL_REVIEW_PACKET_CURRENT.md`: current one-file review packet with latest evidence and uncertainty-baseline result.
 - `review/EXTERNAL_REVIEW_PACKET_V2.md`: compact review packet.
 
 ## Protocols

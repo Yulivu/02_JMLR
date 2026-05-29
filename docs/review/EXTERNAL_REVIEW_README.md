@@ -16,14 +16,15 @@ Decoded output legality is not posterior consistency. This project defines and c
 
 ## Recommended Review Order
 
-1. `docs/review/EXTERNAL_REVIEW_PACKET_V2.md`
-2. `docs/paper/FINAL_CLAIM_TABLE.md`
-3. `docs/paper/RELATED_WORK_DRAFT.md`
-4. `docs/paper/THEORY_PROOF_PROSE.md`
-5. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
-6. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
-7. `docs/paper/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
-8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
+1. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+2. `docs/review/EXTERNAL_REVIEW_PACKET_V2.md`
+3. `docs/paper/FINAL_CLAIM_TABLE.md`
+4. `docs/paper/RELATED_WORK_DRAFT.md`
+5. `docs/paper/THEORY_PROOF_PROSE.md`
+6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+7. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
+8. `docs/paper/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
+9. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
 
 ## What To Judge
 

@@ -105,7 +105,7 @@ scripts/
 For external review:
 
 1. `docs/review/EXTERNAL_REVIEW_README.md`
-2. `docs/review/EXTERNAL_REVIEW_PACKET_V2.md`
+2. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
 3. `docs/paper/FINAL_CLAIM_TABLE.md`
 4. `docs/paper/RELATED_WORK_DRAFT.md`
 5. `docs/paper/THEORY_PROOF_PROSE.md`
