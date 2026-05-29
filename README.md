@@ -59,12 +59,12 @@ Not supported:
 docs/
   README.md
   PROJECT_OVERVIEW.md
-  paper/       claim table, paper positioning, outline, theory prose, related work
-  review/      external review entrypoint and packet
-  protocols/   experiment, diagnostic, and baseline protocols
-  audits/      evidence, theory guardrails, and proof audits
-  runbooks/    AutoDL and FileZilla operational notes
-  references/
+  manuscript/       manuscript planning: claims, outline, theory prose, related work
+  external_review/  external review entrypoint and packet
+  protocols/        experiment, diagnostic, and baseline protocols
+  evidence/         result evidence and theory audits
+  runbooks/         AutoDL and FileZilla operational notes
+  references/       retained papers and reading notes
 
 data/
   raw retained datasets and manifests
@@ -108,18 +108,18 @@ For paper-writing handoff, start here:
 
 1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
 2. `docs/EXPERIMENT_INVENTORY.md`
-3. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
-4. `docs/paper/FINAL_CLAIM_TABLE.md`
-5. `docs/paper/RELATED_WORK_DRAFT.md`
-6. `docs/paper/THEORY_PROOF_PROSE.md`
+3. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+4. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+5. `docs/manuscript/RELATED_WORK_DRAFT.md`
+6. `docs/manuscript/THEORY_PROOF_PROSE.md`
 7. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal project orientation:
 
 1. `docs/PROJECT_OVERVIEW.md`
-2. `docs/paper/PAPER_POSITIONING.md`
-3. `docs/paper/JMLR_METHODS_OUTLINE.md`
-4. `docs/audits/EVIDENCE_AND_AUDIT.md`
+2. `docs/manuscript/PAPER_POSITIONING.md`
+3. `docs/manuscript/JMLR_METHODS_OUTLINE.md`
+4. `docs/evidence/EVIDENCE_AND_AUDIT.md`
 
 ## AutoDL/HPC
 

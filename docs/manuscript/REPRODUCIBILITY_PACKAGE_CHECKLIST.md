@@ -18,7 +18,7 @@ Before paper submission, the repository should expose exact code, configs, data 
 | run metadata | done | `run_metadata.json` in bundles |
 | data notes | partial | WNUT and retail notes exist; final paper citation notes need checking |
 | exact commit references | partial | commits in run metadata; final table should list them |
-| table-generation scripts | done-for-review | `scripts/analysis/generate_paper_tables.py` regenerates `experiments/results/paper_tables/` from curated audit CSVs and `docs/paper/FINAL_CLAIM_TABLE.md` |
+| table-generation scripts | done-for-review | `scripts/analysis/generate_paper_tables.py` regenerates `experiments/results/paper_tables/` from curated audit CSVs and `docs/manuscript/FINAL_CLAIM_TABLE.md` |
 | external proof/claim review | pending | next step |
 
 ## Paper-Ready Requirements
@@ -44,7 +44,7 @@ It is not yet packaged as a final submission artifact.
 The current review-stage table pipeline is:
 
 ```text
-curated audit CSVs + docs/paper/FINAL_CLAIM_TABLE.md -> scripts/analysis/generate_paper_tables.py -> experiments/results/paper_tables/
+curated audit CSVs + docs/manuscript/FINAL_CLAIM_TABLE.md -> scripts/analysis/generate_paper_tables.py -> experiments/results/paper_tables/
 ```
 
 Generated outputs:

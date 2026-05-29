@@ -75,10 +75,10 @@ Do not claim:
 docs/
   PROJECT_OVERVIEW.md          main project state
   README.md                    docs index and reading order
-  paper/                       paper-facing claim, outline, theory, related work
-  review/                      external review entrypoint and packet
+  manuscript/                  manuscript planning: claims, outline, theory, related work
+  external_review/             external review entrypoint and packet
   protocols/                   experiment, diagnostic, and baseline protocols
-  audits/                      evidence, guardrails, and proof audits
+  evidence/                    result evidence, guardrails, and theory audits
   runbooks/                    AutoDL / FileZilla operational notes
   references/                  papers and reading notes
 
@@ -105,21 +105,21 @@ scripts/
 For external review:
 
 1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
-2. `docs/review/EXTERNAL_REVIEW_README.md`
-3. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+2. `docs/external_review/EXTERNAL_REVIEW_README.md`
+3. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
 4. `docs/EXPERIMENT_INVENTORY.md`
-5. `docs/paper/FINAL_CLAIM_TABLE.md`
-6. `docs/paper/RELATED_WORK_DRAFT.md`
-7. `docs/paper/THEORY_PROOF_PROSE.md`
+5. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+6. `docs/manuscript/RELATED_WORK_DRAFT.md`
+7. `docs/manuscript/THEORY_PROOF_PROSE.md`
 8. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal orientation:
 
 1. `docs/PROJECT_OVERVIEW.md`
-2. `docs/paper/PAPER_POSITIONING.md`
+2. `docs/manuscript/PAPER_POSITIONING.md`
 3. `docs/protocols/EXPERIMENT_PLAN.md`
-4. `docs/audits/EVIDENCE_AND_AUDIT.md`
-5. `docs/audits/THEORY_AND_GUARDRAILS.md`
+4. `docs/evidence/EVIDENCE_AND_AUDIT.md`
+5. `docs/evidence/THEORY_AUDIT.md`
 
 ## uMPS Relation
 

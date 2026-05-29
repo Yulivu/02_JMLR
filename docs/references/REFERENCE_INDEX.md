@@ -1,4 +1,4 @@
-﻿# Reference Index
+# Reference Index
 
 Updated: 2026-05-29
 
@@ -9,8 +9,8 @@ Current project entrypoints:
 ```text
 docs/PROJECT_OVERVIEW.md
 docs/README.md
-docs/paper/FINAL_CLAIM_TABLE.md
-docs/review/EXTERNAL_REVIEW_README.md
+docs/manuscript/FINAL_CLAIM_TABLE.md
+docs/external_review/EXTERNAL_REVIEW_README.md
 ```
 
 ## Papers

@@ -39,7 +39,7 @@ The story should be:
 
 | Claim | Current support | Main evidence |
 |---|---|---|
-| `P_theta(L|x)` is a well-defined finite CRF posterior event object. | Strong. | `docs/paper/THEORY_PROOF_PROSE.md`; unit tests. |
+| `P_theta(L|x)` is a well-defined finite CRF posterior event object. | Strong. | `docs/manuscript/THEORY_PROOF_PROSE.md`; unit tests. |
 | Product transfer computes event mass exactly in the finite setup. | Strong. | `src/tensor_crf_jmlr/posterior_event_algebra/`; proof prose; tests. |
 | Decoded legality and posterior consistency differ. | Supported. | R5a diagnostic stress: legal constrained output can coexist with low `P(BIO|x)`. |
 | Event training can raise posterior event mass in audited settings. | Supported but narrow. | R5a, R1/R2/R4 audits. |
@@ -76,12 +76,12 @@ Do not write the paper as any of the following:
 | Need | Path |
 |---|---|
 | Project overview | `docs/PROJECT_OVERVIEW.md` |
-| External review packet | `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md` |
-| Claim table | `docs/paper/FINAL_CLAIM_TABLE.md` |
-| Paper positioning | `docs/paper/PAPER_POSITIONING.md` |
-| JMLR methods outline | `docs/paper/JMLR_METHODS_OUTLINE.md` |
-| Related work draft | `docs/paper/RELATED_WORK_DRAFT.md` |
-| Theory proof prose | `docs/paper/THEORY_PROOF_PROSE.md` |
+| External review packet | `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md` |
+| Claim table | `docs/manuscript/FINAL_CLAIM_TABLE.md` |
+| Paper positioning | `docs/manuscript/PAPER_POSITIONING.md` |
+| JMLR methods outline | `docs/manuscript/JMLR_METHODS_OUTLINE.md` |
+| Related work draft | `docs/manuscript/RELATED_WORK_DRAFT.md` |
+| Theory proof prose | `docs/manuscript/THEORY_PROOF_PROSE.md` |
 | Experiment inventory | `docs/EXPERIMENT_INVENTORY.md` |
 | Formal plan | `docs/protocols/EXPERIMENT_PLAN.md` |
 | Curated paper tables | `experiments/results/paper_tables/PAPER_TABLES_INDEX.md` |
@@ -96,11 +96,11 @@ Do not write the paper as any of the following:
 ## Recommended Reading Order
 
 1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
-2. `docs/review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+2. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
 3. `docs/EXPERIMENT_INVENTORY.md`
-4. `docs/paper/FINAL_CLAIM_TABLE.md`
-5. `docs/paper/PAPER_POSITIONING.md`
-6. `docs/paper/THEORY_PROOF_PROSE.md`
+4. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+5. `docs/manuscript/PAPER_POSITIONING.md`
+6. `docs/manuscript/THEORY_PROOF_PROSE.md`
 7. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 ## Remaining Risks For The Writer

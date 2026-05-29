@@ -155,11 +155,11 @@ Use R6a only to support a rule-specific posterior-consistency audit signal.
 ## Files To Review
 
 ```text
-docs/paper/FINAL_CLAIM_TABLE.md
-docs/paper/JMLR_METHODS_OUTLINE.md
-docs/paper/PAPER_POSITIONING.md
-docs/paper/RELATED_WORK_DRAFT.md
-docs/paper/THEORY_PROOF_PROSE.md
+docs/manuscript/FINAL_CLAIM_TABLE.md
+docs/manuscript/JMLR_METHODS_OUTLINE.md
+docs/manuscript/PAPER_POSITIONING.md
+docs/manuscript/RELATED_WORK_DRAFT.md
+docs/manuscript/THEORY_PROOF_PROSE.md
 docs/protocols/B7_WFST_DESIGN_NOTE.md
 experiments/results/paper_tables/PAPER_TABLES_INDEX.md
 experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md

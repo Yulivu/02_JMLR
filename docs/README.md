@@ -10,19 +10,19 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 - `EXPERIMENT_INVENTORY.md`: experiment block, config, script, result, and claim map.
 - `PROJECT_OVERVIEW.md`: current project state, safe claims, and reading order.
 
-## Paper Materials
+## Manuscript Preparation
 
-- `paper/FINAL_CLAIM_TABLE.md`: supported and forbidden claims.
-- `paper/PAPER_POSITIONING.md`: paper identity and reviewer-facing framing.
-- `paper/JMLR_METHODS_OUTLINE.md`: methods-paper outline.
-- `paper/THEORY_PROOF_PROSE.md`: current formal proof prose.
-- `paper/RELATED_WORK_DRAFT.md`: related-work draft and citation spine.
-- `paper/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`: reproducibility status.
+- `manuscript/FINAL_CLAIM_TABLE.md`: supported and forbidden claims.
+- `manuscript/PAPER_POSITIONING.md`: paper identity and reviewer-facing framing.
+- `manuscript/JMLR_METHODS_OUTLINE.md`: methods-paper outline.
+- `manuscript/THEORY_PROOF_PROSE.md`: current formal proof prose.
+- `manuscript/RELATED_WORK_DRAFT.md`: related-work draft and citation spine.
+- `manuscript/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`: reproducibility status.
 
 ## External Review
 
-- `review/EXTERNAL_REVIEW_README.md`: shortest entrypoint for an external reviewer.
-- `review/EXTERNAL_REVIEW_PACKET_CURRENT.md`: current one-file review packet with latest evidence and uncertainty-baseline result.
+- `external_review/EXTERNAL_REVIEW_README.md`: shortest entrypoint for an external reviewer.
+- `external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`: current one-file review packet with latest evidence and uncertainty-baseline result.
 
 ## Protocols
 
@@ -32,11 +32,10 @@ This directory is organized by purpose. Top-level `docs/` should stay small.
 - `protocols/B7_WFST_DESIGN_NOTE.md`: WFST-style baseline decision note.
 - `protocols/DIAGNOSTIC_REANALYSIS_PLAN.md`: diagnostic reanalysis plan and metrics.
 
-## Audits
+## Evidence
 
-- `audits/EVIDENCE_AND_AUDIT.md`: evidence and claim audit.
-- `audits/FRESH_PROOF_THEORY_AUDIT.md`: proof consistency audit.
-- `audits/THEORY_AND_GUARDRAILS.md`: theory guardrails and non-claims.
+- `evidence/EVIDENCE_AND_AUDIT.md`: evidence and claim audit.
+- `evidence/THEORY_AUDIT.md`: theory audit, proof consistency, and guardrails.
 
 ## Runbooks
 
