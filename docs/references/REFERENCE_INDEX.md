@@ -10,7 +10,7 @@ Current project entrypoints:
 docs/PROJECT_OVERVIEW.md
 docs/README.md
 docs/manuscript/FINAL_CLAIM_TABLE.md
-docs/external_review/EXTERNAL_REVIEW_README.md
+docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md
 ```
 
 ## Papers

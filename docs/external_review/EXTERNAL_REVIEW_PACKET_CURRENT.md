@@ -12,6 +12,34 @@ R6a uncertainty-baseline result first committed in: 9ef3eb3.
 Paper-table provenance is recorded in experiments/results/paper_tables/PAPER_TABLES_INDEX.md.
 ```
 
+## Recommended Review Order
+
+1. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+2. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+3. `docs/manuscript/RELATED_WORK_DRAFT.md`
+4. `docs/manuscript/THEORY_PROOF_PROSE.md`
+5. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+6. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
+7. `docs/manuscript/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
+8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
+
+## Review Tasks
+
+Please evaluate the following without assuming the proposed framing is correct:
+
+| Question | Evaluation target |
+|---|---|
+| Is `P_theta(L|x)` more than a restatement of known CRF x automaton marginal inference? | novelty / significance |
+| Is the distinction from constrained decoding, WFST inference, RegCCRF, and constrained CRFs technically clear? | related-work boundary |
+| Is the distinction from Posterior Regularization, Generalized Expectation, and Semantic Loss technically clear? | related-work boundary |
+| Are the theorem assumptions complete and stated at the right level of generality? | theory soundness |
+| Do R5a/R5b support the empirical claims assigned to them? | empirical framing |
+| Does R6a support only a rule-specific signal, or more than that? | diagnostic claim strength |
+| Does the uncertainty-baseline result require downgrading any claim? | empirical boundary |
+| Is B7 necessary before manuscript writing or only before stronger baseline claims? | baseline sufficiency |
+| Which current claim is most likely to be rejected by a reviewer? | claim discipline |
+| Which experiment, if any, is required before writing begins? | remaining work |
+
 ## Object Under Review
 
 The project defines the following quantity for a CRF posterior and a regular-language label event:

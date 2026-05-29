@@ -60,7 +60,7 @@ docs/
   README.md
   PROJECT_OVERVIEW.md
   manuscript/       manuscript planning: claims, outline, theory prose, related work
-  external_review/  external review entrypoint and packet
+  external_review/  one-file external review packet
   protocols/        experiment, diagnostic, and baseline protocols
   evidence/         result evidence and theory audits
   runbooks/         AutoDL and FileZilla operational notes

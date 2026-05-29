@@ -76,7 +76,7 @@ docs/
   PROJECT_OVERVIEW.md          main project state
   README.md                    docs index and reading order
   manuscript/                  manuscript planning: claims, outline, theory, related work
-  external_review/             external review entrypoint and packet
+  external_review/             one-file external review packet
   protocols/                   experiment, diagnostic, and baseline protocols
   evidence/                    result evidence, guardrails, and theory audits
   runbooks/                    AutoDL / FileZilla operational notes
@@ -105,13 +105,12 @@ scripts/
 For external review:
 
 1. `docs/HANDOFF_FOR_PAPER_WRITING.md`
-2. `docs/external_review/EXTERNAL_REVIEW_README.md`
-3. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
-4. `docs/EXPERIMENT_INVENTORY.md`
-5. `docs/manuscript/FINAL_CLAIM_TABLE.md`
-6. `docs/manuscript/RELATED_WORK_DRAFT.md`
-7. `docs/manuscript/THEORY_PROOF_PROSE.md`
-8. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+2. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
+3. `docs/EXPERIMENT_INVENTORY.md`
+4. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+5. `docs/manuscript/RELATED_WORK_DRAFT.md`
+6. `docs/manuscript/THEORY_PROOF_PROSE.md`
+7. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
 
 For internal orientation:
 
