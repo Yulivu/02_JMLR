@@ -21,6 +21,14 @@ BASELINES = {
     "neg_log_viterbi_probability": ("baseline_neg_log_viterbi_prob", lambda value: value),
 }
 
+GENERIC_BASELINES = {
+    "token_marginal_entropy": BASELINES["token_marginal_entropy"],
+    "sequence_entropy": BASELINES["sequence_entropy"],
+    "viterbi_margin_inverse": BASELINES["viterbi_margin_inverse"],
+    "max_sequence_probability_inverse": BASELINES["max_sequence_probability_inverse"],
+    "neg_log_viterbi_probability": BASELINES["neg_log_viterbi_probability"],
+}
+
 
 def read_csv(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8", newline="") as handle:
@@ -132,6 +140,80 @@ def metric_rows(rows: list[dict[str, str]]) -> list[dict[str, object]]:
     return out
 
 
+def complementarity_rows(rows: list[dict[str, str]], *, bins: int = 10) -> list[dict[str, object]]:
+    out: list[dict[str, object]] = []
+    event_scores = [1.0 - float(row["baseline_p_event"]) for row in rows]
+    labels = [0 if parse_bool(row["baseline_exact"]) else 1 for row in rows]
+    for baseline_name, (field, transform) in GENERIC_BASELINES.items():
+        generic_scores = [transform(float(row[field])) for row in rows]
+        ordered_indices = sorted(range(len(rows)), key=lambda idx: generic_scores[idx])
+        weighted_gap_sum = 0.0
+        total_cases = 0
+        bin_count = 0
+        for bin_idx in range(bins):
+            start = bin_idx * len(ordered_indices) // bins
+            end = (bin_idx + 1) * len(ordered_indices) // bins
+            chunk = ordered_indices[start:end]
+            if len(chunk) < 2:
+                continue
+            median_event = sorted(event_scores[idx] for idx in chunk)[len(chunk) // 2]
+            low = [idx for idx in chunk if event_scores[idx] <= median_event]
+            high = [idx for idx in chunk if event_scores[idx] > median_event]
+            if not low or not high:
+                continue
+            low_error = mean(labels[idx] for idx in low)
+            high_error = mean(labels[idx] for idx in high)
+            gap = high_error - low_error
+            weighted_gap_sum += gap * len(chunk)
+            total_cases += len(chunk)
+            bin_count += 1
+            out.append(
+                {
+                    "baseline": baseline_name,
+                    "generic_risk_bin": bin_idx + 1,
+                    "cases": len(chunk),
+                    "low_event_cases": len(low),
+                    "high_event_cases": len(high),
+                    "low_event_exact_error": low_error,
+                    "high_event_exact_error": high_error,
+                    "event_within_bin_error_gap": gap,
+                    "mean_generic_risk": mean(generic_scores[idx] for idx in chunk),
+                    "mean_event_risk": mean(event_scores[idx] for idx in chunk),
+                }
+            )
+        if total_cases:
+            out.append(
+                {
+                    "baseline": baseline_name,
+                    "generic_risk_bin": "weighted_mean",
+                    "cases": total_cases,
+                    "low_event_cases": "",
+                    "high_event_cases": "",
+                    "low_event_exact_error": "",
+                    "high_event_exact_error": "",
+                    "event_within_bin_error_gap": weighted_gap_sum / total_cases,
+                    "mean_generic_risk": "",
+                    "mean_event_risk": "",
+                }
+            )
+        elif bin_count == 0:
+            out.append(
+                {
+                    "baseline": baseline_name,
+                    "generic_risk_bin": "weighted_mean",
+                    "cases": 0,
+                    "low_event_cases": "",
+                    "high_event_cases": "",
+                    "low_event_exact_error": "",
+                    "high_event_exact_error": "",
+                    "event_within_bin_error_gap": 0.0,
+                    "mean_generic_risk": "",
+                    "mean_event_risk": "",
+                }
+            )
+    return out
+
+
 def missing_fields(rows: list[dict[str, str]]) -> list[str]:
     if not rows:
         return []
@@ -172,7 +254,7 @@ def write_missing_plan(path: Path, missing: list[str]) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_report(path: Path, rows: list[dict[str, object]]) -> None:
+def write_report(path: Path, rows: list[dict[str, object]], complementarity: list[dict[str, object]]) -> None:
     overall = [row for row in rows if row["source"] == "all" and row["task"] == "all"]
     lines = [
         "# R6a Uncertainty Baseline Reanalysis",
@@ -197,11 +279,33 @@ def write_report(path: Path, rows: list[dict[str, object]]) -> None:
     lines.extend(
         [
             "",
+            "## Complementarity Check",
+            "",
+            "Within each generic-uncertainty decile, cases are split by event risk `1 - P_theta(L|x)`.",
+            "A positive weighted gap means high event risk still has higher exact-error rate after controlling coarsely for the generic baseline.",
+            "",
+            "| controlled generic baseline | weighted within-bin event-risk error gap |",
+            "|---|---:|",
+        ]
+    )
+    for row in complementarity:
+        if row["generic_risk_bin"] != "weighted_mean":
+            continue
+        lines.append(
+            "| {baseline} | {gap:.4f} |".format(
+                baseline=row["baseline"],
+                gap=float(row["event_within_bin_error_gap"]),
+            )
+        )
+    lines.extend(
+        [
+            "",
             "## Interpretation",
             "",
             "The event-risk score has positive exact-error ranking signal, but standard uncertainty baselines are stronger overall in this rerun.",
             "Therefore the paper should not claim diagnostic superiority over entropy, margin, or max-probability uncertainty.",
-            "The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal that can rank risk, not a universal or dominant uncertainty score.",
+            "The complementarity check asks only whether event risk carries some rule-specific residual signal within coarse uncertainty strata; it is not a causal or calibration result.",
+            "The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal with positive risk-ranking value, not a universal or dominant uncertainty score.",
             "",
             "Boundary: this is ranking evidence only, not calibration and not benchmark superiority.",
             "",
@@ -224,9 +328,12 @@ def main() -> None:
         print(f"WROTE {output_dir / 'R6A_UNCERTAINTY_BASELINE_PLAN.md'}")
         return
     metrics = metric_rows(rows)
+    complementarity = complementarity_rows(rows)
     write_csv(output_dir / "r6a_uncertainty_baseline_metrics.csv", metrics)
-    write_report(output_dir / "R6A_UNCERTAINTY_BASELINE_REANALYSIS.md", metrics)
+    write_csv(output_dir / "r6a_uncertainty_complementarity.csv", complementarity)
+    write_report(output_dir / "R6A_UNCERTAINTY_BASELINE_REANALYSIS.md", metrics, complementarity)
     print(f"WROTE {output_dir / 'r6a_uncertainty_baseline_metrics.csv'}")
+    print(f"WROTE {output_dir / 'r6a_uncertainty_complementarity.csv'}")
     print(f"WROTE {output_dir / 'R6A_UNCERTAINTY_BASELINE_REANALYSIS.md'}")
 
 

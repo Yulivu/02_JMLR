@@ -57,6 +57,15 @@ This work:
 |---|---|---|
 | `P_theta(L|x)` | posterior event algebra | how much probability the CRF assigns to rule-satisfying structures |
 
+Four-object formula table:
+
+| Object | Formula / Procedure | Denominator / Search Space | What It Answers |
+|---|---|---|---|
+| Unconstrained CRF posterior | `p_theta(y|x)=exp S_theta(x,y)/Z_theta(x)` | all `y in Y^T` | original model distribution |
+| Constrained decoding / WFST decoding | `argmax_{y in L} S_theta(x,y)` | legal outputs only | best legal output |
+| Constrained CRF / RegCCRF-style restriction | `p_theta(y|x, y in L)=exp S_theta(x,y)/Z_{theta,L}(x)` for `y in L` | legal set `L` only | posterior after support restriction |
+| This work | `P_theta(L|x)=Z_{theta,L}(x)/Z_theta(x)` | numerator over `L`, denominator over all `Y^T` | original posterior mass satisfying the rule |
+
 ### 1.2 Preemptive Rebuttal: Is This Just Standard Marginal Inference?
 
 Draft paragraph:
@@ -69,7 +78,7 @@ One might object that `P_theta(L|x)` is merely standard marginal inference after
 2. Prove exact finite product-transfer computation.
 3. Distinguish the posterior-event object from constrained decoding and constrained CRFs.
 4. Derive event-loss gradient as a computable expectation-difference training signal.
-5. Provide diagnostic evidence that low event mass is a rule-specific risk signal in audited field-style settings.
+5. Provide diagnostic evidence that low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value in audited field-style settings.
 6. Provide conservative reference product-state scaling.
 
 Event training is a secondary contribution. It shows the event object can be used as a training signal and can move posterior event mass; it is not framed as an accuracy method.
@@ -237,13 +246,14 @@ Interpretation:
 
 ### 4.3 Diagnostic Use
 
-Use `P_theta(L|x)` to rank examples:
+Use `P_theta(L|x)` to audit and rank examples:
 
 - low event mass;
 - bottom/top quantile errors;
 - hidden conflict cases where constrained decoding is legal but posterior mass is low.
 - compare against uncertainty baselines where available;
 - do not claim event risk dominates entropy, margin, or max-probability uncertainty.
+- do not claim robust residual predictive power after controlling for generic uncertainty.
 
 ## 5. Experiments
 
@@ -327,7 +337,7 @@ Small-field auxiliary evidence; legal rate often saturated.
 Claim:
 
 ```text
-Low event mass predicts higher exact and char error across field-style tasks.
+Low event mass is a rule-specific posterior-consistency signal with positive exact-error ranking value across field-style tasks.
 ```
 
 Key reanalysis:
@@ -342,7 +352,7 @@ highest event-mass decile exact error = 0.2624
 Boundary:
 
 ```text
-Diagnostic evidence, not task-improvement evidence.
+Diagnostic evidence, not task-improvement evidence, calibration evidence, uncertainty superiority, or robust complementarity evidence.
 ```
 
 ### 5.7 R8 Complexity

@@ -76,6 +76,15 @@ How can we compute, train, and audit the posterior probability that a CRF assign
 
 The paper should proactively acknowledge that the computational primitive is adjacent to CRF x automaton marginal inference. The novelty claim should be the object and audit semantics, not that product inference itself is new.
 
+Formula distinction:
+
+| Object | Formula / Procedure | Main Difference |
+|---|---|---|
+| unconstrained CRF | `p_theta(y|x)=exp S_theta(x,y)/Z_theta(x)` | original posterior |
+| constrained decoding | `argmax_{y in L} S_theta(x,y)` | legal search, no posterior mass audit |
+| constrained CRF / RegCCRF | `p_theta(y|x,y in L)=exp S_theta(x,y)/Z_{theta,L}(x)` | support already restricted to `L` |
+| this work | `P_theta(L|x)=Z_{theta,L}(x)/Z_theta(x)` | audits how much original posterior mass satisfies `L` |
+
 ## 5. Boundary Against Ganchev et al. 2010 / Posterior Regularization
 
 Posterior regularization is the closest conceptual neighbor. The safe boundary is:
@@ -101,7 +110,7 @@ Main paper spine:
 | Exact product transfer | compute `Z_{theta,L}(x)` via CRF x DFA product transfer |
 | Distinction from constrained decoding / constrained CRF | show the object answers posterior mass, not best legal output or support restriction |
 | Event-loss gradient / training signal | show `-log P_theta(L|x)` has a finite expectation-difference gradient under explicit assumptions |
-| Risk diagnostic evidence | show low event mass can rank high-risk field-style examples |
+| Risk diagnostic evidence | show event mass is a rule-specific posterior-consistency signal with positive risk-ranking value |
 | Complexity sanity | report conservative product-state scaling |
 
 Event training should be framed as a secondary contribution. It demonstrates that the event object is trainable and can move posterior mass; it is not an accuracy method and should not be sold as the main empirical result.
@@ -141,7 +150,7 @@ R6a:
 
 ```text
 field-style rule-specific risk diagnostic evidence
-not calibration, universal error theorem, or stronger-than-uncertainty claim
+not calibration, universal error theorem, stronger-than-uncertainty claim, or robust complementarity claim
 ```
 
 R8:
@@ -171,6 +180,7 @@ Do not claim:
 - B4 dominates B5/B6 overall;
 - hard constraints are useless;
 - calibration;
+- event risk dominates or robustly complements generic uncertainty baselines;
 - event training generally preserves or improves task metrics;
 - arbitrary low-rank advantage;
 - tensor rank / MPO as main paper identity;

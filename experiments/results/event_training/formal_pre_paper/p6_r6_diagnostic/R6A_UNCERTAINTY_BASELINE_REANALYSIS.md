@@ -11,10 +11,24 @@ This report compares event risk against available uncertainty baselines on exact
 | max_sequence_probability_inverse | 0.8083 | 0.8987 | 0.5153 | 0.9357 | 0.2319 | 0.7038 |
 | neg_log_viterbi_probability | 0.8083 | 0.8987 | 0.5153 | 0.9357 | 0.2319 | 0.7038 |
 
+## Complementarity Check
+
+Within each generic-uncertainty decile, cases are split by event risk `1 - P_theta(L|x)`.
+A positive weighted gap means high event risk still has higher exact-error rate after controlling coarsely for the generic baseline.
+
+| controlled generic baseline | weighted within-bin event-risk error gap |
+|---|---:|
+| token_marginal_entropy | -0.0769 |
+| sequence_entropy | -0.0464 |
+| viterbi_margin_inverse | 0.0368 |
+| max_sequence_probability_inverse | -0.0314 |
+| neg_log_viterbi_probability | -0.0314 |
+
 ## Interpretation
 
 The event-risk score has positive exact-error ranking signal, but standard uncertainty baselines are stronger overall in this rerun.
 Therefore the paper should not claim diagnostic superiority over entropy, margin, or max-probability uncertainty.
-The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal that can rank risk, not a universal or dominant uncertainty score.
+The complementarity check asks only whether event risk carries some rule-specific residual signal within coarse uncertainty strata; it is not a causal or calibration result.
+The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal with positive risk-ranking value, not a universal or dominant uncertainty score.
 
 Boundary: this is ranking evidence only, not calibration and not benchmark superiority.

@@ -47,7 +47,7 @@ Posterior Regular-Language Event Mass for Conditional Random Fields
 | R5a | B0 `P(BIO|x)=0.0566` while constrained legality is 1; B4 raises event mass to `0.3389` | diagnostic-stress evidence, not NER performance |
 | R5b | B0 entity F1 `0.1660` | no B4 F1 improvement |
 | R1/R2/R4 | B4 raises event mass across controlled, semi-real, and real-source blocks | not uniformly task-metric dominant |
-| R6a | base exact-error rate `0.7359`; event-risk AUROC `0.7088`, AUPRC `0.8470`; uncertainty baselines are stronger overall | rule-specific risk ranking, not calibration or uncertainty superiority |
+| R6a | base exact-error rate `0.7359`; event-risk AUROC `0.7088`, AUPRC `0.8470`; uncertainty baselines are stronger and complementarity is mixed | rule-specific posterior-consistency signal, not calibration, uncertainty superiority, or residual predictiveness |
 | R8 | reference product-transfer scaling measured | not optimized runtime or low-rank evidence |
 
 ## Files To Review
@@ -69,7 +69,7 @@ experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTA
 2. Is the distinction from Ganchev et al. 2010 / posterior regularization clear enough?
 3. Is R5a acceptable as diagnostic-stress evidence despite zero entity F1?
 4. Does R6a make the diagnostic contribution strong enough for a methods/auditability paper?
-5. Is the uncertainty-baseline result handled conservatively enough?
+5. Is the uncertainty-baseline and weak-complementarity result handled conservatively enough?
 6. Is B7 implementation mandatory if we avoid superiority claims?
 7. Are R3/R7 still optional if we do not claim robustness over label/unlabeled/lambda regimes?
 8. Is the proposed title too narrow, too broad, or appropriate?

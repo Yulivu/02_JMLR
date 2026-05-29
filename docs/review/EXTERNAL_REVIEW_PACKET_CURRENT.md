@@ -2,10 +2,12 @@
 
 Updated: 2026-05-29
 
-Review commit:
+Provenance:
 
 ```text
-8aed3cb
+Review the repository HEAD that contains this file.
+R6a uncertainty-baseline result first committed in: 9ef3eb3.
+Paper-table provenance is recorded separately in experiments/results/paper_tables/PAPER_TABLES_INDEX.md.
 ```
 
 Use this packet for the next external AI/researcher review. The request is not to polish wording, but to decide whether the current project is defensible as a JMLR-style methods/auditability paper.
@@ -34,6 +36,17 @@ This is not:
 - a projected posterior;
 - a calibration score;
 - a tensor-rank paper.
+
+## Four Object Formula Table
+
+| Object | Formula / Procedure | Denominator / Search Space | What It Answers |
+|---|---|---|---|
+| Unconstrained CRF posterior | `p_theta(y|x)=exp S_theta(x,y)/Z_theta(x)` | all `y in Y^T` | what distribution does the CRF assign? |
+| Constrained decoding / WFST decoding | `argmax_{y in L} S_theta(x,y)` | search restricted to legal outputs | what is the best legal output? |
+| Constrained CRF / RegCCRF-style support restriction | `p_theta(y|x, y in L)=exp S_theta(x,y)/Z_{theta,L}(x)` for `y in L` | legal set `L` only | what is the posterior after restricting support to legal outputs? |
+| This work | `P_theta(L|x)=Z_{theta,L}(x)/Z_theta(x)` | numerator over `L`, denominator over all `Y^T` | how much original posterior mass satisfies the rule? |
+
+This table is the intended main defense against the objection that the paper is only constrained decoding or a constrained CRF.
 
 ## Intended Paper Identity
 
@@ -69,8 +82,8 @@ Event training is secondary. It shows that the object can be used as a training 
 | R5a WNUT17 diagnostic stress | 10 seeds, word-id tiny CRF, low-data stress | B0 `P(BIO|x)=0.0566`, constrained legality 1; B4 raises event mass to `0.3389` | hidden posterior conflict diagnostic evidence | entity F1 is 0; not NER usefulness |
 | R5b WNUT17 feature viability | 10 seeds, feature CRF | B0 entity F1 `0.1660`; event mass saturated near 0.98 | shows WNUT slice not pure all-O toy | no B4 F1 improvement |
 | R1/R2/R4 | controlled, semi-real, real-source small-field tasks | B4 generally raises posterior event mass | event training can move the object | not task-metric dominance |
-| R6a diagnostic | 21,000 field-style cases | event risk AUROC `0.7088`, AUPRC `0.8470` | rule-specific risk signal | not calibration; not strongest uncertainty |
-| R6a uncertainty baselines | same 21,000 cases | entropy/margin/max-probability AUROC about `0.78-0.81` | forces conservative diagnostic claim | no uncertainty-superiority claim |
+| R6a diagnostic | 21,000 field-style cases | event risk AUROC `0.7088`, AUPRC `0.8470` | rule-specific posterior-consistency signal with positive risk-ranking value | not calibration; not strongest uncertainty |
+| R6a uncertainty baselines | same 21,000 cases | entropy/margin/max-probability AUROC about `0.78-0.81` | forces conservative diagnostic claim | no uncertainty-superiority or complementarity claim |
 | R8 complexity | reference CPU transfer scaling | product-state scaling measured | conservative complexity discussion | not optimized runtime |
 
 ## Key Numbers
@@ -101,6 +114,22 @@ Event mass has diagnostic signal, but is not the strongest uncertainty score.
 Its defensible value is rule-specific posterior consistency, not general uncertainty dominance.
 ```
 
+Complementarity check:
+
+```text
+Within generic-uncertainty deciles, event-risk residual gaps are not consistently positive.
+Weighted within-bin gaps:
+token entropy -0.0769, sequence entropy -0.0464, Viterbi margin +0.0368,
+max sequence probability -0.0314, negative log Viterbi probability -0.0314.
+```
+
+Reading:
+
+```text
+Do not claim event risk adds robust residual predictive power beyond generic uncertainty.
+Use R6a only to support a rule-specific posterior-consistency audit signal.
+```
+
 ## Claims Allowed
 
 - `P_theta(L|x)` is a well-defined finite CRF posterior event probability.
@@ -108,7 +137,7 @@ Its defensible value is rule-specific posterior consistency, not general uncerta
 - Hard-constrained decoding and posterior consistency are different objects.
 - Event loss has an expectation-difference gradient under explicit finite assumptions.
 - Semi-event training can raise posterior event mass in audited settings.
-- Low event mass is a rule-specific risk signal in field-style diagnostics.
+- Low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value in field-style diagnostics.
 - Product-state scaling can be discussed conservatively.
 
 ## Claims Not Allowed
@@ -119,6 +148,7 @@ Its defensible value is rule-specific posterior consistency, not general uncerta
 - hard constraints are useless;
 - calibration;
 - event risk dominates entropy/margin/max-probability uncertainty;
+- event risk adds robust residual predictive power after controlling for generic uncertainty;
 - optimized runtime superiority;
 - tensor rank / MPO as the main paper identity.
 
@@ -141,11 +171,12 @@ experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTA
 2. Is the boundary against RegCCRF / constrained CRF strong enough?
 3. Is the boundary against Posterior Regularization, Generalized Expectation, and Semantic Loss strong enough?
 4. Does R5a remain useful as diagnostic-stress evidence despite zero entity F1?
-5. Is the R6a diagnostic claim conservative enough after uncertainty baselines outperform event risk?
+5. Is the R6a diagnostic claim conservative enough after uncertainty baselines outperform event risk and complementarity is weak?
 6. Is B7 implementation necessary if the paper avoids superiority claims?
 7. Which claim should be deleted or downgraded before manuscript writing?
 8. What theorem/proof wording is most likely to be attacked?
 9. Are more experiments necessary before writing begins?
+10. Does the paper remain valuable if event risk is weaker than generic uncertainty but more interpretable and rule-specific?
 
 ## Desired Reviewer Output
 
