@@ -1,0 +1,4 @@
+task,baseline_saturated,legal_rate_not_useful,best_event_variant,best_delta_p_event,best_exact_variant,best_delta_exact_sequence_accuracy,event_task_tradeoff_observed
+date,False,False,B4_semi_event_1.0,0.2602620032727718,B4_semi_event_1.0,0.1996,False
+product_code,False,False,B4_semi_event_1.0,0.20787990701198578,B4_semi_event_0.05,0.044800000000000006,False
+stock_like_digits,False,True,B4_semi_event_1.0,0.07686075954437258,B4_semi_event_1.0,0.0872,False

@@ -1,6 +1,6 @@
 # Project Overview
 
-Updated: 2026-05-29
+Updated: 2026-05-30
 
 ## Core Direction
 
@@ -30,11 +30,11 @@ The project is no longer an early idea search. It is in the pre-paper review sta
 |---|---|---|
 | theory object | stable with guardrails | finite CRF posterior event mass; product transfer requires finite-context/local factorization |
 | source code | stable for current claims | posterior algebra and event training tests pass |
-| formal evidence | audited | R5, R1/R2/R4, R6a, R8 completed |
-| claim table | updated for review | C1/C2 formal foundation, C7 appendix/sanity, B7/public/sensitivity pending |
+| formal evidence | audited with one public-case caveat | R5, R1/R2/R4, R6a, R8, B7, public CoNLL2000 one-seed formal, and R7 completed; R7 derisk now has wrapped formal metadata; CoNLL2000 three-seed full run remains pending |
+| claim table | updated for review | C1/C2 formal foundation, C7 appendix/sanity, B7/public/sensitivity included with boundaries |
 | paper positioning | narrowed | methods/theory/auditability, not benchmark superiority |
 | HPC | paused | no new AutoDL job unless review requires a specific experiment |
-| next step | full-run decision / external review | stress-test novelty, proof assumptions, related work, empirical framing, and whether B7/public/R7 smoke should become formal runs |
+| next step | external review / manuscript integration | stress-test novelty, proof assumptions, related work, empirical framing, and whether single-case public evidence is enough |
 
 ## Supported Claims
 
@@ -45,6 +45,9 @@ Safe current claims:
 - Hard-constrained decoding and posterior consistency are different objects.
 - Semi-event training can raise posterior event mass in audited settings.
 - In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal, but it is not stronger than generic uncertainty baselines in R6a.
+- Public CoNLL2000 provides a structured-prediction audit case, not benchmark superiority.
+- B7 constrained-product decoding is a faithful decoding comparison object that does not use event mass for decoding.
+- R7 shows lambda/rule sensitivity and includes legal-rate-not-useful plus event/task tradeoff boundaries.
 - Reference product-state scaling can be discussed conservatively.
 
 Do not claim:
@@ -69,9 +72,9 @@ Do not claim:
 | R4 real-source small | auxiliary invoice/stock evidence | small-field scope only |
 | R6a diagnostic | rule-specific risk/audit evidence from event mass | not calibration; not uncertainty-baseline superiority |
 | R8 complexity | product-state scaling evidence | reference CPU only |
-| B7 constrained-product smoke | faithful CRF x BIO-DFA constrained decoding smoke | local smoke only; not full WFST system or superiority evidence |
-| Public CoNLL2000 chunking smoke | public BIO/chunking boundary case | local smoke only; B4 moves event mass but task metrics dip slightly |
-| R7 sensitivity smoke | lambda/rule difficulty boundary evidence | local smoke only; full run pending |
+| B7 constrained-product formal | faithful CRF x BIO-DFA constrained decoding baseline | not full WFST system or superiority evidence |
+| Public CoNLL2000 chunking formal | public BIO/chunking audit case | one frozen case-study configuration; three-seed full run pending; not SOTA or benchmark superiority |
+| R7 sensitivity formal | lambda/rule difficulty boundary evidence | includes a wrapped-formal swapped-rule event/task tradeoff; boundary study only; not task-method dominance |
 
 ## Directory Map
 
@@ -130,4 +133,4 @@ uMPS work suggests that regular languages can be treated as probabilistic events
 
 ## Immediate Next Step
 
-External review and full-run decision for B7/public-case/sensitivity. Do not run more HPC until review identifies a concrete missing experiment tied to a specific claim.
+External review and manuscript integration. Do not run more HPC unless review identifies a concrete missing experiment tied to a specific claim; the main candidate is the pending CoNLL2000 three-seed full public case.

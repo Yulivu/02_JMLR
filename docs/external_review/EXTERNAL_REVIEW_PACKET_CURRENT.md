@@ -9,19 +9,28 @@ This packet is for a new external review. It is intended to be descriptive, not 
 ```text
 Review the repository HEAD that contains this file.
 R6a uncertainty-baseline result first committed in: 9ef3eb3.
+JMLR CPU-upgrade formal run bundle was produced at commit: a10517d.
+R7 derisk negative-boundary wrapped formal run uses config experiments/configs/exp7/r7_sensitivity_formal.yaml, returncode 0, duration 28.276712 seconds.
 Paper-table provenance is recorded in experiments/results/paper_tables/PAPER_TABLES_INDEX.md.
 ```
 
 ## Recommended Review Order
 
 1. `docs/external_review/EXTERNAL_REVIEW_PACKET_CURRENT.md`
-2. `docs/manuscript/FINAL_CLAIM_TABLE.md`
-3. `docs/manuscript/RELATED_WORK_DRAFT.md`
-4. `docs/manuscript/THEORY_PROOF_PROSE.md`
-5. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
-6. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
-7. `docs/manuscript/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
-8. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
+2. `docs/external_review/CLOSEST_PRIOR_ATTACK_MEMO.md`
+3. `docs/manuscript/FINAL_CLAIM_TABLE.md`
+4. `docs/manuscript/RELATED_WORK_DRAFT.md`
+5. `docs/manuscript/THEORY_PROOF_PROSE.md`
+6. `experiments/results/paper_tables/PAPER_TABLES_INDEX.md`
+7. `docs/protocols/B7_WFST_DESIGN_NOTE.md`
+8. `experiments/results/event_training/formal_pre_paper/JMLR_CPU_UPGRADE_RESULT_AUDIT.md`
+9. `experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_FORMAL_AUDIT.md`
+10. `experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_MULTISEED_TINY_SMOKE_AUDIT.md`
+11. `experiments/results/event_training/formal_pre_paper/b7_constrained_product/B7_CONSTRAINED_PRODUCT_FORMAL_AUDIT.md`
+12. `experiments/results/event_training/formal_pre_paper/r7_sensitivity/R7_SENSITIVITY_FORMAL_AUDIT.md`
+13. `experiments/results/event_training/formal_pre_paper/r7_sensitivity/R7_SENSITIVITY_DERISK_AUDIT.md`
+14. `experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`
+15. `docs/manuscript/REPRODUCIBILITY_PACKAGE_CHECKLIST.md`
 
 ## Review Tasks
 
@@ -36,7 +45,9 @@ Please evaluate the following without assuming the proposed framing is correct:
 | Do R5a/R5b support the empirical claims assigned to them? | empirical framing |
 | Does R6a support only a rule-specific signal, or more than that? | diagnostic claim strength |
 | Does the uncertainty-baseline result require downgrading any claim? | empirical boundary |
-| Is B7 necessary before manuscript writing or only before stronger baseline claims? | baseline sufficiency |
+| Is the implemented B7 constrained-product baseline faithful and sufficient for the paper boundary? | baseline sufficiency |
+| Does the CoNLL2000 public case strengthen the empirical story without implying benchmark superiority? | public case-study framing |
+| Does R7 sensitivity adequately show lambda/rule boundaries, including unhelpful cases? | sensitivity / boundary evidence |
 | Which current claim is most likely to be rejected by a reviewer? | claim discipline |
 | Which experiment, if any, is required before writing begins? | remaining work |
 
@@ -112,7 +123,12 @@ Review task: identify whether these distinctions are accurate, sufficient, or ov
 | R6a diagnostic | 21,000 field-style cases | event risk AUROC `0.7088`, AUPRC `0.8470` | rule-specific posterior-consistency signal | not calibration; generic uncertainty baselines are stronger |
 | R6a uncertainty baselines | same 21,000 cases | entropy/margin/max-probability AUROC about `0.78-0.81` | boundary on diagnostic claim | no uncertainty-superiority or complementarity claim |
 | R8 complexity | reference CPU transfer scaling | product-state scaling measured | complexity discussion | not optimized runtime |
-| Public CoNLL2000 smoke | 80/80/80 local BIO/chunking smoke | B4 raises `P(BIO|x)` from `0.7303` to `0.8078` and reduces hidden conflict from `0.4125` to `0.2125`; token/span metrics dip slightly | public structured-prediction boundary case | smoke only; no benchmark superiority or task-improvement claim |
+| Public CoNLL2000 formal | 1000/1000/1000 public BIO/chunking case, one seed/config | B4 raises `P(BIO|x)` from `0.9762` to `0.9953`, hidden conflict drops from `0.0240` to `0.0040`, span F1 is `0.7773` to `0.7936`, B7 legality `1.0000` | public structured-prediction audit case | not SOTA, benchmark superiority, or general task-improvement claim |
+| Public CoNLL2000 uncertainty | same 2,000 variant/case detail rows | event risk has positive exact-error ranking signal, but entropy/max-probability baselines are stronger | public-case uncertainty boundary | no uncertainty-superiority or calibration claim |
+| B7 constrained-product formal | WNUT17 BIO, 500/500/500, B0 and B4 source models | legal rate `1.0000`; `uses_event_mass_for_decoding=False` | faithful constrained decoding comparison object | not full WFST, constrained CRF, or replacement claim |
+| R7 sensitivity formal | 3 rule difficulties x 10 seeds x lambda sweep | event mass moves with lambda; stock-like digits has legal-rate-not-useful boundary | lambda/rule boundary evidence | not an accuracy-method or benchmark claim |
+| R7 derisk boundary | wrapped formal run, 10 seeds, config `experiments/configs/exp7/r7_sensitivity_formal.yaml`, includes intentionally swapped rule | `product_code_swapped_rule` B4 lambda 1.0 raises `P(event)` by `+0.9485`, while char accuracy drops `-0.5524` and exact accuracy drops `-0.0816` | explicit event/task tradeoff boundary | shows rule choice can make event loss harmful for task metrics |
+| CoNLL2000 multiseed tiny smoke | wrapped smoke run, 30/30/30 examples, 3 seeds, 1 epoch | B4 raises mean `P(BIO|x)` from `0.3487` to `0.5187`, while mean span F1 drops from `0.6894` to `0.6647` | plumbing check only | separate smoke provenance table; not formal evidence; full three-seed run pending |
 
 ## Key Numbers
 
@@ -146,6 +162,40 @@ max sequence probability -0.0314, negative log Viterbi probability -0.0314.
 
 Review task: determine what diagnostic claim, if any, these numbers support.
 
+### Public CoNLL2000 Formal Case
+
+| Variant | P(BIO\|x) | Hidden Conflict | Unconstrained Legal | B7 Legal | Token Acc | Span F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| B0 | 0.9762 | 0.0240 | 0.9800 | 1.0000 | 0.8623 | 0.7773 |
+| B4 | 0.9953 | 0.0040 | 1.0000 | 1.0000 | 0.8681 | 0.7936 |
+
+Public-case uncertainty:
+
+| Variant | Score | AUROC exact | AUPRC exact | Spearman token error | Exact risk gap |
+|---|---|---:|---:|---:|---:|
+| B0 | event risk | 0.7202 | 0.9011 | 0.2607 | 0.3950 |
+| B0 | token entropy | 0.8330 | 0.9468 | 0.4114 | 0.5500 |
+| B0 | max-prob inverse | 0.8265 | 0.9448 | 0.3834 | 0.5550 |
+| B4 | event risk | 0.6861 | 0.8664 | 0.2621 | 0.2450 |
+| B4 | token entropy | 0.8242 | 0.9417 | 0.4042 | 0.5350 |
+| B4 | max-prob inverse | 0.7980 | 0.9298 | 0.3422 | 0.5100 |
+
+Review task: decide whether this is enough as a public structured-prediction case study, and whether any wording implies benchmark superiority.
+
+Full three-seed CoNLL2000 remains pending. The tiny three-seed run is a wrapped
+smoke/provenance check and appears only in `table_6a_public_conll2000_smoke`;
+it is not C13 evidence and should not be read as formal multiseed evidence.
+
+### B7 And R7 Formal Additions
+
+| Block | Key result | Boundary |
+|---|---|---|
+| B7 constrained-product | B0-source legal rate `1.0000`, token accuracy `0.8841`, entity F1 `0.1486`; B4-source legal rate `1.0000`, token accuracy `0.8838`, entity F1 `0.1688` | decoding baseline only; does not use event mass for decoding |
+| R7 date | B4 lambda 1.0: delta `P(event)=+0.2603`, delta exact accuracy `+0.1996` | sensitivity evidence, not accuracy theorem |
+| R7 product_code | B4 lambda 1.0: delta `P(event)=+0.2079`, delta legal rate `+0.0328` | sensitivity evidence, not benchmark |
+| R7 stock_like_digits | B4 lambda 1.0: delta `P(event)=+0.0769`, delta legal rate `+0.0000` | legal-rate-not-useful boundary |
+| R7 product_code_swapped_rule | B4 lambda 1.0: delta `P(event)=+0.9485`, delta legal rate `+0.9716`, delta char accuracy `-0.5524`, delta exact accuracy `-0.0816` | wrapped-formal event/task tradeoff; event loss is not a general accuracy method |
+
 ## Current Claim Table Summary
 
 The repository currently allows these claims, subject to boundaries in `docs/manuscript/FINAL_CLAIM_TABLE.md`:
@@ -156,6 +206,9 @@ The repository currently allows these claims, subject to boundaries in `docs/man
 - Event loss has an expectation-difference gradient under explicit finite assumptions.
 - Semi-event training can raise posterior event mass in audited settings.
 - In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal.
+- Public CoNLL2000 provides a structured-prediction audit case with event-mass movement, hidden-conflict reduction, and legal constrained decoding under one frozen configuration.
+- B7 constrained-product decoding can be reported as a decoding comparison object that does not use event mass for decoding.
+- R7 sensitivity shows lambda/rule-dependent movement and includes legal-rate-not-useful and wrapped-formal event/task tradeoff boundary cases.
 - Product-state scaling can be discussed conservatively.
 
 The repository currently forbids these claims:
@@ -175,10 +228,12 @@ The repository currently forbids these claims:
 
 ```text
 The project is not JMLR-main submission-ready and should not be described as
-JMLR-ready. A defensible main-paper draft still requires B7 or an explicitly
-scoped constrained-product baseline, a stronger public structured-prediction
-case or documented fallback, and sensitivity evidence or an equivalent boundary
-study.
+submission-ready. Manuscript drafting can proceed with conservative boundaries now
+that B7, public CoNLL2000, and R7 sensitivity formal runs are audited, but
+submission still requires final proof review, final related-work citations,
+table/figure integration, reproducibility packaging, and a decision on whether
+the one-seed CoNLL2000 public case is enough or the pending full three-seed run
+is required.
 ```
 
 Review task: check whether the allowed list is still too broad, and whether any forbidden claim is implied elsewhere.
@@ -195,6 +250,12 @@ docs/evidence/THEORY_AUDIT.md
 docs/protocols/B7_WFST_DESIGN_NOTE.md
 experiments/results/paper_tables/PAPER_TABLES_INDEX.md
 experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTAINTY_BASELINE_REANALYSIS.md
+experiments/results/event_training/formal_pre_paper/JMLR_CPU_UPGRADE_RESULT_AUDIT.md
+experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_FORMAL_AUDIT.md
+experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_MULTISEED_TINY_SMOKE_AUDIT.md
+experiments/results/event_training/formal_pre_paper/b7_constrained_product/B7_CONSTRAINED_PRODUCT_FORMAL_AUDIT.md
+experiments/results/event_training/formal_pre_paper/r7_sensitivity/R7_SENSITIVITY_FORMAL_AUDIT.md
+experiments/results/event_training/formal_pre_paper/r7_sensitivity/R7_SENSITIVITY_DERISK_AUDIT.md
 ```
 
 ## Review Questions
@@ -204,10 +265,10 @@ experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic/R6A_UNCERTA
 3. Is the boundary against Posterior Regularization, Generalized Expectation, and Semantic Loss technically valid?
 4. What does R5a support, given that entity F1 is zero?
 5. What does R6a support, given that generic uncertainty baselines outperform event risk?
-6. Is B7 implementation necessary before manuscript writing?
+6. Is the B7 constrained-product implementation a faithful enough baseline for the manuscript boundary?
 7. Which claim should be deleted or downgraded?
 8. What theorem/proof wording is most vulnerable?
-9. Are more experiments necessary before writing begins?
+9. Are more experiments necessary before submission, or is the remaining work mainly proof/related-work/reproducibility integration?
 10. Is there a coherent manuscript if event mass is weaker than generic uncertainty but rule-specific and interpretable?
 
 ## Requested Reviewer Output
@@ -220,5 +281,5 @@ Please return:
 - related-work gaps;
 - theory/proof gaps;
 - experiment gaps;
-- whether B7 should be implemented;
+- whether B7 is faithful and sufficiently scoped;
 - whether to proceed to writing, run additional experiments first, or reframe the project.

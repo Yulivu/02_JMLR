@@ -1,0 +1,11 @@
+variant,generic_baseline,cases,pearson_with_event_risk,spearman_with_event_risk
+B0_unconstrained,token_marginal_entropy,1000,0.24642736105910096,0.6119583970431379
+B0_unconstrained,sequence_entropy,1000,0.24795019606733698,0.5886835115152488
+B0_unconstrained,viterbi_margin_inverse,1000,0.12251464849116898,0.4018672813200267
+B0_unconstrained,max_sequence_probability_inverse,1000,0.22083543559135066,0.5396584214082248
+B0_unconstrained,neg_log_viterbi_probability,1000,0.24692325130126327,0.5396584214082248
+B4_semi_event_0.1,token_marginal_entropy,1000,0.09666026768550459,0.5030014602892648
+B4_semi_event_0.1,sequence_entropy,1000,0.11085493545828004,0.47951681831308934
+B4_semi_event_0.1,viterbi_margin_inverse,1000,0.08054354142656997,0.31424180188406353
+B4_semi_event_0.1,max_sequence_probability_inverse,1000,0.11988261948596876,0.42270957995965913
+B4_semi_event_0.1,neg_log_viterbi_probability,1000,0.12515561417097543,0.42270957995965913

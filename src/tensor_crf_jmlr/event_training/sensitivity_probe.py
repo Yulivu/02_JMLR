@@ -11,8 +11,9 @@ import argparse
 import csv
 import json
 import os
+import random
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
@@ -27,11 +28,16 @@ from .semi_real_format_probe import (
     VariantConfig,
     build_vocab,
     encode,
-    evaluate_model,
+    event_loss,
+    labels_follow_pattern,
+    log_event_probability,
+    nll_loss,
+    pr_style_loss,
     make_dataset,
     run_settings,
     summarize_runs,
     train_model,
+    viterbi,
 )
 
 
@@ -39,19 +45,48 @@ DIFFICULTY_TASKS = {
     "easy_saturated": ("stock_like_digits", ("D", "D", "D"), "short digit-only field; often saturated"),
     "medium": ("product_code", ("L", "L", "-", "D", "D", "D"), "mixed product-code field"),
     "hard": ("date", ("D", "D", "D", "D", "-", "D", "D", "-", "D", "D"), "longer date-like field"),
+    "irrelevant_rule": (
+        "product_code_swapped_rule",
+        ("L", "L", "-", "D", "D", "D"),
+        "product-code data audited against swapped DD-LLL event rule; intentionally weakly related to task correctness",
+    ),
 }
 
 
-def make_tasks(levels: Sequence[str]) -> list[SemiRealTask]:
+@dataclass(frozen=True)
+class R7TaskSpec:
+    name: str
+    data_task: SemiRealTask
+    event_task: SemiRealTask
+    description: str
+
+    @property
+    def pattern_string(self) -> str:
+        if self.data_task.pattern == self.event_task.pattern:
+            return self.data_task.pattern_string
+        return f"{self.data_task.pattern_string}->{self.event_task.pattern_string}"
+
+
+def make_task_specs(levels: Sequence[str]) -> list[R7TaskSpec]:
     tasks_by_name = {task.name: task for task in TASKS}
-    out: list[SemiRealTask] = []
+    out: list[R7TaskSpec] = []
     for level in levels:
         name, pattern, description = DIFFICULTY_TASKS[level]
-        if name in tasks_by_name:
-            out.append(tasks_by_name[name])
+        if level == "irrelevant_rule":
+            data_task = tasks_by_name["product_code"]
+            event_task = SemiRealTask("swapped_product_rule", ("D", "D", "-", "L", "L", "L"), description)
+            out.append(R7TaskSpec(name, data_task, event_task, description))
+        elif name in tasks_by_name:
+            task = tasks_by_name[name]
+            out.append(R7TaskSpec(task.name, task, task, description))
         else:
-            out.append(SemiRealTask(name, pattern, description))
+            task = SemiRealTask(name, pattern, description)
+            out.append(R7TaskSpec(task.name, task, task, description))
     return out
+
+
+def make_tasks(levels: Sequence[str]) -> list[SemiRealTask]:
+    return [spec.data_task for spec in make_task_specs(levels)]
 
 
 def write_table(path: Path, rows: Sequence[dict[str, object]]) -> None:
@@ -90,40 +125,182 @@ def boundary_rows(summary: Sequence[dict[str, float | str | int]]) -> list[dict[
     return rows
 
 
-def _run_one_job(payload: tuple[SemiRealTask, ProbeSetting, int, str, VariantConfig]) -> ProbeRun:
-    task, setting, seed, _variant_name, variant = payload
+def _train_model_for_spec(
+    spec: R7TaskSpec,
+    labeled: list[tuple[list[int], list[int]]],
+    unlabeled: list[list[int]],
+    vocab_size: int,
+    *,
+    variant: VariantConfig,
+    seed: int,
+    epochs: int,
+    lr: float,
+) -> torch.nn.Module:
+    from .event_crf import TinyLinearChainCRF
+
+    torch.manual_seed(seed)
+    random.seed(seed)
+    model = TinyLinearChainCRF(vocab_size, spec.data_task.label_names)
+    model.assert_cpu_only()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    for _epoch in range(epochs):
+        labeled_order = list(range(len(labeled)))
+        random.shuffle(labeled_order)
+        for idx in labeled_order:
+            word_ids, label_ids = labeled[idx]
+            optimizer.zero_grad(set_to_none=True)
+            loss = nll_loss(model, spec.data_task, word_ids, label_ids, rule_bias=variant.rule_bias)
+            if variant.labeled_lam:
+                loss = loss + variant.labeled_lam * event_loss(model, spec.event_task, word_ids, rule_bias=variant.rule_bias)
+            if variant.pr_eta:
+                loss = loss + variant.pr_eta * pr_style_loss(
+                    model,
+                    spec.event_task,
+                    word_ids,
+                    tau=variant.pr_tau,
+                    rule_bias=variant.rule_bias,
+                )
+            loss.backward()
+            optimizer.step()
+        if unlabeled and (variant.unlabeled_lam or variant.pr_eta):
+            unlabeled_order = list(range(len(unlabeled)))
+            random.shuffle(unlabeled_order)
+            for idx in unlabeled_order:
+                optimizer.zero_grad(set_to_none=True)
+                loss = torch.tensor(0.0)
+                if variant.unlabeled_lam:
+                    loss = loss + variant.unlabeled_lam * event_loss(
+                        model,
+                        spec.event_task,
+                        unlabeled[idx],
+                        rule_bias=variant.rule_bias,
+                    )
+                if variant.pr_eta:
+                    loss = loss + variant.pr_eta * pr_style_loss(
+                        model,
+                        spec.event_task,
+                        unlabeled[idx],
+                        tau=variant.pr_tau,
+                        rule_bias=variant.rule_bias,
+                    )
+                loss.backward()
+                optimizer.step()
+    return model
+
+
+def _evaluate_model_for_spec(
+    model: torch.nn.Module,
+    spec: R7TaskSpec,
+    dev: list[tuple[list[int], list[int]]],
+    *,
+    setting: ProbeSetting,
+    variant: VariantConfig,
+    seed: int,
+) -> ProbeRun:
+    from statistics import mean
+
+    p_values: list[float] = []
+    nlls: list[float] = []
+    unconstrained_event = 0
+    constrained_event = 0
+    hidden_conflict = 0
+    total_chars = 0
+    correct_chars = 0
+    constrained_correct_chars = 0
+    exact_sequences = 0
+    constrained_exact_sequences = 0
+    for word_ids, gold in dev:
+        with torch.no_grad():
+            p_event = float(torch.exp(log_event_probability(model, spec.event_task, word_ids, rule_bias=variant.rule_bias)).item())
+            nll = float(nll_loss(model, spec.data_task, word_ids, gold, rule_bias=variant.rule_bias).item()) / len(gold)
+            pred, _score = viterbi(model, spec.data_task, word_ids, constrained=False, rule_bias=variant.rule_bias)
+            c_pred, _c_score = viterbi(model, spec.event_task, word_ids, constrained=True, rule_bias=variant.rule_bias)
+        p_values.append(p_event)
+        nlls.append(nll)
+        pred_is_event = labels_follow_pattern(spec.event_task, model.label_names, pred)
+        c_pred_is_event = labels_follow_pattern(spec.event_task, model.label_names, c_pred)
+        unconstrained_event += int(pred_is_event)
+        constrained_event += int(c_pred_is_event)
+        hidden_conflict += int(c_pred_is_event and p_event < 0.5)
+        exact_sequences += int(tuple(pred) == tuple(gold))
+        constrained_exact_sequences += int(tuple(c_pred) == tuple(gold))
+        for pred_idx, c_pred_idx, gold_idx in zip(pred, c_pred, gold):
+            total_chars += 1
+            correct_chars += int(pred_idx == gold_idx)
+            constrained_correct_chars += int(c_pred_idx == gold_idx)
+    return ProbeRun(
+        block=setting.block,
+        task=spec.name,
+        pattern=spec.pattern_string,
+        setting=setting.name,
+        variant=variant.name,
+        seed=seed,
+        labeled_size=setting.labeled_size,
+        unlabeled_size=setting.unlabeled_size,
+        dev_size=setting.dev_size,
+        epochs=setting.epochs,
+        lr=setting.lr,
+        mean_p_event=mean(p_values),
+        mean_illegal_mass=1.0 - mean(p_values),
+        low_p_event_rate=mean(1.0 if p < 0.5 else 0.0 for p in p_values),
+        unconstrained_event_rate=unconstrained_event / len(dev),
+        constrained_event_rate=constrained_event / len(dev),
+        char_accuracy=correct_chars / total_chars,
+        constrained_char_accuracy=constrained_correct_chars / total_chars,
+        exact_sequence_accuracy=exact_sequences / len(dev),
+        constrained_exact_sequence_accuracy=constrained_exact_sequences / len(dev),
+        mean_nll=mean(nlls),
+        hidden_conflict_rate=hidden_conflict / len(dev),
+        notes=f"R7 sensitivity boundary probe; event_rule={spec.event_task.pattern_string}; not benchmark evidence",
+    )
+
+
+def _run_one_job(payload: tuple[R7TaskSpec, ProbeSetting, int, str, VariantConfig]) -> ProbeRun:
+    spec, setting, seed, _variant_name, variant = payload
     torch.set_num_threads(1)
-    label_to_idx = {label: idx for idx, label in enumerate(task.label_names)}
-    labeled_ds = make_dataset(task, f"{task.name}_labeled", setting.labeled_size, seed=1100 + seed)
-    unlabeled_ds = make_dataset(task, f"{task.name}_unlabeled", setting.unlabeled_size, seed=2200 + seed)
-    dev_ds = make_dataset(task, f"{task.name}_dev", setting.dev_size, seed=3300 + seed)
+    label_to_idx = {label: idx for idx, label in enumerate(spec.data_task.label_names)}
+    labeled_ds = make_dataset(spec.data_task, f"{spec.name}_labeled", setting.labeled_size, seed=1100 + seed)
+    unlabeled_ds = make_dataset(spec.data_task, f"{spec.name}_unlabeled", setting.unlabeled_size, seed=2200 + seed)
+    dev_ds = make_dataset(spec.data_task, f"{spec.name}_dev", setting.dev_size, seed=3300 + seed)
     vocab = build_vocab(labeled_ds.tokens + unlabeled_ds.tokens + dev_ds.tokens)
     labeled = encode(labeled_ds, vocab, label_to_idx)
     unlabeled = [word_ids for word_ids, _labels in encode(unlabeled_ds, vocab, label_to_idx)]
     dev = encode(dev_ds, vocab, label_to_idx)
-    model = train_model(
-        task,
-        labeled,
-        unlabeled,
-        len(vocab),
-        variant=variant,
-        seed=seed,
-        epochs=setting.epochs,
-        lr=setting.lr,
-    )
-    return evaluate_model(model, task, dev, setting=setting, variant=variant, seed=seed)
+    if spec.data_task.pattern == spec.event_task.pattern and spec.data_task.name == spec.event_task.name:
+        model = train_model(
+            spec.data_task,
+            labeled,
+            unlabeled,
+            len(vocab),
+            variant=variant,
+            seed=seed,
+            epochs=setting.epochs,
+            lr=setting.lr,
+        )
+    else:
+        model = _train_model_for_spec(
+            spec,
+            labeled,
+            unlabeled,
+            len(vocab),
+            variant=variant,
+            seed=seed,
+            epochs=setting.epochs,
+            lr=setting.lr,
+        )
+    return _evaluate_model_for_spec(model, spec, dev, setting=setting, variant=variant, seed=seed)
 
 
 def run_settings_parallel(
-    tasks: Sequence[SemiRealTask],
+    task_specs: Sequence[R7TaskSpec],
     setting: ProbeSetting,
     variants: dict[str, VariantConfig],
     *,
     workers: int,
 ) -> list[ProbeRun]:
     jobs = [
-        (task, setting, seed, variant_name, variants[variant_name])
-        for task in tasks
+        (spec, setting, seed, variant_name, variants[variant_name])
+        for spec in task_specs
         for seed in setting.seeds
         for variant_name in setting.variants
     ]
@@ -146,14 +323,14 @@ def write_report(output_dir: Path, summary: Sequence[dict[str, float | str | int
         "",
         "## Lambda Tradeoff",
         "",
-        "| task | variant | runs | P(L|x) | delta P | delta legal rate | delta exact acc |",
-        "|---|---|---:|---:|---:|---:|---:|",
+        "| task | variant | runs | P(L|x) | delta P | delta legal rate | delta exact acc | delta constrained exact |",
+        "|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for row in summary:
         if row["variant"] == "B0_unconstrained":
             continue
         lines.append(
-            "| {task} | {variant} | {runs} | {p:.4f} | {dp:+.4f} | {dl:+.4f} | {de:+.4f} |".format(
+            "| {task} | {variant} | {runs} | {p:.4f} | {dp:+.4f} | {dl:+.4f} | {de:+.4f} | {dce:+.4f} |".format(
                 task=row["task"],
                 variant=row["variant"],
                 runs=int(row["runs"]),
@@ -161,6 +338,7 @@ def write_report(output_dir: Path, summary: Sequence[dict[str, float | str | int
                 dp=float(row["delta_p_event"]),
                 dl=float(row["delta_unconstrained_event_rate"]),
                 de=float(row["delta_exact_sequence_accuracy"]),
+                dce=float(row["delta_constrained_exact_sequence_accuracy"]),
             )
         )
     lines.extend(
@@ -201,7 +379,7 @@ def write_report(output_dir: Path, summary: Sequence[dict[str, float | str | int
 def run_probe(*, output_dir: Path, seed_count: int, quick: bool, difficulty_levels: Sequence[str], workers: int) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     seeds = tuple(range(min(seed_count, 2) if quick else seed_count))
-    tasks = make_tasks(difficulty_levels)
+    task_specs = make_task_specs(difficulty_levels)
     setting = ProbeSetting(
         block="r7_sensitivity",
         name="lambda_rule_difficulty",
@@ -215,9 +393,16 @@ def run_probe(*, output_dir: Path, seed_count: int, quick: bool, difficulty_leve
     )
     resolved_workers = (os.cpu_count() or 1) if workers == 0 else workers
     if resolved_workers > 1:
-        runs = run_settings_parallel(tasks, setting, LAMBDA_VARIANTS, workers=resolved_workers)
+        runs = run_settings_parallel(task_specs, setting, LAMBDA_VARIANTS, workers=resolved_workers)
     else:
-        runs = run_settings(tasks, [setting], LAMBDA_VARIANTS)
+        ordinary_tasks = [spec.data_task for spec in task_specs if spec.data_task == spec.event_task]
+        custom_specs = [spec for spec in task_specs if spec.data_task != spec.event_task]
+        runs = run_settings(ordinary_tasks, [setting], LAMBDA_VARIANTS)
+        for spec in custom_specs:
+            for seed in setting.seeds:
+                for variant_name in setting.variants:
+                    runs.append(_run_one_job((spec, setting, seed, variant_name, LAMBDA_VARIANTS[variant_name])))
+        runs = sorted(runs, key=lambda row: (row.task, row.seed, row.variant))
     run_dicts = [asdict(row) for row in runs]
     summary = summarize_runs(runs)
     boundaries = boundary_rows(summary)

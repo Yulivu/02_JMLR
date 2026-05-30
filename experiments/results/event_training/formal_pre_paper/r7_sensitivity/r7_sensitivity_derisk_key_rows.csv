@@ -1,0 +1,10 @@
+task,variant,runs,P_event,delta_P_event,delta_legal_rate,delta_char_acc,delta_exact_acc,tradeoff_observed,boundary
+date,B0_unconstrained,10,0.7135713487625122,0.0,0.0,0.0,0.0,False,ordinary
+date,B4_semi_event_1.0,10,0.9738333967924118,0.2602620480298996,0.1948,0.03063999999999998,0.1996,False,ordinary
+product_code,B0_unconstrained,10,0.7764831675708294,0.0,0.0,0.0,0.0,False,ordinary
+product_code,B4_semi_event_1.0,10,0.9843630127668381,0.20787984519600866,0.03280000000000002,0.009666666666666667,0.024800000000000003,False,ordinary
+product_code_swapped_rule,B0_unconstrained,10,8.038502904630684e-06,0.0,0.0,0.0,0.0,True,event/task tradeoff
+product_code_swapped_rule,B4_semi_event_0.1,10,0.6082833849948133,0.6082753464919086,0.6752,-0.4352,-0.0668,True,event/task tradeoff
+product_code_swapped_rule,B4_semi_event_1.0,10,0.9485539315700531,0.9485458930671484,0.9716,-0.5524,-0.08159999999999999,True,event/task tradeoff
+stock_like_digits,B0_unconstrained,10,0.9191903453111648,0.0,0.0,0.0,0.0,False,legal-rate-not-useful
+stock_like_digits,B4_semi_event_1.0,10,0.9960511162519455,0.07686077094078063,0.0,0.03306666666666669,0.0868,False,legal-rate-not-useful

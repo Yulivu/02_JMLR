@@ -220,6 +220,149 @@ def table_complexity(results_dir: Path) -> list[dict[str, object]]:
     return selected
 
 
+def table_public_conll2000(results_dir: Path) -> list[dict[str, object]]:
+    multiseed_path = results_dir / "public_sequence_labeling" / "conll2000_public_multiseed_formal_summary.csv"
+    if multiseed_path.is_file():
+        selected = []
+        for row in read_csv(multiseed_path):
+            selected.append(
+                {
+                    "setting": "formal_3seed",
+                    "variant": row["variant"],
+                    "seeds": row["seeds"],
+                    "P_BIO_mean": numfmt(row["P_BIO_mean"]),
+                    "P_BIO_std": numfmt(row["P_BIO_std"]),
+                    "hidden_conflict_mean": numfmt(row["hidden_conflict_mean"]),
+                    "B7_legal_mean": numfmt(row["B7_legal_mean"]),
+                    "token_acc_mean": numfmt(row["token_acc_mean"]),
+                    "span_F1_mean": numfmt(row["span_F1_mean"]),
+                    "claim_use": "public structured-prediction multiseed audit case; not benchmark superiority",
+                }
+            )
+        return selected
+
+    rows = read_csv(results_dir / "public_sequence_labeling" / "conll2000_public_formal_summary.csv")
+    selected = []
+    for row in rows:
+        selected.append(
+            {
+                "setting": "formal_seed0",
+                "variant": row["variant"],
+                "seeds": 1,
+                "P_BIO_mean": numfmt(row["P_BIO"]),
+                "P_BIO_std": "0.0000",
+                "hidden_conflict_mean": numfmt(row["hidden_conflict"]),
+                "B7_legal_mean": numfmt(row["B7_legal"]),
+                "token_acc_mean": numfmt(row["token_acc"]),
+                "span_F1_mean": numfmt(row["span_F1"]),
+                "claim_use": "public structured-prediction audit case; not benchmark superiority",
+            }
+        )
+    return selected
+
+
+def table_public_conll2000_smoke(results_dir: Path) -> list[dict[str, object]]:
+    smoke_path = results_dir / "public_sequence_labeling" / "conll2000_public_multiseed_tiny_smoke_summary.csv"
+    selected = []
+    if smoke_path.is_file():
+        for row in read_csv(smoke_path):
+            selected.append(
+                {
+                    "setting": "tiny_3seed_smoke",
+                    "variant": row["variant"],
+                    "seeds": row["seeds"],
+                    "P_BIO_mean": numfmt(row["mean_p_event_mean"]),
+                    "P_BIO_std": numfmt(row["mean_p_event_std"]),
+                    "hidden_conflict_mean": numfmt(row["hidden_conflict_rate_mean"]),
+                    "B7_legal_mean": numfmt(row["b7_legal_rate_mean"]),
+                    "token_acc_mean": numfmt(row["token_accuracy_mean"]),
+                    "span_F1_mean": numfmt(row["span_f1_mean"]),
+                    "claim_use": "plumbing smoke only; full multiseed pending",
+                }
+            )
+    if not selected:
+        selected.append(
+            {
+                "setting": "tiny_3seed_smoke",
+                "variant": "pending",
+                "seeds": 0,
+                "P_BIO_mean": "",
+                "P_BIO_std": "",
+                "hidden_conflict_mean": "",
+                "B7_legal_mean": "",
+                "token_acc_mean": "",
+                "span_F1_mean": "",
+                "claim_use": "no smoke bundle curated",
+            }
+        )
+    return selected
+
+
+def table_public_uncertainty(results_dir: Path) -> list[dict[str, object]]:
+    rows = read_csv(results_dir / "public_sequence_labeling" / "conll2000_public_uncertainty_metrics.csv")
+    selected = []
+    keep = {
+        "event_risk_1_minus_p",
+        "token_marginal_entropy",
+        "sequence_entropy",
+        "viterbi_margin_inverse",
+        "max_sequence_probability_inverse",
+        "neg_log_viterbi_probability",
+    }
+    for row in rows:
+        if row["baseline"] not in keep:
+            continue
+        selected.append(
+            {
+                "variant": row["variant"],
+                "score": row["baseline"],
+                "AUROC_exact": numfmt(row["auroc_exact_error"]),
+                "AUPRC_exact": numfmt(row["auprc_exact_error"]),
+                "Spearman_token_error": numfmt(row["spearman_token_error"]),
+                "exact_risk_gap": numfmt(row["risk_gap_exact"]),
+            }
+        )
+    return selected
+
+
+def table_b7_constrained_product(results_dir: Path) -> list[dict[str, object]]:
+    rows = read_csv(results_dir / "b7_constrained_product" / "b7_constrained_product_formal_summary.csv")
+    selected = []
+    for row in rows:
+        selected.append(
+            {
+                "source_model": row["source_model"],
+                "decoded_legal_rate": numfmt(row["decoded_legal_rate"]),
+                "token_accuracy": numfmt(row["token_accuracy"]),
+                "entity_F1": numfmt(row["entity_F1"]),
+                "uses_event_training": row["uses_event_training"],
+                "uses_event_mass_for_decoding": row["uses_event_mass_for_decoding"],
+            }
+        )
+    return selected
+
+
+def table_r7_sensitivity(results_dir: Path) -> list[dict[str, object]]:
+    derisk_path = results_dir / "r7_sensitivity" / "r7_sensitivity_derisk_key_rows.csv"
+    rows = read_csv(derisk_path if derisk_path.is_file() else results_dir / "r7_sensitivity" / "r7_sensitivity_formal_key_rows.csv")
+    selected = []
+    for row in rows:
+        selected.append(
+            {
+                "task": row["task"],
+                "variant": row["variant"],
+                "runs": row["runs"],
+                "P_event": numfmt(row["P_event"]),
+                "delta_P_event": numfmt(row["delta_P_event"]),
+                "delta_legal_rate": numfmt(row["delta_legal_rate"]),
+                "delta_char_acc": numfmt(row.get("delta_char_acc", "")),
+                "delta_exact_acc": numfmt(row["delta_exact_acc"]),
+                "boundary": row["boundary"],
+            }
+        )
+    return selected
+
+
 def write_table_set(output_dir: Path, name: str, title: str, rows: list[dict[str, object]]) -> None:
     write_csv(output_dir / f"{name}.csv", rows)
     write_markdown(output_dir / f"{name}.md", title, rows)
@@ -233,6 +376,10 @@ def write_index(output_dir: Path, names: Iterable[str], commit: str) -> None:
         "",
         "This is table-generation provenance, not a claim that later documentation-only",
         "handoff commits changed the curated numeric evidence.",
+        "",
+        "`table_6_public_conll2000` contains formal public-case evidence only.",
+        "`table_6a_public_conll2000_smoke` is smoke/provenance only and must not be used",
+        "as formal multiseed evidence.",
         "",
         "| Table | CSV | Markdown |",
         "|---|---|---|",
@@ -272,6 +419,20 @@ def main() -> None:
         "table_3_event_training_signal": ("R1/R2/R4 Event-Mass Movement", table_training(results_dir)),
         "table_4_diagnostic_ranking": ("R6a Diagnostic Ranking", table_diagnostic(results_dir)),
         "table_5_complexity_scaling": ("R8 Complexity Scaling", table_complexity(results_dir)),
+        "table_6_public_conll2000": (
+            "CoNLL2000 Public BIO/Chunking Formal Case",
+            table_public_conll2000(results_dir),
+        ),
+        "table_6a_public_conll2000_smoke": (
+            "CoNLL2000 Public BIO/Chunking Smoke Provenance",
+            table_public_conll2000_smoke(results_dir),
+        ),
+        "table_7_public_uncertainty": ("CoNLL2000 Public Uncertainty Boundary", table_public_uncertainty(results_dir)),
+        "table_8_b7_constrained_product": (
+            "B7 Constrained-Product Decoding Baseline",
+            table_b7_constrained_product(results_dir),
+        ),
+        "table_9_r7_sensitivity": ("R7 Lambda / Rule Sensitivity", table_r7_sensitivity(results_dir)),
     }
     for name, (title, rows) in tables.items():
         write_table_set(output_dir, name, title, rows)

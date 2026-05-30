@@ -129,7 +129,7 @@ Ganchev et al. 2010 introduced posterior regularization as a framework for incor
 
 | Ganchev et al. 2010 / Posterior Regularization | This Work |
 |---|---|
-| constrains or projects posteriors according to expectation-style constraint sets | defines an explicit regular-language event probability under the original CRF posterior |
+| constrains or projects posteriors according to expectation-style constraint sets | formalizes and studies a reportable regular-language event probability under the original CRF posterior |
 | primarily an optimization framework for posterior constraints | an algebraic posterior-event object with audit semantics |
 | constraints influence training/inference objectives | `P_theta(L|x)` can be reported as a scalar diagnostic even without changing decoding |
 | does not center the distinction between legal decoded output and low original posterior event mass | this distinction is the main empirical and conceptual object |
@@ -348,7 +348,7 @@ Small-field auxiliary evidence; legal rate often saturated.
 Claim:
 
 ```text
-Low event mass is a rule-specific posterior-consistency signal with positive exact-error ranking value across field-style tasks.
+Low event mass is a rule-specific posterior-consistency signal with positive exact-error ranking value in the evaluated field-style diagnostics.
 ```
 
 Key reanalysis:
@@ -380,28 +380,77 @@ Boundary:
 Not optimized runtime, GPU, or low-rank evidence.
 ```
 
-### 5.8 Public CoNLL2000 BIO/Chunking Smoke
+### 5.8 Public CoNLL2000 BIO/Chunking Formal Case
 
 Claim:
 
 ```text
-The public BIO/chunking smoke provides an additional structured-prediction
-boundary case: B4 can move posterior event mass upward while task metrics do
-not improve.
+The public BIO/chunking formal case provides an additional structured-prediction
+audit case: B4 moves posterior BIO event mass upward, B7 constrained-product
+decoding produces legal outputs, and the original posterior event mass remains
+separate from decoded legality.
 ```
 
-Key local smoke:
+Key formal run:
 
 ```text
-B0 P(BIO|x)=0.7303, hidden conflict=0.4125, span F1=0.7345
-B4 P(BIO|x)=0.8078, hidden conflict=0.2125, span F1=0.7219
+B0 P(BIO|x)=0.9762, hidden conflict=0.0240, span F1=0.7773
+B4 P(BIO|x)=0.9953, hidden conflict=0.0040, span F1=0.7936
 B7 constrained-product legality=1.0000
 ```
 
 Boundary:
 
 ```text
-Smoke only, not a full benchmark and not task-improvement evidence.
+One frozen public case-study configuration, not SOTA, benchmark superiority,
+or proof that event training generally improves task metrics.
+The three-seed CoNLL2000 full run is pending; the current tiny three-seed smoke
+validates plumbing only and is not formal evidence.
+```
+
+Public-case uncertainty boundary:
+
+```text
+Event risk has positive exact-error ranking signal in the public case
+(B0 AUROC 0.7202; B4 AUROC 0.6861), but entropy and max-probability
+uncertainty baselines are stronger. Do not claim uncertainty dominance.
+```
+
+### 5.9 R7 Lambda / Rule Sensitivity And Negative Boundary
+
+Claim:
+
+```text
+Event loss can move posterior event mass, but its task effect depends on the
+rule and lambda. A rule that is weakly related or misleading for the task can
+raise event mass while degrading task metrics.
+```
+
+Key derisk row:
+
+```text
+product_code_swapped_rule, B4 lambda 1.0:
+delta P(event)=+0.9485
+delta legal rate=+0.9716
+delta char accuracy=-0.5524
+delta exact accuracy=-0.0816
+```
+
+Provenance:
+
+```text
+wrapped formal run:
+experiments/runs/local_checks/r7_sensitivity_derisk_formal_wrapped
+config: experiments/configs/exp7/r7_sensitivity_formal.yaml
+returncode: 0
+duration_seconds: 28.276712
+```
+
+Boundary:
+
+```text
+This is evidence against an accuracy-method reading of event loss. It supports
+only a training-signal and audit-design interpretation.
 ```
 
 ## 6. Discussion
@@ -424,12 +473,12 @@ Use:
 Must include:
 
 - missing R3 low-label/unlabeled sensitivity;
-- missing R7 broader lambda/rule sensitivity;
-- pending B7 faithful WFST-style baseline;
 - not a new automata-inference algorithm;
 - not a replacement for constrained decoding, WFST methods, constrained CRFs, or RegCCRF;
 - not an uncertainty replacement; R6a shows generic uncertainty baselines are stronger overall;
-- B7/public stronger case/sensitivity evidence remains pending unless implemented in the final package;
+- B7 is a constrained-product decoding baseline, not a full WFST toolkit;
+- public CoNLL2000 remains one frozen formal configuration unless the pending three-seed full run is completed;
+- R7 sensitivity includes negative/event-task tradeoff boundary evidence and is not benchmark-superiority evidence;
 - no benchmark superiority;
 - WNUT R5a is diagnostic-stress evidence, not a performance result;
 - R8 is reference CPU scaling only;
@@ -454,4 +503,4 @@ Appendix contents:
 4. full configs and run manifests;
 5. result-to-claim audit tables;
 6. additional diagnostic cases;
-7. B7 design discussion if not implemented.
+7. B7 constrained-product design and scoped baseline discussion.

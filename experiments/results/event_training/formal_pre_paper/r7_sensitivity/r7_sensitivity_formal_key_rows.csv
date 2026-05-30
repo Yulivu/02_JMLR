@@ -1,0 +1,7 @@
+task,variant,runs,P_event,delta_P_event,delta_legal_rate,delta_exact_acc,boundary
+date,B0_unconstrained,10,0.7135713589727879,0.0,0.0,0.0,ordinary
+date,B4_semi_event_1.0,10,0.9738333622455597,0.2602620032727718,0.1948,0.1996,ordinary
+product_code,B0_unconstrained,10,0.7764831666231156,0.0,0.0,0.0,ordinary
+product_code,B4_semi_event_1.0,10,0.9843630736351013,0.20787990701198578,0.03280000000000002,0.024800000000000003,ordinary
+stock_like_digits,B0_unconstrained,10,0.9191903473377228,0.0,0.0,0.0,legal-rate-not-useful
+stock_like_digits,B4_semi_event_1.0,10,0.9960511068820953,0.07686075954437258,0.0,0.0872,legal-rate-not-useful

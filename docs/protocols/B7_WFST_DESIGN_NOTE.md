@@ -1,6 +1,6 @@
 # B7 WFST-Style Design Note
 
-Generated: 2026-05-28
+Generated: 2026-05-30
 
 ## Decision
 
@@ -12,7 +12,7 @@ used for superiority claims.
 
 ## Why B7 Matters
 
-A reviewer may ask whether this paper is only constrained decoding in another form. B1/B3 already test hard-constrained decoding, but B7 would address stronger WFST-style constrained structured-method pressure.
+A reviewer may ask whether this paper is only constrained decoding in another form. B1/B3 already test hard-constrained decoding; B7 now adds a faithful constrained-product decoding baseline while keeping the claim scoped away from full WFST-system replacement.
 
 ## What B7 Would Need To Be
 
@@ -29,7 +29,9 @@ Implemented local path:
 ```text
 src/tensor_crf_jmlr/event_training/constrained_product_baseline.py
 experiments/configs/exp7/b7_constrained_product_smoke.yaml
+experiments/configs/exp7/b7_constrained_product_formal.yaml
 experiments/suites/b7_constrained_product_plan.yaml
+experiments/results/event_training/formal_pre_paper/b7_constrained_product/B7_CONSTRAINED_PRODUCT_FORMAL_AUDIT.md
 ```
 
 Name in paper tables:
@@ -54,12 +56,15 @@ Avoid:
 - a baseline that changes data splits or label vocabulary;
 - a baseline used to claim superiority without faithful implementation.
 
-## Current Paper Strategy If Full B7 Is Not Run
+## Current Paper Strategy
 
 Safe claim:
 
 ```text
-The paper distinguishes posterior event mass from constrained decoding through B1/B3, R5a, and a local B7 constrained-product smoke if available.
+The paper distinguishes posterior event mass from constrained decoding through
+B1/B3, R5a, and the B7 constrained-product formal run. B7 reports legal output
+behavior and task metrics without using original posterior event mass for
+decoding.
 ```
 
 Unsafe claim:
@@ -68,22 +73,29 @@ Unsafe claim:
 The method outperforms WFST/constrained structured methods.
 ```
 
-## Full-Run Trigger
+## Formal Run Status
 
-Run full B7 only if the final paper needs a reviewer-facing constrained-structured baseline row or claims:
+Completed in the CPU upgrade block:
 
 ```text
-empirical superiority over constrained structured methods
+raw bundle: experiments/runs/autodl_jmlr_block/jmlr_cpu_upgrade/b7_constrained_product_formal
+curated audit: experiments/results/event_training/formal_pre_paper/b7_constrained_product/B7_CONSTRAINED_PRODUCT_FORMAL_AUDIT.md
 ```
 
-or if external review says:
+Observed rows:
 
 ```text
-the distinction from constrained decoding is not credible without a WFST-style baseline.
+B0 source: legal rate 1.0000, token accuracy 0.8841, entity F1 0.1486
+B4 source: legal rate 1.0000, token accuracy 0.8838, entity F1 0.1688
 ```
 
-## Recommended Text If B7 Is Omitted
+## Recommended Text If Full WFST Systems Are Omitted
 
 ```text
-We include hard-constrained decoding baselines to separate output legality from posterior consistency. A faithful comparison to full WFST-style constrained training or inference systems is outside the present scope because our contribution is not a replacement decoder; it is an event probability under the original posterior. We therefore avoid claims of superiority over constrained structured methods.
+We include hard-constrained and constrained-product decoding baselines to
+separate output legality from posterior consistency. A faithful comparison to
+full WFST-style constrained training systems is outside the present scope
+because our contribution is not a replacement decoder; it is an event
+probability under the original posterior. We therefore avoid claims of
+superiority over constrained structured methods.
 ```

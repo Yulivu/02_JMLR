@@ -1,0 +1,14 @@
+id: public_conll2000_chunking_multiseed_smoke
+module: tensor_crf_jmlr.event_training.public_sequence_labeling_case
+args:
+  seeds:
+    - 0
+    - 1
+    - 2
+  train_size: 120
+  unlabeled_size: 120
+  dev_size: 120
+  max_len: 50
+  epochs: 1
+  lr: 0.05
+  use_features: true

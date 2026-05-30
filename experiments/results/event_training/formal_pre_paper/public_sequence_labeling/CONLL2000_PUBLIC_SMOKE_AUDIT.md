@@ -1,5 +1,7 @@
 # CoNLL2000 Public Sequence Labeling Smoke Audit
 
+Superseded for main evidence by `CONLL2000_PUBLIC_FORMAL_AUDIT.md`. Keep this file only as local smoke-test provenance.
+
 Updated: 2026-05-30
 
 This is a local smoke run for the optional public BIO/chunking case. It is not a formal benchmark result and must not be used for superiority claims.
@@ -57,7 +59,7 @@ Task metrics decrease slightly in this smoke. Do not claim benchmark superiority
 
 ```text
 public_case_smoke = passed
-public_case_full_run = pending
+public_case_full_run = superseded by CONLL2000_PUBLIC_FORMAL_AUDIT.md
 uncertainty_fields_for_public_case = implemented in runner and present in smoke raw bundle
 ```
 

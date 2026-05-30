@@ -58,7 +58,7 @@ Current local hashes:
 | `hidden_conflict_rate` | constrained legal but original posterior event mass below threshold |
 | `B4 delta` | event-mass movement relative to B0 |
 
-Uncertainty baselines should be added only after the public case emits per-case uncertainty fields; until then mark them pending.
+The formal public run emits per-case uncertainty fields and the curated analysis compares event risk against entropy, margin, and max-probability uncertainty baselines.
 
 ## Smoke Command
 
@@ -93,7 +93,52 @@ superiority result.
 ## Full-Run Command
 
 ```powershell
-python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_formal.yaml --out-dir experiments/runs/autodl_jmlr_block/public_sequence_labeling/conll2000_chunking
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_formal.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_cpu_upgrade/public_conll2000_chunking_formal
+```
+
+Formal result:
+
+```text
+raw bundle: experiments/runs/autodl_jmlr_block/jmlr_cpu_upgrade/public_conll2000_chunking_formal
+curated audit: experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_FORMAL_AUDIT.md
+```
+
+Key formal numbers:
+
+```text
+B0 P(BIO|x)=0.9762, hidden conflict=0.0240, span F1=0.7773
+B4 P(BIO|x)=0.9953, hidden conflict=0.0040, span F1=0.7936
+B7 legality=1.0000
+```
+
+## Multiseed Status
+
+The runner supports explicit seeds and a three-seed full config:
+
+```text
+experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml
+experiments/configs/exp7/public_conll2000_chunking_multiseed_smoke.yaml
+```
+
+Completed local tiny smoke:
+
+```powershell
+python -m tensor_crf_jmlr.event_training.public_sequence_labeling_case --output-dir experiments/runs/local_checks/public_conll2000_multiseed_tiny_smoke --seeds 0 1 2 --train-size 30 --unlabeled-size 30 --dev-size 30 --max-len 40 --epochs 1 --lr 0.05 --use-features
+```
+
+Curated tiny-smoke audit:
+
+```text
+experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_MULTISEED_TINY_SMOKE_AUDIT.md
+```
+
+The tiny smoke validates plumbing only and is not formal evidence. Full
+three-seed command for the CPU box:
+
+```bash
+cd /root/autodl-tmp/02_JMLR
+git pull --ff-only origin master
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
 ```
 
 ## Claim Boundary
@@ -101,7 +146,7 @@ python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7
 Allowed after audited results:
 
 ```text
-The public BIO/chunking case provides an additional structured-prediction audit of original posterior event mass, constrained decoded legality, B4 event-mass movement, and B7 constrained-product behavior.
+The public BIO/chunking case provides an additional structured-prediction audit of original posterior event mass, constrained decoded legality, B4 event-mass movement, and B7 constrained-product behavior under one frozen formal configuration.
 ```
 
 Forbidden:

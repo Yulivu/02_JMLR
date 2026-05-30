@@ -1,6 +1,6 @@
 ﻿# Evidence And Audit
 
-生成时间：2026-05-26
+生成时间：2026-05-30
 
 本文档合并当前 evidence table、claim-evidence matrix、baseline fairness、diagnostic、code/result audit 和 gate 状态。它不是最终论文结论。
 
@@ -27,7 +27,7 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 - full training system；
 - benchmark；
 - speed/memory superiority；
-- JMLR-ready。
+- submission-ready paper package。
 
 ## 2. Claim-Evidence Matrix
 
@@ -41,8 +41,8 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | weak/semi-supervised format signal | partial | semi-real/real-source B4 positive; WNUT17 R5a formal positive for posterior BIO mass | broader formal blocks beyond R5 |
 | hard constraint 与 posterior training 不同 | supported | constrained metrics, conflict cases | explicit B1/B3 rows preferred |
 | risk diagnostic | partial positive | bottom/top diagnostic | expand all tasks/baselines |
-| B4 empirically superior | not supported | B5/B6 competitive; R5b does not improve NER F1 | stronger baseline block |
-| JMLR-ready empirical package | not yet | R5/R1/R2/R4/R6a/R8 audited | external review, final tables, proof polish, related work |
+| B4 empirically dominant | not supported | B5/B6 competitive; R5b does not improve NER F1 | keep event training as secondary |
+| submission-ready empirical package | not yet | R5/R1/R2/R4/R6a/R8/B7/public/R7 audited | external review, final tables, proof polish, related work |
 
 ## 3. Evidence Summary
 
@@ -61,9 +61,12 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | P6 R1 controlled formal | B4 raises posterior event mass across controlled formats | controlled structural evidence only |
 | P6 R2 semi-real formal | B4 raises posterior event mass across amount/date/dose/product_code | task metrics vary; no superiority claim |
 | P6 R4 real-source formal | B4 raises posterior event mass across invoice/stock small fields | legal rate is saturated or near-saturated |
-| P6 R6a diagnostic formal | bottom event-mass quantile has higher exact/char error than top quantile across field-style tasks | diagnostic evidence only; not task-superiority evidence |
+| P6 R6a diagnostic formal | bottom event-mass quantile has higher exact/char error than top quantile in the evaluated field-style diagnostics | diagnostic evidence only; not task-superiority evidence |
 | P6 R6a diagnostic reanalysis | AUROC `0.7088`, AUPRC `0.8470`; exact error falls from `0.8862` in lowest event-mass decile to `0.2624` in highest decile | ranking/risk evidence only; not calibration |
 | P6 R8 complexity formal | reference product-transfer scaling measured across length/labels/DFA states/context order | not optimized benchmark, GPU, or low-rank evidence |
+| B7 constrained-product formal | legal rate `1.0000`; event mass is not used for decoding | constrained-product decoding baseline only; not full WFST |
+| Public CoNLL2000 formal | one frozen public BIO/chunking case with event-mass movement and B7 legal decoding | not SOTA or benchmark superiority |
+| R7 sensitivity formal + derisk | lambda/rule sensitivity plus legal-rate-not-useful and event/task tradeoff boundaries | boundary evidence only; `product_code_swapped_rule` shows event mass can rise while task metrics fall |
 
 ## 4. Important Numbers
 
@@ -154,7 +157,7 @@ Current evidence can support:
 Current evidence does not support:
 
 - benchmark superiority;
-- JMLR-ready submission claim;
+- submission-ready claim;
 - full real-task usefulness;
 - B4 improving NER F1 on WNUT17;
 - comprehensive superiority over hard constraint / WFST / posterior regularization / rule-feature;
@@ -174,7 +177,8 @@ Current evidence does not support:
 | WNUT17 task viability | feature CRF gives B0 entity F1 `0.1660` over 10 formal seeds | task regime saturates `P(BIO|x)`, so keep separate from hidden-conflict stress |
 | retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
-| AutoDL formal block | JMLR needs scale and seeds | run only after smoke gate |
+| CoNLL2000 multiseed public case | one-seed formal evidence is helpful but thin | run 3-seed CPU/HPC command if external review says one frozen case is too weak |
+| final R7 reproducibility packaging | derisk run is curated as a local direct run | rerun through the suite wrapper if a submission package requires uniform metadata |
 
 ## 9. Gate
 
@@ -189,11 +193,12 @@ GO: R5 WNUT17 formal AutoDL runs completed and audited.
 GO: P6 R1/R2/R4 formal AutoDL runs completed and audited.
 GO: P6 R6a diagnostic AutoDL run completed and audited.
 GO: P6 R8 complexity AutoDL run completed and audited.
-GO: pause HPC and enter local pre-paper evidence gate.
-HOLD: paper-writing.
+GO: B7/public/R7 CPU-upgrade formal runs completed and curated.
+GO: R7 derisk boundary run completed and curated locally.
+GO: draft with caveats after closest-prior review.
 HOLD: benchmark superiority.
-HOLD: JMLR-ready claim.
-HOLD: treating R5 as sufficient for full P6/JMLR empirical package.
-HOLD: new HPC jobs until R3/R7/B7 need is decided locally.
+HOLD: submission-ready claim.
+HOLD: treating R5 or one public case as sufficient for broad task usefulness.
+HOLD: new HPC jobs until external review identifies a concrete missing experiment.
 HOLD: treating retail_fields_v1 as the primary public benchmark.
 ```

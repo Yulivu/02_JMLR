@@ -7,4 +7,5 @@ args:
     - easy_saturated
     - medium
     - hard
+    - irrelevant_rule
   workers: 2

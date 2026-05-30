@@ -1,6 +1,6 @@
 # Paper-Writing Handoff
 
-Updated: 2026-05-29
+Updated: 2026-05-30
 
 This document is the main handoff for a supervisor or paper writer. It summarizes what the project is, what story it can safely tell, where the experiments live, and which claims must not be made.
 
@@ -42,7 +42,7 @@ The story should be:
 | `P_theta(L|x)` is a well-defined finite CRF posterior event object. | Strong. | `docs/manuscript/THEORY_PROOF_PROSE.md`; unit tests. |
 | Product transfer computes event mass exactly in the finite setup. | Strong. | `src/tensor_crf_jmlr/posterior_event_algebra/`; proof prose; tests. |
 | Decoded legality and posterior consistency differ. | Supported. | R5a diagnostic stress: legal constrained output can coexist with low `P(BIO|x)`. |
-| Event training can raise posterior event mass in audited settings. | Supported but narrow. | R5a, R1/R2/R4 audits. |
+| Event training can raise posterior event mass in audited settings. | Supported but narrow. | R5a, R1/R2/R4, public CoNLL2000, and R7 audits; R7 derisk shows this can harm task metrics when the rule is misleading. |
 | Event mass is a rule-specific posterior-consistency signal with positive risk-ranking value. | Supported but not dominant. | R6a AUROC/AUPRC and uncertainty-baseline comparison. |
 | Product-state scaling is discussable conservatively. | Supported as reference scaling, not optimized runtime superiority. | R8 complexity audit. |
 
@@ -58,6 +58,7 @@ Do not write the paper as any of the following:
 - calibration paper;
 - tensor-rank or MPO main-contribution paper;
 - low-rank advantage paper.
+- submission-ready package without final proof/related-work/reproducibility review.
 
 ## Experimental Evidence Snapshot
 
@@ -70,6 +71,9 @@ Do not write the paper as any of the following:
 | R4 real-source small | Small real-source auxiliary evidence. | Supports field-style applicability, not broad benchmark claims. |
 | R6a diagnostic | Risk/audit analysis. | Event mass has positive rule-specific ranking signal, but generic uncertainty baselines are stronger. |
 | R8 complexity | Scaling reference. | Product-state scaling should be described conservatively. |
+| B7 constrained-product | Decoding comparison object. | Legal decoding can be reported without using original posterior event mass. |
+| Public CoNLL2000 | Public BIO/chunking audit case. | Helpful structured-prediction case, but one frozen configuration until multiseed full run is completed. |
+| R7 sensitivity | Lambda/rule boundary study. | Includes a wrapped-formal irrelevant-rule derisk run: B4 lambda 1.0 raises `P(event)` by `+0.9485` while char accuracy drops `-0.5524` and exact accuracy drops `-0.0816`. |
 
 ## Where Things Are
 
@@ -110,3 +114,18 @@ The largest JMLR risk is significance: a reviewer may say the computation is sta
 The second risk is empirical strength. R6a shows positive signal but generic uncertainty baselines are stronger. The paper should present this as a boundary result: event mass is interpretable and rule-specific, not a universal uncertainty replacement.
 
 The third risk is overclaiming event training. Event loss is a computable training signal, but the current evidence does not justify a general task-accuracy improvement claim.
+
+The main pending empirical option is the CoNLL2000 three-seed full public case. The existing tiny three-seed run is a wrapped plumbing smoke only; do not cite it as formal evidence. If external review says one frozen public configuration is too fragile, run:
+
+```bash
+cd /root/autodl-tmp/02_JMLR
+git pull --ff-only origin master
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+```
+
+Then curate it with:
+
+```bash
+python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+python scripts/analysis/generate_paper_tables.py
+```

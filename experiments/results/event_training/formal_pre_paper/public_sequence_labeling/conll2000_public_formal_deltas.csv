@@ -1,0 +1,6 @@
+comparison,metric,B0,B4,delta
+B4_semi_event_0.1 - B0_unconstrained,P_BIO,0.9761971407011152,0.9953035919368267,0.01910645123571153
+B4_semi_event_0.1 - B0_unconstrained,hidden_conflict,0.024,0.004,-0.02
+B4_semi_event_0.1 - B0_unconstrained,unconstrained_legal,0.98,1.0,0.020000000000000018
+B4_semi_event_0.1 - B0_unconstrained,token_acc,0.8622601133137769,0.8680994608109337,0.005839347497156755
+B4_semi_event_0.1 - B0_unconstrained,span_F1,0.777271132935812,0.793629902605949,0.016358769670137052

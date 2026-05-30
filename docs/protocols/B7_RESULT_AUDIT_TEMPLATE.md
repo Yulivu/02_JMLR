@@ -2,7 +2,7 @@
 
 Updated: 2026-05-30
 
-This template records the intended paper row schema for B7. Smoke outputs under `experiments/runs/` are local validation only and remain ignored by Git.
+This template records the intended paper row schema for B7. Formal B7 evidence is now curated in `experiments/results/event_training/formal_pre_paper/b7_constrained_product/B7_CONSTRAINED_PRODUCT_FORMAL_AUDIT.md`; this file remains a schema for future reruns.
 
 ## Paper Table Row Schema
 

@@ -1,6 +1,6 @@
 # Paper Positioning
 
-Generated: 2026-05-28
+Generated: 2026-05-30
 
 ## 1. Recommended Title Direction
 
@@ -83,7 +83,7 @@ with low original posterior event mass.
 | confidence calibration | are predicted probabilities calibrated? | does a structured rule receive posterior mass? |
 | Lagrangian relaxation | how do we optimize a constrained objective? | how do we audit posterior consistency without replacing the posterior? |
 
-The paper should proactively acknowledge that the computational primitive is adjacent to CRF x automaton marginal inference. The novelty claim should be the object and audit semantics, not that product inference itself is new.
+The paper should proactively acknowledge that the computational primitive is adjacent to CRF x automaton marginal inference. The contribution claim should be the object and audit semantics, not that product inference itself is new.
 
 Formula distinction:
 
@@ -108,7 +108,7 @@ Posterior regularization is the closest conceptual neighbor. The safe boundary i
 
 ```text
 Posterior regularization constrains or projects posterior distributions during learning/inference.
-This work defines an explicit regular-language event probability under the original CRF posterior and uses it as an audit scalar.
+This work formalizes and studies a reportable regular-language event probability under the original CRF posterior as an audit scalar.
 ```
 
 Do not say posterior regularization cannot express constraints. Say instead:
@@ -128,6 +128,9 @@ Main paper spine:
 | Distinction from constrained decoding / constrained CRF | show the object answers posterior mass, not best legal output or support restriction |
 | Event-loss gradient / training signal | show `-log P_theta(L|x)` has a finite expectation-difference gradient under explicit assumptions |
 | Risk diagnostic evidence | show event mass is a rule-specific posterior-consistency signal with positive risk-ranking value |
+| Public structured-prediction case | report CoNLL2000 BIO/chunking as an audit case, not a benchmark-superiority case |
+| Constrained-product decoding baseline | report B7 as legal decoding behavior separated from original posterior event mass |
+| Lambda/rule sensitivity | show event-mass movement depends on lambda and rule difficulty, including legal-rate-not-useful and event/task tradeoff boundary cases |
 | Complexity sanity | report conservative product-state scaling |
 
 Event training should be framed as a secondary contribution. It demonstrates that the event object is trainable and can move posterior mass; it is not an accuracy method and should not be sold as the main empirical result.
@@ -177,6 +180,28 @@ reference CPU complexity sanity
 not optimized speed or low-rank evidence
 ```
 
+Public CoNLL2000:
+
+```text
+public structured-prediction audit case
+not SOTA, benchmark superiority, or a proof that event training generally improves task metrics
+```
+
+B7:
+
+```text
+faithful constrained-product decoding baseline
+not a full WFST toolkit, constrained-CRF replacement, or event-mass advantage claim
+```
+
+R7:
+
+```text
+lambda/rule sensitivity, including an intentionally misleading-rule boundary
+where event mass rises while task metrics fall
+not an accuracy-method claim
+```
+
 ## 8. Required Narrative Discipline
 
 Every section should answer at least one:
@@ -203,7 +228,7 @@ Do not claim:
 - arbitrary low-rank advantage;
 - tensor rank / MPO as main paper identity;
 - optimized runtime superiority;
-- JMLR-ready without external proof/positioning review.
+- submission-ready without external proof/positioning review.
 
 ## 10. Most Dangerous Objection
 

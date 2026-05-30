@@ -1,91 +1,156 @@
 # Related Work Draft
 
-Generated: 2026-05-28
+Generated: 2026-05-30
 
-This is prose for paper drafting. It is intentionally conservative about novelty.
+This draft is written for submission-risk control. It deliberately concedes close prior art and avoids positioning the paper as a new automata-inference, constrained-decoding, weak-supervision, or uncertainty method.
 
 ## Constrained Decoding And Automata-Based Inference
 
-Constrained decoding and WFST-style methods are a natural point of comparison because they also combine sequence models with symbolic structure. This neighborhood includes linear-chain CRFs (Lafferty, McCallum, and Pereira, 2001), weighted finite-state transducer methods for sequence modeling and decoding (Mohri, Pereira, and Riley, 2002), and automata-constrained dynamic programs for structured prediction. In these methods, the central object is usually the decoded output under a constraint: the inference procedure searches over legal paths, repairs invalid outputs, or restricts the output space to satisfy a formal rule. This is the right tool when the goal is output validity.
+Constrained decoding and WFST-style methods are a direct neighbor. Linear-chain CRFs, finite-state sequence models, and WFST methods already combine statistical sequence scores with automata-like structure. These methods are appropriate when the goal is to search over legal paths, repair invalid outputs, or enforce a regular constraint at decode time.
 
-Our object is different. We ask how much probability mass the original CRF posterior assigns to a regular-language event. A hard-constrained decoder can return a legal output while the original posterior still assigns low mass to legal structures. Thus decoded legality and posterior consistency are distinct. We use constrained decoding baselines to expose this difference rather than to claim that constrained decoding is ineffective.
+This paper does not claim that automata-constrained inference is new. It uses the familiar CRF x automaton computational neighborhood to make a different quantity explicit: the probability mass assigned by the original CRF posterior to a regular-language event. A constrained decoder answers:
 
-We do not claim that automata product inference is new. The computational construction is adjacent to standard CRF x automaton dynamic programming. The contribution is to make the regular-language event probability under the original posterior the central semantic object, and to study it as an audit, training, and diagnostic signal.
+```text
+What is the best legal output?
+```
+
+The audit object answers:
+
+```text
+How much probability does the original posterior assign to legal outputs?
+```
+
+These can disagree. A constrained-product decoder can return a legal BIO sequence while the unconstrained posterior assigns low mass to BIO-legal sequences. The paper uses constrained decoding baselines to expose this distinction, not to argue that constrained decoding is unimportant.
 
 ## Regular-Constrained CRFs
 
-RegCCRF / "Constraining Linear-chain CRFs to Regular Languages" (Papay, Klinger, and Padó, 2021) is especially close and must be handled explicitly. RegCCRF changes the CRF model class so the constrained model assigns zero probability to label sequences outside a regular language. Its central object is a constrained CRF distribution over legal outputs, and its empirical story concerns constrained training and downstream task performance.
+Regular-constrained CRFs, including RegCCRF-style models and work on constraining linear-chain CRFs to regular languages, are among the closest prior systems. They can enforce regular-language support restrictions and train/infer under a constrained CRF distribution. A constrained CRF is often the right modeling choice when illegal structures should receive zero probability by design.
 
-Our paper should not compete with RegCCRF as a better constrained CRF. The boundary is:
+The boundary is the denominator and the object under audit. In a constrained-support CRF, the posterior is normalized over legal structures. In this project, the reported scalar is:
 
 ```text
-RegCCRF defines a constrained model whose support is L.
-This work audits the original unconstrained CRF posterior by reporting P_theta(L|x).
+P_theta(L|x) = Z_{theta,L}(x) / Z_theta(x),
 ```
 
-Thus the denominator in our object remains the original `Z_theta(x)`, not a normalizer after replacing the model support by `L`. This is precisely why `P_theta(L|x)` can be low even when a constrained decoder or constrained model can produce a legal output.
+where `Z_theta(x)` is the original CRF normalizer over all length-`T` label sequences. We therefore do not replace the original model with a constrained-support model before asking the audit question. This distinction is useful precisely when decoded legality or constrained support would hide the fact that the original model placed substantial mass outside the rule.
+
+Allowed wording:
+
+```text
+We audit the original posterior rather than replacing it with a constrained-support posterior.
+```
+
+Forbidden wording:
+
+```text
+We replace RegCCRF or show that constrained CRFs are unnecessary.
+```
 
 ## Posterior Regularization
 
-Posterior regularization, especially the framework of Ganchev et al. (2010), is the closest conceptual neighbor. Posterior regularization introduces constraints on posterior distributions and optimizes models under those constraints. It provides a general training framework for using indirect supervision or structural preferences.
+Posterior Regularization, especially Ganchev et al. (2010), is a close conceptual prior. PR can express posterior constraints, weak structural supervision, and training objectives that encourage model posteriors to satisfy desired properties. The paper should not imply otherwise.
 
-Our emphasis is different. We define an explicit regular-language event probability under the original CRF posterior:
+The distinction is narrower. PR is primarily a framework for constraining, projecting, or regularizing posterior distributions during learning or inference. This project centers a reportable event probability under the original posterior. The scalar can be computed and audited before deciding whether to regularize, project, constrain decoding, or change the model:
 
 ```text
-P_theta(L|x) = Z_{theta,L}(x) / Z_theta(x).
+original-posterior event mass first; training objective second.
 ```
 
-This scalar can be reported without changing the decoder or projecting the posterior. Event loss is one possible use of the object, but it is not the only use. The same quantity can audit hidden posterior conflict: a constrained decoder may return a legal sequence while `P_theta(L|x)` remains low.
+The event loss `-log P_theta(L|x)` is one computable use of the object. It should not be presented as a new weak-supervision family or as a claim that PR cannot express related constraints.
 
-Therefore, the boundary is not that posterior regularization cannot use constraints. It can. The boundary is that our paper centers the explicit event mass assigned by the original posterior to a regular language, and uses this mass to separate posterior consistency from decode-time legality.
+## Generalized Expectation
 
-## Generalized Expectation Criteria
+Generalized Expectation criteria use weak supervision by matching model expectations to target expectations. This is relevant because event loss also uses weak structural information. The safe distinction is that GE is an expectation-matching training criterion, while the main object here is the auditable regular-language event probability under the original posterior.
 
-Generalized expectation criteria (Mann and McCallum, 2010) use weak supervision by encouraging model expectations to match user-specified target expectations. This is related because event training can also be viewed as using weak structural information.
-
-The distinction is that GE is an expectation-matching training criterion, while our main object is the reportable event probability under the original posterior. Event loss is a secondary use of this object. The paper should therefore avoid positioning itself as a new weak-supervision objective family; its primary contribution is posterior regular-language event semantics.
+Event loss should be framed as a secondary training signal derived from the audit object. The paper should avoid suggesting that it introduces a broadly new semi-supervised or weak-supervision framework.
 
 ## Semantic Loss
 
-Semantic Loss (Xu et al., 2018) maps logical constraints to a differentiable loss by penalizing low probability assigned to satisfying assignments. This is conceptually adjacent to `-log P_theta(L|x)`.
+Semantic Loss is especially important to handle directly. It penalizes low probability assigned to assignments that satisfy a logical constraint. Therefore:
 
-The safe boundary is that Semantic Loss is a broad logic-based learning objective, while this paper focuses on CRF posterior semantics for regular-language label events. We use exact finite CRF x DFA transfer to compute the original posterior event mass, and we study how this scalar separates decoded legality from posterior consistency. The event loss is therefore a computable training signal, not the paper's sole identity.
+```text
+-log P_theta(L|x)
+```
 
-## Confidence Calibration
+is conceptually close to semantic loss or to the negative log probability of satisfying a constraint. This must be conceded.
 
-Confidence calibration studies whether model probabilities correspond to empirical correctness, as in classical probability calibration for classifiers (Platt, 1999) and later neural calibration analyses (Guo et al., 2017). This is related because both calibration and posterior event mass involve probabilities attached to model behavior. However, calibration typically concerns the reliability of predicted confidence values, while our question is whether a structured rule receives posterior mass.
+The defensible distinction is not that the loss form is unrelated. The distinction is that this paper studies a finite CRF posterior, regular-language label events, exact CRF x DFA event-mass computation, and an audit protocol separating decoded legality from original posterior consistency. In other words, semantic-loss-like training is not the paper identity; the original-posterior event mass and its audit semantics are.
 
-Our R6a diagnostic results should not be described as calibration. They show that low event mass is useful as a ranking/risk signal in audited field-style tasks. They do not prove calibrated probabilities or universal error prediction.
+Allowed wording:
+
+```text
+The event loss is semantic-loss-like; our emphasis is the CRF posterior audit object and regular-language diagnostic protocol.
+```
+
+Forbidden wording:
+
+```text
+Semantic Loss is unrelated, or event loss is a wholly new objective family.
+```
 
 ## Lagrangian Relaxation And Constrained Optimization
 
-Lagrangian relaxation and constrained optimization methods introduce penalties or dual variables to solve constrained objectives. Dual-decomposition methods for structured prediction and NLP (for example, Rush et al., 2010) are representative of this line. These methods are optimization tools. They are useful when the goal is to enforce or approximately enforce constraints during inference or learning.
+Lagrangian relaxation, dual decomposition, and other constrained-optimization methods introduce penalties, dual variables, or relaxations to solve constrained inference and training problems. These methods are relevant because they also connect symbolic constraints with structured prediction.
 
-By contrast, `P_theta(L|x)` is an event probability under the original posterior. It can be computed before deciding whether to constrain decoding, add a penalty, or change training. This distinction matters because the event mass can reveal that a model does not internally believe a rule even when an optimization procedure returns a legal answer.
+The paper's central object is not an optimizer for a constrained objective. `P_theta(L|x)` can be evaluated under the original CRF posterior without changing the decoder. This makes it useful as an audit scalar: it can reveal whether a legal answer produced by an optimization procedure is supported by the model distribution.
+
+The paper should not claim that penalty or constrained-optimization methods are ineffective. It should say that they answer a different intervention question.
+
+## Calibration And Uncertainty
+
+Calibration and uncertainty-ranking work studies whether model probabilities match empirical correctness, or whether uncertainty scores rank likely errors. This project is not a calibration paper. R6a and the public CoNLL2000 case both show that generic uncertainty baselines such as entropy, margin, and max-sequence-probability scores are stronger than event risk for broad error ranking.
+
+The narrower defensible claim is:
+
+```text
+In the evaluated diagnostics, event risk is a positive rule-specific posterior-consistency signal.
+```
+
+It is not:
+
+```text
+Event risk dominates generic uncertainty, is calibrated confidence, or has robust residual predictive power after controlling for uncertainty.
+```
 
 ## Tensor-Network And uMPS Motivation
 
-Prior tensor-network sequence models, including uMPS-style work, motivate the idea that regular languages can be treated as probabilistic events. This project transfers that view to conditional CRF posteriors. The tensor/rank material in our repository is therefore support for optional appendix discussion, not the paper identity.
+Tensor-network and uMPS work motivates the idea that regular languages can be treated as events in probabilistic sequence models. That motivation is useful, but it should not define the main paper. The current evidence does not establish arbitrary low-rank event transfers, optimized tensor runtime, or a tensor-rank identity for the method.
 
-The main paper should not be framed as a tensor-rank contribution. The safer framing is posterior regular-language event mass for CRFs.
+The main text should keep tensor-network material as motivation or appendix-only support. The main contribution is posterior regular-language event mass for CRF posteriors.
 
-## Summary Boundary
+## Closest Prior Risk Summary
 
-The safest related-work statement is:
+The closest-prior attack memo is:
 
 ```text
-We use a familiar computational neighborhood, CRF x automaton dynamic programming, to define and audit a specific posterior event object. The novelty is not product inference alone; it is the posterior-event semantics, result-to-claim discipline, and empirical demonstration that legal decoded outputs can coexist with low original posterior event mass.
+docs/external_review/CLOSEST_PRIOR_ATTACK_MEMO.md
+```
+
+Its core conclusion is that the paper remains plausible only if it treats product automaton inference as known and makes the contribution about object semantics, audit protocol, and empirical boundaries. The most dangerous objection is:
+
+```text
+This is standard CRF x automaton marginal inference with a new name, plus a semantic-loss-style penalty.
+```
+
+The introduction should preempt that objection with:
+
+```text
+Known product-automaton marginal inference is the computational neighborhood; our focus is the original-posterior regular-language event mass as an auditable semantic object, separated from constrained decoding and constrained-support normalization.
+```
+
+The manuscript must never say:
+
+```text
+We introduce a new product-automaton inference algorithm for CRFs.
 ```
 
 ## Citation Spine To Resolve In BibTeX
-
-Use this as a citation checklist during manuscript writing:
 
 | Area | Anchor citation | Role in this paper |
 |---|---|---|
 | CRFs | Lafferty, McCallum, and Pereira (2001), "Conditional Random Fields" | base conditional sequence model and marginal inference neighborhood |
 | WFST / finite-state methods | Mohri, Pereira, and Riley (2002), "Weighted Finite-State Transducers in Speech Recognition" | automata/product-style constrained decoding neighborhood |
-| regular-constrained CRFs | Papay, Klinger, and Padó (2021), "Constraining Linear-chain CRFs to Regular Languages" | closest constrained-CRF neighbor; support restriction vs original-posterior event mass |
+| regular-constrained CRFs | Papay, Klinger, and Pado (2021), "Constraining Linear-chain CRFs to Regular Languages" | closest constrained-CRF neighbor; support restriction vs original-posterior event mass |
 | posterior regularization | Ganchev et al. (2010), "Posterior Regularization for Structured Latent Variable Models" | closest conceptual neighbor for posterior constraints |
 | generalized expectation | Mann and McCallum (2010), "Generalized Expectation Criteria for Semi-Supervised Learning with Weakly Labeled Data" | weak-supervision expectation criterion boundary |
 | semantic loss | Xu et al. (2018), "A Semantic Loss Function for Deep Learning with Symbolic Knowledge" | logic/event loss boundary |

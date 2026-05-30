@@ -404,6 +404,7 @@ def run_case(
     data_dir: Path,
     output_dir: Path,
     seed: int,
+    seeds: Sequence[int] | None = None,
     train_size: int,
     unlabeled_size: int,
     dev_size: int,
@@ -436,35 +437,37 @@ def run_case(
         vocab_size = len(vocab)
     rows: list[PublicCaseRun] = []
     details: list[PublicCaseDetail] = []
-    for variant_name in ("B0_unconstrained", "B4_semi_event_0.1"):
-        variant = VARIANTS[variant_name]
-        set_seed(seed)
-        model = train_model(
-            labeled,
-            unlabeled,
-            vocab_size=vocab_size,
-            label_names=label_names,
-            variant=variant,
-            seed=seed,
-            epochs=epochs,
-            lr=lr,
-            use_features=use_features,
-        )
-        run, run_details = evaluate(
-            model,
-            dev,
-            label_names=label_names,
-            variant=variant,
-            seed=seed,
-            train_sentences=len(labeled),
-            unlabeled_sentences=len(unlabeled),
-            max_len=max_len,
-            epochs=epochs,
-            use_features=use_features,
-            hidden_conflict_threshold=0.7,
-        )
-        rows.append(run)
-        details.extend(run_details)
+    run_seeds = tuple(seeds) if seeds is not None else (seed,)
+    for run_seed in run_seeds:
+        for variant_name in ("B0_unconstrained", "B4_semi_event_0.1"):
+            variant = VARIANTS[variant_name]
+            set_seed(run_seed)
+            model = train_model(
+                labeled,
+                unlabeled,
+                vocab_size=vocab_size,
+                label_names=label_names,
+                variant=variant,
+                seed=run_seed,
+                epochs=epochs,
+                lr=lr,
+                use_features=use_features,
+            )
+            run, run_details = evaluate(
+                model,
+                dev,
+                label_names=label_names,
+                variant=variant,
+                seed=run_seed,
+                train_sentences=len(labeled),
+                unlabeled_sentences=len(unlabeled),
+                max_len=max_len,
+                epochs=epochs,
+                use_features=use_features,
+                hidden_conflict_threshold=0.7,
+            )
+            rows.append(run)
+            details.extend(run_details)
     write_outputs(output_dir, rows, details)
 
 
@@ -473,6 +476,7 @@ def main() -> None:
     parser.add_argument("--data-dir", default=str(DEFAULT_DATA_DIR))
     parser.add_argument("--output-dir", default="experiments/runs/local_checks/public_conll2000_chunking_smoke")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--seeds", nargs="*", type=int)
     parser.add_argument("--train-size", type=int, default=80)
     parser.add_argument("--unlabeled-size", type=int, default=80)
     parser.add_argument("--dev-size", type=int, default=80)
@@ -485,6 +489,7 @@ def main() -> None:
         data_dir=Path(args.data_dir),
         output_dir=Path(args.output_dir),
         seed=args.seed,
+        seeds=args.seeds,
         train_size=args.train_size,
         unlabeled_size=args.unlabeled_size,
         dev_size=args.dev_size,

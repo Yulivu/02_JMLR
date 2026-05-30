@@ -28,3 +28,45 @@ tasks:
       - formal-plan
       - machine:autodl
     enabled: false
+
+  - id: public_conll2000_chunking_multiseed_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_multiseed_smoke.yaml
+    output_subdir: local_checks/public_conll2000_chunking_multiseed_smoke
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - multiseed
+      - smoke
+      - machine:cpu
+    enabled: true
+
+  - id: public_conll2000_chunking_multiseed_tiny_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_multiseed_tiny_smoke.yaml
+    output_subdir: local_checks/public_conll2000_chunking_multiseed_tiny_smoke
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - multiseed
+      - tiny-smoke
+      - machine:cpu
+    enabled: true
+
+  - id: public_conll2000_chunking_multiseed
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml
+    output_subdir: autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - multiseed
+      - formal-plan
+      - machine:cpu
+    enabled: false
