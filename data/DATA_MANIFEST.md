@@ -9,6 +9,8 @@ after cloning from GitHub or must be uploaded manually with FileZilla/SFTP.
 | `data/raw/wnut17/train.conll` | `wnut17_bio`, future R5 BIO/NER slice | `731820e13f71af324c6b55a1575ec2ce59fbaa2a0806f8f0400b98d56cd6a7a5` | WNUT17 `wnut17train.conll` from `leondz/emerging_entities_17` | tracked in Git; CC-BY 4.0 per upstream README |
 | `data/raw/wnut17/dev.conll` | `wnut17_bio`, future R5 BIO/NER slice | `e053b752b8155113ca66e7db08af5f2f5f43ab993694e4774f1ec5bad42312d8` | WNUT17 `emerging.dev.conll` from `leondz/emerging_entities_17` | tracked in Git; CC-BY 4.0 per upstream README |
 | `data/raw/wnut17/test.conll` | `wnut17_bio`, future R5 BIO/NER slice | `2aa79b764e56ec9264a1b30fdd9b70195bd00ff400b62edd8f399d5f13c178f0` | WNUT17 `emerging.test.annotated` from `leondz/emerging_entities_17` | tracked in Git; do not replace with multi-label `emerging.test.conll` |
+| `data/raw/conll2000_chunking/train.txt` | optional public BIO/chunking case | `82033cd7a72b209923a98007793e8f9de3abc1c8b79d646c50648eb949b87cea` | CoNLL-2000 chunking, fetched by `scripts/data/fetch_conll2000_chunking.py`; official hosts attempted first, GitHub mirror used locally | not tracked; optional local data; review redistribution/citation before committing |
+| `data/raw/conll2000_chunking/test.txt` | optional public BIO/chunking case | `73b7b1e565fa75a1e22fe52ecdf41b6624d6f59dacb591d44252bf4d692b1628` | CoNLL-2000 chunking, fetched by `scripts/data/fetch_conll2000_chunking.py`; official hosts attempted first, GitHub mirror used locally | not tracked; optional local data; review redistribution/citation before committing |
 
 Do not rely on external dataset downloads on AutoDL. If a future dataset is too
 large for GitHub, upload it manually into `data/raw/` and add a manifest row
@@ -20,4 +22,10 @@ WNUT17 can be refreshed from GitHub with:
 python scripts/data/fetch_wnut17.py
 python scripts/data/verify_data.py --strict
 python scripts/data/audit_bio_ner_slice.py --data-dir data/raw/wnut17
+```
+
+CoNLL-2000 chunking optional public-case files can be refreshed with:
+
+```powershell
+python scripts/data/fetch_conll2000_chunking.py
 ```

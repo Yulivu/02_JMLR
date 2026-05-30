@@ -1,0 +1,12 @@
+id: b7_constrained_product_smoke
+module: tensor_crf_jmlr.event_training.constrained_product_baseline
+args:
+  task_kind: wnut17_bio
+  seed: 0
+  train_size: 40
+  unlabeled_size: 40
+  dev_size: 40
+  max_len: 30
+  epochs: 1
+  lr: 0.05
+  include_b4: true

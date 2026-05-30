@@ -1,0 +1,9 @@
+id: r7_sensitivity_smoke
+module: tensor_crf_jmlr.event_training.sensitivity_probe
+args:
+  seed_count: 2
+  quick: true
+  difficulty_levels:
+    - easy_saturated
+    - medium
+    - hard

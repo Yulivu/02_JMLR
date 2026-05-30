@@ -1,0 +1,30 @@
+suite: public_sequence_labeling_plan
+description: Optional public BIO/chunking case study. Missing local data writes pending plan instead of results.
+tasks:
+  - id: public_conll2000_chunking_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_smoke.yaml
+    output_subdir: local_checks/public_conll2000_chunking_smoke
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - smoke
+      - machine:cpu
+      - needs:data/raw/conll2000_chunking/train.txt
+      - needs:data/raw/conll2000_chunking/test.txt
+    enabled: true
+
+  - id: public_conll2000_chunking_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_formal.yaml
+    output_subdir: autodl_jmlr_block/public_sequence_labeling/conll2000_chunking
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - formal-plan
+      - machine:autodl
+    enabled: false

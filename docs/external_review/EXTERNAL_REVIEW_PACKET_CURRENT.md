@@ -57,6 +57,10 @@ the probability mass assigned by the original CRF posterior to label sequences s
 ```
 
 The review should evaluate whether this object and its empirical treatment are sufficient for a methods/auditability manuscript.
+The packet intentionally does not ask the reviewer to treat CRF-DFA product
+automaton marginal inference as new. Known product automaton marginal inference
+is the computational neighborhood; the proposed contribution is object
+semantics, audit protocol, event-loss use, and empirical boundaries.
 
 ## Object Distinctions
 
@@ -74,7 +78,7 @@ Review task: judge whether this distinction is enough to separate the project fr
 The repository currently presents these components:
 
 1. posterior regular-language event mass object;
-2. exact CRF-DFA product-transfer computation;
+2. exact finite CRF-DFA product-transfer computation as theorem foundation;
 3. distinction from constrained decoding and constrained CRFs;
 4. event-loss gradient as a computable training signal;
 5. rule-specific diagnostic evidence;
@@ -100,7 +104,7 @@ Review task: identify whether these distinctions are accurate, sufficient, or ov
 
 | Block | Setting | Reported result | Intended use | Boundary |
 |---|---|---|---|---|
-| Theory | finite `Y,T`, finite scores, complete DFA | exact event mass and product transfer | theorem spine | fixed finite setup |
+| Theory | finite `Y,T`, finite scores, complete DFA, finite-context/local factorization for product transfer | exact event mass and product transfer | theorem spine / formal foundation | arbitrary finite score tables require huge context/table representation; no efficiency claim |
 | Gradient | `Z_{theta,L}(x)>0`, finite differentiable scores | event-loss gradient is posterior expectation minus event-conditioned expectation | training-signal interpretation | no accuracy theorem |
 | R5a WNUT17 diagnostic stress | 10 seeds, word-id tiny CRF, low-data stress | B0 `P(BIO|x)=0.0566`, constrained legality 1; B4 raises event mass to `0.3389` | hidden-posterior-conflict diagnostic | entity F1 is 0; not NER usefulness |
 | R5b WNUT17 feature nonzero-F1 check | 10 seeds, feature CRF | B0 entity F1 `0.1660`; event mass saturated near 0.98 | WNUT slice nonzero-F1 check | no B4 F1 improvement |
@@ -108,6 +112,7 @@ Review task: identify whether these distinctions are accurate, sufficient, or ov
 | R6a diagnostic | 21,000 field-style cases | event risk AUROC `0.7088`, AUPRC `0.8470` | rule-specific posterior-consistency signal | not calibration; generic uncertainty baselines are stronger |
 | R6a uncertainty baselines | same 21,000 cases | entropy/margin/max-probability AUROC about `0.78-0.81` | boundary on diagnostic claim | no uncertainty-superiority or complementarity claim |
 | R8 complexity | reference CPU transfer scaling | product-state scaling measured | complexity discussion | not optimized runtime |
+| Public CoNLL2000 smoke | 80/80/80 local BIO/chunking smoke | B4 raises `P(BIO|x)` from `0.7303` to `0.8078` and reduces hidden conflict from `0.4125` to `0.2125`; token/span metrics dip slightly | public structured-prediction boundary case | smoke only; no benchmark superiority or task-improvement claim |
 
 ## Key Numbers
 
@@ -145,12 +150,12 @@ Review task: determine what diagnostic claim, if any, these numbers support.
 
 The repository currently allows these claims, subject to boundaries in `docs/manuscript/FINAL_CLAIM_TABLE.md`:
 
-- `P_theta(L|x)` is a well-defined finite CRF posterior event probability.
-- CRF x DFA product transfer computes `Z_{theta,L}(x)` exactly under the finite setup.
+- `P_theta(L|x)` is a well-defined finite CRF posterior event probability, used as a formal foundation.
+- CRF x DFA product transfer computes `Z_{theta,L}(x)` exactly under finite-context/local-factor assumptions; this is the known computational neighborhood, not the novelty claim.
 - Hard-constrained decoding and posterior consistency are different objects.
 - Event loss has an expectation-difference gradient under explicit finite assumptions.
 - Semi-event training can raise posterior event mass in audited settings.
-- Low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value in field-style diagnostics.
+- In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal.
 - Product-state scaling can be discussed conservatively.
 
 The repository currently forbids these claims:
@@ -164,6 +169,17 @@ The repository currently forbids these claims:
 - event risk adds robust residual predictive power after controlling for generic uncertainty;
 - optimized runtime superiority;
 - tensor rank / MPO as the main paper identity.
+- product automaton inference itself is new.
+
+## Current Readiness Boundary
+
+```text
+The project is not JMLR-main submission-ready and should not be described as
+JMLR-ready. A defensible main-paper draft still requires B7 or an explicitly
+scoped constrained-product baseline, a stronger public structured-prediction
+case or documented fallback, and sensitivity evidence or an equivalent boundary
+study.
+```
 
 Review task: check whether the allowed list is still too broad, and whether any forbidden claim is implied elsewhere.
 

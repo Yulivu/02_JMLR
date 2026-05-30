@@ -1,0 +1,26 @@
+suite: r7_sensitivity_plan
+description: Lambda and rule-difficulty sensitivity for event loss boundaries.
+tasks:
+  - id: r7_sensitivity_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/r7_sensitivity_smoke.yaml
+    output_subdir: local_checks/r7_sensitivity_smoke
+    tags:
+      - exp7
+      - r7
+      - sensitivity
+      - smoke
+      - machine:cpu
+    enabled: true
+
+  - id: r7_sensitivity_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/r7_sensitivity_formal.yaml
+    output_subdir: autodl_jmlr_block/r7_sensitivity/lambda_rule_difficulty
+    tags:
+      - exp7
+      - r7
+      - sensitivity
+      - formal-plan
+      - machine:autodl
+    enabled: false

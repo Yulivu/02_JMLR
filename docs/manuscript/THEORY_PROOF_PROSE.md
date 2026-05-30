@@ -40,6 +40,13 @@ P_theta(L | x) = Z_{theta,L}(x) / Z_theta(x).
 
 Thus `P_theta(L|x)` is always well-defined in `[0,1]` under the finite setup.
 
+This setup alone defines the posterior event probability. The product-transfer
+computation below additionally assumes a finite-context/local factorization of
+the score. An arbitrary finite score table over `Y^T` can always be represented
+by an exponentially large context or explicit table, but that observation is
+only an expressivity fallback. It is not an efficiency, scaling, or novelty
+claim.
+
 ## 2. Regular-Language Monitor
 
 Let the regular language `L` be recognized by a complete deterministic finite automaton
@@ -92,6 +99,9 @@ G_t(c,j) = exp(phi_t(x,c,j)).
 ```
 
 The finite-context assumption covers the standard first-order linear-chain case and fixed higher-order Markov contexts. It is not a claim about arbitrary unbounded-memory models.
+It is also the assumption under which the product-state scaling discussion is
+meaningful: the product state count scales with the chosen finite context `C`
+and DFA state set `Q`, not with an arbitrary implicit score function.
 
 ## 4. Product Event Transfer
 
@@ -122,7 +132,8 @@ u_0 M_1^L M_2^L ... M_T^L b_L.
 
 ## 5. Exact Event Transfer Theorem
 
-**Theorem.** Under the finite setup above,
+**Theorem.** Under the finite setup above, including the finite-context/local
+factorization in Section 3,
 
 ```text
 u_0 M_1^L M_2^L ... M_T^L b_L = Z_{theta,L}(x).

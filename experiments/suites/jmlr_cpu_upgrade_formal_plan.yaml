@@ -1,0 +1,45 @@
+suite: jmlr_cpu_upgrade_formal_plan
+description: CPU-only formal run package for the JMLR main upgrade gap closure. No GPU is required.
+tasks:
+  - id: public_conll2000_chunking_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/public_conll2000_chunking_formal.yaml
+    output_subdir: autodl_jmlr_block/jmlr_cpu_upgrade/public_conll2000_chunking_formal
+    tags:
+      - exp7
+      - public-case
+      - conll2000
+      - chunking
+      - uncertainty-fields
+      - formal-plan
+      - machine:cpu
+      - needs:data/raw/conll2000_chunking/train.txt
+      - needs:data/raw/conll2000_chunking/test.txt
+    enabled: true
+
+  - id: b7_constrained_product_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/b7_constrained_product_formal.yaml
+    output_subdir: autodl_jmlr_block/jmlr_cpu_upgrade/b7_constrained_product_formal
+    tags:
+      - exp7
+      - b7
+      - constrained-product
+      - wnut17
+      - formal-plan
+      - machine:cpu
+    enabled: true
+
+  - id: r7_sensitivity_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/r7_sensitivity_formal.yaml
+    output_subdir: autodl_jmlr_block/jmlr_cpu_upgrade/r7_sensitivity_formal
+    tags:
+      - exp7
+      - r7
+      - sensitivity
+      - lambda
+      - rule-difficulty
+      - formal-plan
+      - machine:cpu
+    enabled: true

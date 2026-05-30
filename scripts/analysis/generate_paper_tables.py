@@ -69,7 +69,17 @@ def git_commit() -> str:
         )
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
-    return result.stdout.strip()
+    commit = result.stdout.strip()
+    try:
+        status = subprocess.run(
+            ["git", "status", "--short"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return commit
+    return f"{commit}+dirty" if status.stdout.strip() else commit
 
 
 def split_markdown_row(line: str) -> list[str]:
@@ -108,11 +118,12 @@ def parse_markdown_table(path: Path) -> list[dict[str, str]]:
 def table_claims(claims_path: Path) -> list[dict[str, object]]:
     rows = parse_markdown_table(claims_path)
     selected = []
+    included_levels = {"Formal foundation", "Sanity / Appendix", "Appendix"}
     for row in rows:
         if not row.get("Claim ID", "").startswith("C"):
             continue
         level = row.get("Level", "")
-        if not level.startswith("Main"):
+        if not level.startswith("Main") and level not in included_levels:
             continue
         selected.append(
             {

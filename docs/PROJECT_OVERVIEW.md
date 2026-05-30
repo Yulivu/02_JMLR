@@ -28,23 +28,23 @@ The project is no longer an early idea search. It is in the pre-paper review sta
 
 | Area | Status | Notes |
 |---|---|---|
-| theory object | stable | finite CRF posterior event mass and product transfer |
+| theory object | stable with guardrails | finite CRF posterior event mass; product transfer requires finite-context/local factorization |
 | source code | stable for current claims | posterior algebra and event training tests pass |
 | formal evidence | audited | R5, R1/R2/R4, R6a, R8 completed |
-| claim table | frozen for review | conservative main/boundary/appendix split |
+| claim table | updated for review | C1/C2 formal foundation, C7 appendix/sanity, B7/public/sensitivity pending |
 | paper positioning | narrowed | methods/theory/auditability, not benchmark superiority |
 | HPC | paused | no new AutoDL job unless review requires a specific experiment |
-| next step | paper-writer handoff / external review | stress-test novelty, proof assumptions, related work, and empirical framing |
+| next step | full-run decision / external review | stress-test novelty, proof assumptions, related work, empirical framing, and whether B7/public/R7 smoke should become formal runs |
 
 ## Supported Claims
 
 Safe current claims:
 
-- `P_theta(L|x)` is a well-defined finite CRF posterior event probability.
-- Product automaton transfer computes the event numerator exactly under the finite setup.
+- `P_theta(L|x)` is a well-defined finite CRF posterior event probability and formal foundation.
+- Product automaton transfer computes the event numerator exactly under finite-context/local-factor assumptions; the computation sits in the known product automaton marginal-inference neighborhood.
 - Hard-constrained decoding and posterior consistency are different objects.
 - Semi-event training can raise posterior event mass in audited settings.
-- Low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value, but it is not stronger than generic uncertainty baselines in R6a.
+- In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal, but it is not stronger than generic uncertainty baselines in R6a.
 - Reference product-state scaling can be discussed conservatively.
 
 Do not claim:
@@ -52,6 +52,7 @@ Do not claim:
 - benchmark superiority;
 - WNUT17 NER F1 improvement;
 - WFST/constrained-method replacement;
+- product automaton inference itself is new;
 - hard constraints are useless;
 - calibrated confidence;
 - optimized runtime superiority;
@@ -68,6 +69,9 @@ Do not claim:
 | R4 real-source small | auxiliary invoice/stock evidence | small-field scope only |
 | R6a diagnostic | rule-specific risk/audit evidence from event mass | not calibration; not uncertainty-baseline superiority |
 | R8 complexity | product-state scaling evidence | reference CPU only |
+| B7 constrained-product smoke | faithful CRF x BIO-DFA constrained decoding smoke | local smoke only; not full WFST system or superiority evidence |
+| Public CoNLL2000 chunking smoke | public BIO/chunking boundary case | local smoke only; B4 moves event mass but task metrics dip slightly |
+| R7 sensitivity smoke | lambda/rule difficulty boundary evidence | local smoke only; full run pending |
 
 ## Directory Map
 
@@ -126,4 +130,4 @@ uMPS work suggests that regular languages can be treated as probabilistic events
 
 ## Immediate Next Step
 
-External review. Do not run more HPC until review identifies a concrete missing experiment tied to a specific claim.
+External review and full-run decision for B7/public-case/sensitivity. Do not run more HPC until review identifies a concrete missing experiment tied to a specific claim.

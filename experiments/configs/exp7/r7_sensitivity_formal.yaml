@@ -1,0 +1,8 @@
+id: r7_sensitivity_formal
+module: tensor_crf_jmlr.event_training.sensitivity_probe
+args:
+  seed_count: 10
+  difficulty_levels:
+    - easy_saturated
+    - medium
+    - hard

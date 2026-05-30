@@ -28,12 +28,22 @@ P_theta(L|x) = Z_{theta,L}(x) / Z_theta(x)
 
 The paper must stay tied to this object. Claims that do not involve `Z_{theta,L}(x)`, `P_theta(L|x)`, or the product event transfer are outside the main route.
 
+Computation boundary:
+
+```text
+The event probability is defined for any finite score table over Y^T, but the
+efficient product-transfer theorem assumes a finite-context/local factorization.
+An arbitrary finite score can be encoded with an exponentially large
+context/table representation; that fallback is not an efficiency or scaling
+claim.
+```
+
 ## Main Theory Spine
 
 | ID | Statement | Status | Scope |
 |---|---|---|---|
 | T0 | Finite posterior setup is well-defined. | Main | finite `Y,T`, finite scores |
-| T1 | Product automaton transfer computes `Z_{theta,L}(x)` exactly. | Main | complete deterministic DFA, fixed sequence length |
+| T1 | Product automaton transfer computes `Z_{theta,L}(x)` exactly. | Formal foundation | complete deterministic DFA, fixed sequence length, finite-context/local factorization |
 | T2 | Event loss has a finite expectation-difference gradient when `Z_{theta,L}(x)>0`. | Main-with-boundary | computable training signal only |
 | T3 | Conditional nonnegative MPO/rank membership. | Appendix only | explicit construction assumptions required |
 | T4 | Positive-cone transfer approximation controls event mass multiplicatively. | Appendix only | nonnegative matrices; posterior/log versions need denominator and positivity assumptions |
@@ -59,7 +69,10 @@ The product state combines the CRF context and DFA state. Every label sequence m
 Required boundary:
 
 ```text
-The exactness statement assumes finite labels, finite length, finite scores, and a complete deterministic DFA.
+The exactness statement assumes finite labels, finite length, finite scores,
+complete deterministic DFA, and a finite-context/local factorization of the
+score. Product-state scaling applies to the chosen finite-context
+implementation, not to an arbitrary implicit score function.
 ```
 
 ## Event-Loss Gradient

@@ -10,6 +10,10 @@ from tensor_crf_jmlr.event_training.bio_event import (
     bio_transition_allowed,
     extract_strict_bio_spans,
 )
+from tensor_crf_jmlr.event_training.constrained_product_baseline import (
+    constrained_product_viterbi_model,
+    make_bio_dfa,
+)
 from tensor_crf_jmlr.event_training.data_utils import SequenceDataset, filter_dataset_by_length, normalize_bio_dataset
 from tensor_crf_jmlr.event_training.event_crf import TinyLinearChainCRF
 from tensor_crf_jmlr.event_training.formal_validation_runner import (
@@ -158,6 +162,24 @@ class EventCRFTests(unittest.TestCase):
         self.assertGreaterEqual(float(p_event.item()), 0.0)
         self.assertLessEqual(float(p_event.item()), 1.0)
         path, _score = wnut_viterbi(model, word_ids, constrained=True, rule_bias=0.8)
+        labels = [model.label_names[idx] for idx in path]
+        self.assertTrue(bio_sequence_allowed(labels))
+
+    def test_b7_bio_dfa_matches_bio_utility(self):
+        label_names = ("O", "B-X", "I-X", "B-Y", "I-Y")
+        dfa = make_bio_dfa(label_names)
+        for labels in (("O", "B-X", "I-X"), ("B-Y", "O", "B-X"), ("I-X",), ("O", "I-Y")):
+            ids = [label_names.index(label) for label in labels]
+            self.assertEqual(dfa.accepts(ids), bio_sequence_allowed(labels))
+
+    def test_b7_constrained_product_viterbi_returns_legal_path(self):
+        model = TinyLinearChainCRF(vocab_size=4, label_names=("O", "B-X", "I-X"))
+        with torch.no_grad():
+            model.emissions.weight.zero_()
+            model.start[:] = torch.tensor([0.0, -2.0, 3.0])
+            model.transitions.zero_()
+        dfa = make_bio_dfa(model.label_names)
+        path, _score = constrained_product_viterbi_model(model, [1, 2], dfa)
         labels = [model.label_names[idx] for idx in path]
         self.assertTrue(bio_sequence_allowed(labels))
 

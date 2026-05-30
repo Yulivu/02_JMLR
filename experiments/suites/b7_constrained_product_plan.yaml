@@ -1,0 +1,28 @@
+suite: b7_constrained_product_plan
+description: Faithful constrained-product decoding baseline plan. Smoke locally; run formal only after public-case and sensitivity gates are frozen.
+tasks:
+  - id: b7_constrained_product_smoke
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/b7_constrained_product_smoke.yaml
+    output_subdir: local_checks/b7_constrained_product_smoke
+    tags:
+      - exp7
+      - b7
+      - constrained-product
+      - wnut17
+      - smoke
+      - machine:cpu
+    enabled: true
+
+  - id: b7_constrained_product_formal
+    script: scripts/exp1/run_event_training_task.py
+    config: experiments/configs/exp7/b7_constrained_product_formal.yaml
+    output_subdir: autodl_jmlr_block/b7_constrained_product/wnut17_feature
+    tags:
+      - exp7
+      - b7
+      - constrained-product
+      - wnut17
+      - formal-plan
+      - machine:autodl
+    enabled: false

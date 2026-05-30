@@ -18,7 +18,7 @@ Decoded output legality is not posterior consistency.
 
 Draft content:
 
-Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the model assigns to rule-consistent structures. We define `P_theta(L|x)`, the posterior mass that a CRF assigns to a regular-language event `L`, and compute it exactly using a product construction between the CRF state and a deterministic finite automaton. The resulting scalar is a posterior-level semantic object: it can be audited, trained through an event loss, and used as a diagnostic signal. In diagnostic and field-style settings, posterior event mass exposes hidden inconsistency that constrained decoding can mask. The paper is positioned around posterior-event semantics and auditability, not benchmark superiority.
+Structured prediction systems often use hard constraints to ensure that decoded outputs satisfy known rules. This repairs the final prediction but does not reveal how much posterior probability the original model assigns to rule-consistent structures. We formalize and operationalize posterior regular-language event mass as an audit statistic for CRF posteriors, using known product-automaton marginal-inference machinery as the computational foundation. The resulting scalar measures posterior-level rule consistency: it can be audited directly, used in an event loss, and studied as a diagnostic signal. In evaluated diagnostic and field-style settings, posterior event mass exposes cases where legal decoded outputs coexist with low original posterior event mass. The paper is positioned around posterior-event semantics and auditability, not new automata inference or benchmark superiority.
 
 ## 1. Introduction
 
@@ -74,12 +74,12 @@ One might object that `P_theta(L|x)` is merely standard marginal inference after
 
 ### 1.3 Contributions
 
-1. Define regular-language posterior event mass for CRFs.
-2. Prove exact finite product-transfer computation.
-3. Distinguish the posterior-event object from constrained decoding and constrained CRFs.
+1. Formalize posterior regular-language event mass as an audit object for CRF posterior semantics.
+2. Use exact finite product-transfer computation as the theorem foundation, while acknowledging known product automaton marginal inference as the computational neighborhood.
+3. Distinguish posterior event mass from constrained decoding, WFST-style decoding, constrained CRFs, and RegCCRF-style support restriction.
 4. Derive event-loss gradient as a computable expectation-difference training signal.
-5. Provide diagnostic evidence that low event mass is a rule-specific posterior-consistency signal with positive risk-ranking value in audited field-style settings.
-6. Provide conservative reference product-state scaling.
+5. Provide a diagnostic protocol and empirical boundaries for evaluated field-style settings.
+6. Provide scaling sanity for the finite product-state implementation.
 
 Event training is a secondary contribution. It shows the event object can be used as a training signal and can move posterior event mass; it is not framed as an accuracy method.
 
@@ -87,6 +87,7 @@ Explicit non-contributions:
 
 - no benchmark superiority claim;
 - no WFST replacement claim;
+- no claim that product automaton inference itself is new;
 - no NER F1 improvement claim;
 - no calibration claim;
 - no claim that hard constraints are useless;
@@ -193,6 +194,16 @@ Sections:
 4. exact event transfer theorem;
 5. posterior event probability;
 6. event loss and diagnostic statistic.
+
+Required assumption boundary:
+
+```text
+The exact product-transfer theorem assumes finite label set, fixed finite length,
+finite scores, complete deterministic DFA, and a finite-context/local
+factorization of the CRF score. Arbitrary finite score tables can be represented
+by a sufficiently large finite context/table construction, but that is an
+expressive construction, not an efficiency claim.
+```
 
 Main theorem:
 
@@ -369,6 +380,30 @@ Boundary:
 Not optimized runtime, GPU, or low-rank evidence.
 ```
 
+### 5.8 Public CoNLL2000 BIO/Chunking Smoke
+
+Claim:
+
+```text
+The public BIO/chunking smoke provides an additional structured-prediction
+boundary case: B4 can move posterior event mass upward while task metrics do
+not improve.
+```
+
+Key local smoke:
+
+```text
+B0 P(BIO|x)=0.7303, hidden conflict=0.4125, span F1=0.7345
+B4 P(BIO|x)=0.8078, hidden conflict=0.2125, span F1=0.7219
+B7 constrained-product legality=1.0000
+```
+
+Boundary:
+
+```text
+Smoke only, not a full benchmark and not task-improvement evidence.
+```
+
 ## 6. Discussion
 
 Main interpretation:
@@ -391,6 +426,10 @@ Must include:
 - missing R3 low-label/unlabeled sensitivity;
 - missing R7 broader lambda/rule sensitivity;
 - pending B7 faithful WFST-style baseline;
+- not a new automata-inference algorithm;
+- not a replacement for constrained decoding, WFST methods, constrained CRFs, or RegCCRF;
+- not an uncertainty replacement; R6a shows generic uncertainty baselines are stronger overall;
+- B7/public stronger case/sensitivity evidence remains pending unless implemented in the final package;
 - no benchmark superiority;
 - WNUT R5a is diagnostic-stress evidence, not a performance result;
 - R8 is reference CPU scaling only;

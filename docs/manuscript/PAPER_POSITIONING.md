@@ -40,7 +40,7 @@ Shortest version:
 ```text
 Hard-constrained decoding can make the final output legal.
 It cannot tell whether the original CRF posterior still places large mass on illegal structures.
-We define and compute P_theta(L|x), the posterior mass assigned to a regular-language event.
+We formalize, operationalize, and study `P_theta(L|x)`, the original posterior mass assigned to a regular-language event.
 ```
 
 ## 3. Reviewer-Facing Problem Definition
@@ -61,6 +61,15 @@ The paper asks:
 
 ```text
 How can we compute, train, and audit the posterior probability that a CRF assigns to a regular-language structural event?
+```
+
+Reviewer-facing answer to "is this just marginal inference":
+
+```text
+Yes, the computation is familiar: known product automaton marginal inference is
+the computational neighborhood. The contribution is the object semantics, audit
+protocol, and empirical demonstration that legal decoded outputs can coexist
+with low original posterior event mass.
 ```
 
 ## 4. Relationship To Nearby Work
@@ -85,6 +94,14 @@ Formula distinction:
 | constrained CRF / RegCCRF | `p_theta(y|x,y in L)=exp S_theta(x,y)/Z_{theta,L}(x)` | support already restricted to `L` |
 | this work | `P_theta(L|x)=Z_{theta,L}(x)/Z_theta(x)` | audits how much original posterior mass satisfies `L` |
 
+Important wording:
+
+```text
+Do not introduce the computation as a new CRF-DFA product automaton algorithm.
+Introduce it as the exact finite computation used to evaluate a posterior
+event statistic under the original CRF posterior.
+```
+
 ## 5. Boundary Against Ganchev et al. 2010 / Posterior Regularization
 
 Posterior regularization is the closest conceptual neighbor. The safe boundary is:
@@ -106,8 +123,8 @@ Main paper spine:
 
 | Part | Role |
 |---|---|
-| Posterior regular-language event mass | define the object `P_theta(L|x)` under the original CRF posterior |
-| Exact product transfer | compute `Z_{theta,L}(x)` via CRF x DFA product transfer |
+| Posterior regular-language event mass | formalize the audit object `P_theta(L|x)` under the original CRF posterior |
+| Exact product transfer | finite theorem foundation for computing `Z_{theta,L}(x)` via known CRF x DFA product transfer |
 | Distinction from constrained decoding / constrained CRF | show the object answers posterior mass, not best legal output or support restriction |
 | Event-loss gradient / training signal | show `-log P_theta(L|x)` has a finite expectation-difference gradient under explicit assumptions |
 | Risk diagnostic evidence | show event mass is a rule-specific posterior-consistency signal with positive risk-ranking value |
@@ -149,7 +166,7 @@ not benchmark superiority
 R6a:
 
 ```text
-field-style rule-specific risk diagnostic evidence
+evaluated field-style rule-specific risk diagnostic evidence
 not calibration, universal error theorem, stronger-than-uncertainty claim, or robust complementarity claim
 ```
 
@@ -176,6 +193,7 @@ Do not claim:
 
 - benchmark superiority;
 - WFST replacement;
+- new product automaton inference algorithm;
 - B4 improves WNUT17 NER F1;
 - B4 dominates B5/B6 overall;
 - hard constraints are useless;
@@ -196,6 +214,6 @@ This is just CRF marginal inference on a product automaton, with a new name.
 Response:
 
 ```text
-Yes, the computation is adjacent to standard product automaton marginal inference.
-The contribution is the posterior-event object and audit protocol: measuring the original CRF posterior's mass on a regular-language rule, and showing that legal decoded outputs can coexist with low original posterior event mass.
+Yes, the computation is familiar: it sits in the known product automaton marginal-inference neighborhood.
+The contribution is object semantics, audit protocol, and evidence: measuring the original CRF posterior's mass on a regular-language rule, and showing that legal decoded outputs can coexist with low original posterior event mass.
 ```

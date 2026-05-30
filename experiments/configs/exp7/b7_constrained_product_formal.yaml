@@ -1,0 +1,13 @@
+id: b7_constrained_product_formal
+module: tensor_crf_jmlr.event_training.constrained_product_baseline
+args:
+  task_kind: wnut17_bio
+  seed: 0
+  train_size: 500
+  unlabeled_size: 500
+  dev_size: 500
+  max_len: 40
+  epochs: 5
+  lr: 0.05
+  use_features: true
+  include_b4: true

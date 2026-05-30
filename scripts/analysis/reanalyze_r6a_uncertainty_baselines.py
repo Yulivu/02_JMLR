@@ -214,6 +214,22 @@ def complementarity_rows(rows: list[dict[str, str]], *, bins: int = 10) -> list[
     return out
 
 
+def correlation_rows(rows: list[dict[str, str]]) -> list[dict[str, object]]:
+    event_scores = [1.0 - float(row["baseline_p_event"]) for row in rows]
+    out: list[dict[str, object]] = []
+    for baseline_name, (field, transform) in GENERIC_BASELINES.items():
+        scores = [transform(float(row[field])) for row in rows]
+        out.append(
+            {
+                "baseline": baseline_name,
+                "cases": len(rows),
+                "pearson_with_event_risk": pearson(event_scores, scores),
+                "spearman_with_event_risk": spearman(event_scores, scores),
+            }
+        )
+    return out
+
+
 def missing_fields(rows: list[dict[str, str]]) -> list[str]:
     if not rows:
         return []
@@ -254,7 +270,41 @@ def write_missing_plan(path: Path, missing: list[str]) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def write_report(path: Path, rows: list[dict[str, object]], complementarity: list[dict[str, object]]) -> None:
+def write_missing_cases_plan(path: Path, cases_path: Path) -> None:
+    lines = [
+        "# R6a Uncertainty Baseline Reanalysis Pending",
+        "",
+        "The requested R6a cases file is not available locally, so no new uncertainty table was generated.",
+        "",
+        "Missing cases file:",
+        "",
+        f"- `{cases_path}`",
+        "",
+        "Expected source:",
+        "",
+        "```text",
+        "experiments/runs/autodl_jmlr_block/p6_r6_diagnostic/r6a_field_diagnostic_formal/diagnostic_cases.csv",
+        "```",
+        "",
+        "This raw run folder is intentionally not committed. Restore it from the audited run bundle, then rerun:",
+        "",
+        "```powershell",
+        "python scripts/analysis/reanalyze_r6a_uncertainty_baselines.py --cases experiments/runs/autodl_jmlr_block/p6_r6_diagnostic/r6a_field_diagnostic_formal/diagnostic_cases.csv --output-dir experiments/results/event_training/formal_pre_paper/p6_r6_diagnostic",
+        "```",
+        "",
+        "Until then, use the committed `R6A_UNCERTAINTY_BASELINE_REANALYSIS.md` and mark the event-risk/generic-uncertainty correlation table pending.",
+        "",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def write_report(
+    path: Path,
+    rows: list[dict[str, object]],
+    complementarity: list[dict[str, object]],
+    correlations: list[dict[str, object]],
+) -> None:
     overall = [row for row in rows if row["source"] == "all" and row["task"] == "all"]
     lines = [
         "# R6a Uncertainty Baseline Reanalysis",
@@ -300,11 +350,30 @@ def write_report(path: Path, rows: list[dict[str, object]], complementarity: lis
     lines.extend(
         [
             "",
+            "## Correlation With Event Risk",
+            "",
+            "These correlations are descriptive overlap checks between `1 - P_theta(L|x)` and generic uncertainty scores.",
+            "",
+            "| generic baseline | Pearson | Spearman |",
+            "|---|---:|---:|",
+        ]
+    )
+    for row in correlations:
+        lines.append(
+            "| {baseline} | {pearson:.4f} | {spearman:.4f} |".format(
+                baseline=row["baseline"],
+                pearson=float(row["pearson_with_event_risk"]),
+                spearman=float(row["spearman_with_event_risk"]),
+            )
+        )
+    lines.extend(
+        [
+            "",
             "## Interpretation",
             "",
             "The event-risk score has positive exact-error ranking signal, but standard uncertainty baselines are stronger overall in this rerun.",
             "Therefore the paper should not claim diagnostic superiority over entropy, margin, or max-probability uncertainty.",
-            "The complementarity check asks only whether event risk carries some rule-specific residual signal within coarse uncertainty strata; it is not a causal or calibration result.",
+            "The complementarity check asks only whether event risk carries some rule-specific residual signal within coarse uncertainty strata; it is not a causal, calibration, or robust residual-predictiveness result.",
             "The safe claim is narrower: `1 - P_theta(L|x)` is an interpretable rule-specific posterior-consistency signal with positive risk-ranking value, not a universal or dominant uncertainty score.",
             "",
             "Boundary: this is ranking evidence only, not calibration and not benchmark superiority.",
@@ -320,8 +389,13 @@ def main() -> None:
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT))
     args = parser.parse_args()
 
-    rows = read_csv(Path(args.cases))
+    cases_path = Path(args.cases)
     output_dir = Path(args.output_dir)
+    if not cases_path.is_file():
+        write_missing_cases_plan(output_dir / "R6A_UNCERTAINTY_BASELINE_PENDING.md", cases_path)
+        print(f"WROTE {output_dir / 'R6A_UNCERTAINTY_BASELINE_PENDING.md'}")
+        return
+    rows = read_csv(cases_path)
     missing = missing_fields(rows)
     if missing:
         write_missing_plan(output_dir / "R6A_UNCERTAINTY_BASELINE_PLAN.md", missing)
@@ -329,11 +403,14 @@ def main() -> None:
         return
     metrics = metric_rows(rows)
     complementarity = complementarity_rows(rows)
+    correlations = correlation_rows(rows)
     write_csv(output_dir / "r6a_uncertainty_baseline_metrics.csv", metrics)
     write_csv(output_dir / "r6a_uncertainty_complementarity.csv", complementarity)
-    write_report(output_dir / "R6A_UNCERTAINTY_BASELINE_REANALYSIS.md", metrics, complementarity)
+    write_csv(output_dir / "r6a_event_uncertainty_correlations.csv", correlations)
+    write_report(output_dir / "R6A_UNCERTAINTY_BASELINE_REANALYSIS.md", metrics, complementarity, correlations)
     print(f"WROTE {output_dir / 'r6a_uncertainty_baseline_metrics.csv'}")
     print(f"WROTE {output_dir / 'r6a_uncertainty_complementarity.csv'}")
+    print(f"WROTE {output_dir / 'r6a_event_uncertainty_correlations.csv'}")
     print(f"WROTE {output_dir / 'R6A_UNCERTAINTY_BASELINE_REANALYSIS.md'}")
 
 

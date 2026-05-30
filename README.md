@@ -19,8 +19,8 @@ This repository studies `P_theta(L|x)`: the posterior probability that a CRF ass
 ```text
 HPC paused.
 Formal pre-paper evidence blocks completed and audited.
-Paper-outline / proof-prose / external-review materials drafted.
-Next step: external review and paper-positioning cleanup, not more AutoDL runs.
+Claim-boundary cleanup, B7 smoke, public CoNLL2000 smoke, and sensitivity smoke are local-only additions.
+Next step: external review plus full B7/public/sensitivity decisions, not broad AutoDL runs.
 ```
 
 Completed audited blocks:
@@ -33,14 +33,17 @@ Completed audited blocks:
 | R4 real-source small | invoice/stock auxiliary small-field evidence |
 | R6a diagnostic | field-style risk diagnostic |
 | R8 complexity | reference CPU product-transfer scaling |
+| B7 constrained-product smoke | local constrained decoding baseline smoke; full run pending |
+| Public CoNLL2000 chunking smoke | public BIO/chunking boundary case; full run pending |
+| R7 sensitivity smoke | local lambda/rule boundary smoke; full run pending |
 
 Supported at current scope:
 
-- `P_theta(L|x)` is a well-defined finite CRF posterior event object.
-- Product automaton transfer computes event mass exactly under the finite setup.
+- `P_theta(L|x)` is a well-defined finite CRF posterior event object and formal foundation.
+- Product automaton transfer computes event mass exactly under finite-context/local-factor assumptions; known product automaton marginal inference is the computational neighborhood, not the novelty claim.
 - Semi-event training can raise posterior event mass in audited settings.
 - Hard-constrained decoding and posterior consistency are different objects.
-- Low event mass is a useful field-style risk signal.
+- In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal.
 - R8 supports conservative product-state complexity discussion.
 
 Not supported:
@@ -51,7 +54,8 @@ Not supported:
 - hard constraints are useless;
 - arbitrary low-rank advantage;
 - optimized runtime superiority;
-- final JMLR-ready claim before external review.
+- product automaton inference itself is new;
+- JMLR main draft-ready or submission-ready status.
 
 ## Repository Structure
 
@@ -98,7 +102,7 @@ python -m ruff check src scripts
 Current expected check status:
 
 ```text
-pytest: 47 passed
+pytest: 49 passed
 ruff: All checks passed
 ```
 
