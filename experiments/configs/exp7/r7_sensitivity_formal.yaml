@@ -6,3 +6,4 @@ args:
     - easy_saturated
     - medium
     - hard
+  workers: 0

@@ -3,6 +3,12 @@ set -euo pipefail
 
 SUITE="experiments/suites/jmlr_cpu_upgrade_formal_plan.yaml"
 RUN_DIR="experiments/runs/autodl_jmlr_block/jmlr_cpu_upgrade"
+SUITE_JOBS="${JMLR_SUITE_JOBS:-3}"
+
+export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
+export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
+export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
+export NUMEXPR_NUM_THREADS="${NUMEXPR_NUM_THREADS:-1}"
 
 python -m pip install -e ".[dev]"
 python scripts/data/verify_data.py --strict
@@ -15,7 +21,7 @@ python scripts/hpc/preflight_autodl.py \
   --report experiments/runs/preflight/jmlr_cpu_upgrade_preflight.json
 
 python scripts/run_experiment_suite.py --suite "${SUITE}" --dry-run
-python scripts/run_experiment_suite.py --suite "${SUITE}"
+python scripts/run_experiment_suite.py --suite "${SUITE}" --jobs "${SUITE_JOBS}"
 
 python scripts/analysis/audit_run_bundles.py \
   --runs-dir "${RUN_DIR}" \

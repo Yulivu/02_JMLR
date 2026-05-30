@@ -23,6 +23,16 @@ Network access to GitHub for clone and CoNLL2000 mirror fetch
 
 The code is CPU-only; `torch.cuda.is_available()` may be false.
 
+For a multi-core CPU machine, the one-command script runs the three suite tasks
+concurrently by default (`JMLR_SUITE_JOBS=3`) and lets R7 sensitivity use all
+available CPU cores for its seed/rule/lambda worker pool (`workers: 0` in the
+formal config). BLAS/PyTorch intra-op thread counts default to 1 to avoid
+oversubscription. Override only if the machine is shared:
+
+```bash
+JMLR_SUITE_JOBS=2 bash scripts/hpc/run_jmlr_cpu_upgrade_formal.sh
+```
+
 ## Suite
 
 ```text
@@ -74,7 +84,8 @@ python scripts/run_experiment_suite.py \
   --dry-run
 
 python scripts/run_experiment_suite.py \
-  --suite experiments/suites/jmlr_cpu_upgrade_formal_plan.yaml
+  --suite experiments/suites/jmlr_cpu_upgrade_formal_plan.yaml \
+  --jobs 3
 ```
 
 Audit:

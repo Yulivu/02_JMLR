@@ -10,9 +10,13 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import asdict
 from pathlib import Path
 from typing import Sequence
+
+import torch
 
 from .semi_real_format_probe import (
     LAMBDA_VARIANTS,
@@ -20,8 +24,14 @@ from .semi_real_format_probe import (
     ProbeRun,
     ProbeSetting,
     SemiRealTask,
+    VariantConfig,
+    build_vocab,
+    encode,
+    evaluate_model,
+    make_dataset,
     run_settings,
     summarize_runs,
+    train_model,
 )
 
 
@@ -78,6 +88,54 @@ def boundary_rows(summary: Sequence[dict[str, float | str | int]]) -> list[dict[
             }
         )
     return rows
+
+
+def _run_one_job(payload: tuple[SemiRealTask, ProbeSetting, int, str, VariantConfig]) -> ProbeRun:
+    task, setting, seed, _variant_name, variant = payload
+    torch.set_num_threads(1)
+    label_to_idx = {label: idx for idx, label in enumerate(task.label_names)}
+    labeled_ds = make_dataset(task, f"{task.name}_labeled", setting.labeled_size, seed=1100 + seed)
+    unlabeled_ds = make_dataset(task, f"{task.name}_unlabeled", setting.unlabeled_size, seed=2200 + seed)
+    dev_ds = make_dataset(task, f"{task.name}_dev", setting.dev_size, seed=3300 + seed)
+    vocab = build_vocab(labeled_ds.tokens + unlabeled_ds.tokens + dev_ds.tokens)
+    labeled = encode(labeled_ds, vocab, label_to_idx)
+    unlabeled = [word_ids for word_ids, _labels in encode(unlabeled_ds, vocab, label_to_idx)]
+    dev = encode(dev_ds, vocab, label_to_idx)
+    model = train_model(
+        task,
+        labeled,
+        unlabeled,
+        len(vocab),
+        variant=variant,
+        seed=seed,
+        epochs=setting.epochs,
+        lr=setting.lr,
+    )
+    return evaluate_model(model, task, dev, setting=setting, variant=variant, seed=seed)
+
+
+def run_settings_parallel(
+    tasks: Sequence[SemiRealTask],
+    setting: ProbeSetting,
+    variants: dict[str, VariantConfig],
+    *,
+    workers: int,
+) -> list[ProbeRun]:
+    jobs = [
+        (task, setting, seed, variant_name, variants[variant_name])
+        for task in tasks
+        for seed in setting.seeds
+        for variant_name in setting.variants
+    ]
+    if not jobs:
+        return []
+    max_workers = min(workers, len(jobs))
+    runs: list[ProbeRun] = []
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(_run_one_job, job) for job in jobs]
+        for future in as_completed(futures):
+            runs.append(future.result())
+    return sorted(runs, key=lambda row: (row.task, row.seed, row.variant))
 
 
 def write_report(output_dir: Path, summary: Sequence[dict[str, float | str | int]], boundaries: Sequence[dict[str, object]]) -> None:
@@ -140,7 +198,7 @@ def write_report(output_dir: Path, summary: Sequence[dict[str, float | str | int
     (output_dir / "R7_SENSITIVITY_AUDIT.md").write_text("\n".join(lines), encoding="utf-8")
 
 
-def run_probe(*, output_dir: Path, seed_count: int, quick: bool, difficulty_levels: Sequence[str]) -> None:
+def run_probe(*, output_dir: Path, seed_count: int, quick: bool, difficulty_levels: Sequence[str], workers: int) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     seeds = tuple(range(min(seed_count, 2) if quick else seed_count))
     tasks = make_tasks(difficulty_levels)
@@ -155,7 +213,11 @@ def run_probe(*, output_dir: Path, seed_count: int, quick: bool, difficulty_leve
         seeds=seeds,
         variants=tuple(LAMBDA_VARIANTS.keys()),
     )
-    runs: list[ProbeRun] = run_settings(tasks, [setting], LAMBDA_VARIANTS)
+    resolved_workers = (os.cpu_count() or 1) if workers == 0 else workers
+    if resolved_workers > 1:
+        runs = run_settings_parallel(tasks, setting, LAMBDA_VARIANTS, workers=resolved_workers)
+    else:
+        runs = run_settings(tasks, [setting], LAMBDA_VARIANTS)
     run_dicts = [asdict(row) for row in runs]
     summary = summarize_runs(runs)
     boundaries = boundary_rows(summary)
@@ -173,6 +235,12 @@ def main() -> None:
     parser.add_argument("--seed-count", type=int, default=3)
     parser.add_argument("--quick", action="store_true")
     parser.add_argument("--difficulty-levels", nargs="*", default=["easy_saturated", "medium", "hard"])
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Parallel worker processes for seed/rule/lambda jobs. Use 0 for all available CPU cores.",
+    )
     args = parser.parse_args()
     unknown = sorted(set(args.difficulty_levels) - set(DIFFICULTY_TASKS))
     if unknown:
@@ -182,6 +250,7 @@ def main() -> None:
         seed_count=args.seed_count,
         quick=args.quick,
         difficulty_levels=args.difficulty_levels,
+        workers=args.workers,
     )
 
 
