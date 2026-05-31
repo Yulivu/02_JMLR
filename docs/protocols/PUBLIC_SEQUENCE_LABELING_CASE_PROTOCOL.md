@@ -132,13 +132,19 @@ Curated tiny-smoke audit:
 experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_MULTISEED_TINY_SMOKE_AUDIT.md
 ```
 
-The tiny smoke validates plumbing only and is not formal evidence. Full
-three-seed command for the CPU box:
+The tiny smoke validates plumbing only and is not formal evidence. The full
+three-seed run was completed locally with 1000/1000/1000 train/unlabeled/dev
+examples:
 
 ```bash
-cd /root/autodl-tmp/02_JMLR
-git pull --ff-only origin master
-python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
+```
+
+Provenance: git commit `002ecbb`, returncode `0`, duration `3076.544701`
+seconds. Curated audit:
+
+```text
+experiments/results/event_training/formal_pre_paper/public_sequence_labeling/CONLL2000_PUBLIC_MULTISEED_FORMAL_AUDIT.md
 ```
 
 ## Claim Boundary
@@ -146,7 +152,7 @@ python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7
 Allowed after audited results:
 
 ```text
-The public BIO/chunking case provides an additional structured-prediction audit of original posterior event mass, constrained decoded legality, B4 event-mass movement, and B7 constrained-product behavior under one frozen formal configuration.
+The public BIO/chunking case provides an additional structured-prediction audit of original posterior event mass, constrained decoded legality, B4 event-mass movement, and B7 constrained-product behavior under a full local three-seed case-study configuration.
 ```
 
 Forbidden:

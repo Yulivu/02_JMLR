@@ -31,14 +31,12 @@ C:\Users\debuf\AppData\Local\Programs\Python\Python312\python.exe -m tensor_crf_
 | B0_unconstrained | 3 | 0.3487 | 0.0413 | 0.9889 | 0.8342 | 0.6894 |
 | B4_semi_event_0.1 | 3 | 0.5187 | 0.1360 | 0.7222 | 0.8191 | 0.6647 |
 
-## Formal Multiseed Pending Command
+## Formal Multiseed Status
 
-The full 1000/1000/1000 three-seed run was not completed locally because even the tiny smoke took about two minutes on this Windows machine and the earlier 120-example smoke exceeded the tool timeout. Run on the CPU box if external review says one frozen CoNLL configuration is too weak:
+This tiny run remains a plumbing smoke only. The full 1000/1000/1000 three-seed run is curated separately:
 
 ```bash
-cd /root/autodl-tmp/02_JMLR
-git pull --ff-only origin master
-python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
 ```
 
-Boundary: until that command is run and curated, C13 remains a one frozen configuration claim.
+Boundary: do not use this tiny smoke as C13 evidence even when a full multiseed run exists.

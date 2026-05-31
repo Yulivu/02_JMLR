@@ -31,7 +31,7 @@ This plan turns the current draftable Tensor-CRF posterior-event project into a 
 |---|---|---|---|---|
 | Paper-ready R6a uncertainty boundary | `R6A_UNCERTAINTY_BASELINE_REANALYSIS.md`; `r6a_uncertainty_baseline_metrics.csv`; `r6a_uncertainty_complementarity.csv` | Table with event risk and generic uncertainty baselines | AUROC, AUPRC, Spearman char error, top/bottom quantile risk, correlations, within-bin residual checks | Event risk may be oversold as uncertainty replacement |
 | Public-case uncertainty boundary | completed for CoNLL2000 in `conll2000_public_uncertainty_metrics.csv` and related correlation/complementarity CSVs | Table comparing event risk with entropy/margin/max-probability uncertainty | Shows event risk has positive signal but generic uncertainty is stronger in this public case | Event risk may be oversold as uncertainty replacement |
-| CoNLL2000 three-seed public run | `experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml`; `experiments/suites/public_sequence_labeling_plan.yaml`; curation hook `scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run ...` | Mean/std public-case table for `P(BIO|x)`, hidden conflict, B7 legal rate, token accuracy, span F1; uncertainty fields are emitted per case for follow-up analysis | Pending: wrapped tiny three-seed smoke validates plumbing only; full run must be curated before any multiseed evidence claim | One frozen CoNLL configuration may look fragile to a skeptical reviewer |
+| CoNLL2000 three-seed public run | `experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml`; `experiments/suites/public_sequence_labeling_plan.yaml`; curation hook `scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run ...` | Mean/std public-case table for `P(BIO|x)`, hidden conflict, B7 legal rate, token accuracy, span F1; uncertainty fields are emitted per case for follow-up analysis | Completed locally: `experiments/runs/local_checks/public_conll2000_chunking_multiseed_full`, commit `002ecbb`, returncode `0`, duration `3076.544701`; tiny three-seed smoke remains plumbing only | Public case remains a case study and shows task-metric boundary behavior; not benchmark superiority |
 | Result audit templates for new B7/public/sensitivity runs | completed in `experiments/results/event_training/formal_pre_paper/{public_sequence_labeling,b7_constrained_product,r7_sensitivity}/` | Explicit completed states | Every result row has provenance and claim boundary | Hard to distinguish smoke from evidence |
 | Public data provenance | `data/DATA_MANIFEST.md`; `scripts/data/fetch_conll2000_chunking.py`; protocol doc | Source, local path, hashes, official-host failure note, mirror fallback | Local hashes recorded; redistribution/citation review still needed before tracking data | Data reproducibility objection |
 
@@ -60,17 +60,17 @@ python scripts/run_experiment_suite.py --suite experiments/suites/public_sequenc
 python scripts/run_experiment_suite.py --suite experiments/suites/r7_sensitivity_plan.yaml --dry-run
 ```
 
-Pending public multiseed full run:
+Completed public multiseed full run provenance:
 
 ```bash
-cd /root/autodl-tmp/02_JMLR
-git pull --ff-only origin master
-python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
+python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
+python scripts/analysis/generate_paper_tables.py
 ```
 
 ## Readiness Gate
 
 ```text
 JMLR main manuscript drafting can proceed with caveats: B7, public CoNLL2000, and R7 sensitivity formal runs are audited, and the R7 derisk run now gives a wrapped-formal event/task tradeoff boundary.
-JMLR submission-ready: no. Submission still requires final proof review, final related-work citations, final table/figure integration, reproducibility packaging, and a decision on whether to run the pending CoNLL2000 three-seed full public case.
+JMLR submission-ready: no. Submission still requires final proof review, final related-work citations, final table/figure integration, and reproducibility packaging.
 ```

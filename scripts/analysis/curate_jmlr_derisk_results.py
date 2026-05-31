@@ -248,17 +248,15 @@ def write_public_multiseed_smoke_audit(results_root: Path, run_dir: Path) -> Non
     lines.extend(
         [
             "",
-            "## Formal Multiseed Pending Command",
+            "## Formal Multiseed Status",
             "",
-            "The full 1000/1000/1000 three-seed run was not completed locally because even the tiny smoke took about two minutes on this Windows machine and the earlier 120-example smoke exceeded the tool timeout. Run on the CPU box if external review says one frozen CoNLL configuration is too weak:",
+            "This tiny run remains a plumbing smoke only. The full 1000/1000/1000 three-seed run is curated separately when available:",
             "",
             "```bash",
-            "cd /root/autodl-tmp/02_JMLR",
-            "git pull --ff-only origin master",
-            "python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed",
+            "python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/local_checks/public_conll2000_chunking_multiseed_full",
             "```",
             "",
-            "Boundary: until that command is run and curated, C13 remains a one frozen configuration claim.",
+            "Boundary: do not use this tiny smoke as C13 evidence even when a full multiseed run exists.",
             "",
         ]
     )

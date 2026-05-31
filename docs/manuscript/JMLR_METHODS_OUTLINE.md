@@ -394,26 +394,26 @@ separate from decoded legality.
 Key formal run:
 
 ```text
-B0 P(BIO|x)=0.9762, hidden conflict=0.0240, span F1=0.7773
-B4 P(BIO|x)=0.9953, hidden conflict=0.0040, span F1=0.7936
+B0 mean P(BIO|x)=0.9837 +/- 0.0011, hidden conflict=0.0133, span F1=0.7973
+B4 mean P(BIO|x)=0.9885 +/- 0.0063, hidden conflict=0.0123, span F1=0.7918
 B7 constrained-product legality=1.0000
 ```
 
 Boundary:
 
 ```text
-One frozen public case-study configuration, not SOTA, benchmark superiority,
-or proof that event training generally improves task metrics.
-The three-seed CoNLL2000 full run is pending; the current tiny three-seed smoke
-validates plumbing only and is not formal evidence.
+Full local three-seed public case-study configuration, not SOTA, benchmark
+superiority, or proof that event training generally improves task metrics.
+B4 raises event mass and slightly reduces hidden conflict on average, while
+mean token accuracy and span F1 decrease.
 ```
 
 Public-case uncertainty boundary:
 
 ```text
-Event risk has positive exact-error ranking signal in the public case
-(B0 AUROC 0.7202; B4 AUROC 0.6861), but entropy and max-probability
-uncertainty baselines are stronger. Do not claim uncertainty dominance.
+Event risk has positive exact-error ranking signal in the public multiseed case
+(B0 AUROC 0.7384; B4 AUROC 0.6895), but sequence entropy is stronger by AUROC
+for both variants. Do not claim uncertainty dominance.
 ```
 
 ### 5.9 R7 Lambda / Rule Sensitivity And Negative Boundary
@@ -477,7 +477,7 @@ Must include:
 - not a replacement for constrained decoding, WFST methods, constrained CRFs, or RegCCRF;
 - not an uncertainty replacement; R6a shows generic uncertainty baselines are stronger overall;
 - B7 is a constrained-product decoding baseline, not a full WFST toolkit;
-- public CoNLL2000 remains one frozen formal configuration unless the pending three-seed full run is completed;
+- public CoNLL2000 is a full local three-seed case study, not broad benchmark evidence;
 - R7 sensitivity includes negative/event-task tradeoff boundary evidence and is not benchmark-superiority evidence;
 - no benchmark superiority;
 - WNUT R5a is diagnostic-stress evidence, not a performance result;

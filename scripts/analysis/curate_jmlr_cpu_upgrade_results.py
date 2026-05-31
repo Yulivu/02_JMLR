@@ -475,6 +475,7 @@ def write_public_multiseed_report(
     run_dir: Path,
     rows: list[dict[str, object]],
     delta_rows: list[dict[str, object]],
+    uncertainty_rows: list[dict[str, object]],
 ) -> None:
     meta = metadata(run_dir)
     lines = [
@@ -512,6 +513,46 @@ def write_public_multiseed_report(
     )
     for row in delta_rows:
         lines.append("| {metric} | {B0_mean:.4f} | {B4_mean:.4f} | {delta_mean:+.4f} |".format(**row))
+    event_rows = [row for row in uncertainty_rows if row["baseline"] == "event_risk_1_minus_p"]
+    strongest_generic: list[dict[str, object]] = []
+    for variant in sorted({row["variant"] for row in uncertainty_rows}):
+        generic_rows = [
+            row
+            for row in uncertainty_rows
+            if row["variant"] == variant and row["baseline"] != "event_risk_1_minus_p"
+        ]
+        if generic_rows:
+            strongest_generic.append(max(generic_rows, key=lambda row: float(row["auroc_exact_error"])))
+    lines.extend(
+        [
+            "",
+            "## Multiseed Uncertainty Boundary",
+            "",
+            "| variant | event-risk AUROC exact | event-risk AUPRC exact | event-risk Spearman token error | event-risk exact risk gap |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
+    for row in event_rows:
+        lines.append(
+            "| {variant} | {auroc_exact_error:.4f} | {auprc_exact_error:.4f} | {spearman_token_error:.4f} | {risk_gap_exact:.4f} |".format(
+                **row
+            )
+        )
+    lines.extend(
+        [
+            "",
+            "Strongest generic uncertainty baselines by AUROC:",
+            "",
+            "| variant | strongest generic score | AUROC exact | AUPRC exact | Spearman token error |",
+            "|---|---|---:|---:|---:|",
+        ]
+    )
+    for row in strongest_generic:
+        lines.append(
+            "| {variant} | {baseline} | {auroc_exact_error:.4f} | {auprc_exact_error:.4f} | {spearman_token_error:.4f} |".format(
+                **row
+            )
+        )
     lines.extend(
         [
             "",
@@ -693,11 +734,18 @@ def curate_public_multiseed(run_dir: Path, results_root: Path) -> None:
         raise FileNotFoundError(run_dir / "run_metadata.json")
     public_out = results_root / "public_sequence_labeling"
     public_summary = read_csv(run_dir / "public_case_summary.csv")
+    public_details = read_csv(run_dir / "public_case_details.csv")
     rows = public_multiseed_table_rows(public_summary)
     deltas = public_multiseed_delta_rows(rows)
+    uncertainty_rows = uncertainty_metric_rows(public_details)
+    corr_rows = correlation_rows(public_details)
+    comp_rows = complementarity_rows(public_details)
     write_csv(public_out / "conll2000_public_multiseed_formal_summary.csv", rows)
     write_csv(public_out / "conll2000_public_multiseed_formal_deltas.csv", deltas)
-    write_public_multiseed_report(public_out, run_dir, rows, deltas)
+    write_csv(public_out / "conll2000_public_multiseed_uncertainty_metrics.csv", uncertainty_rows)
+    write_csv(public_out / "conll2000_public_multiseed_event_uncertainty_correlations.csv", corr_rows)
+    write_csv(public_out / "conll2000_public_multiseed_uncertainty_complementarity.csv", comp_rows)
+    write_public_multiseed_report(public_out, run_dir, rows, deltas, uncertainty_rows)
 
 
 def main() -> None:

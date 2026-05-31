@@ -30,7 +30,7 @@ The project is no longer an early idea search. It is in the pre-paper review sta
 |---|---|---|
 | theory object | stable with guardrails | finite CRF posterior event mass; product transfer requires finite-context/local factorization |
 | source code | stable for current claims | posterior algebra and event training tests pass |
-| formal evidence | audited with one public-case caveat | R5, R1/R2/R4, R6a, R8, B7, public CoNLL2000 one-seed formal, and R7 completed; R7 derisk now has wrapped formal metadata; CoNLL2000 three-seed full run remains pending |
+| formal evidence | audited with public-case boundary | R5, R1/R2/R4, R6a, R8, B7, public CoNLL2000 three-seed formal, and R7 completed; R7 derisk has wrapped formal metadata |
 | claim table | updated for review | C1/C2 formal foundation, C7 appendix/sanity, B7/public/sensitivity included with boundaries |
 | paper positioning | narrowed | methods/theory/auditability, not benchmark superiority |
 | HPC | paused | no new AutoDL job unless review requires a specific experiment |
@@ -73,7 +73,7 @@ Do not claim:
 | R6a diagnostic | rule-specific risk/audit evidence from event mass | not calibration; not uncertainty-baseline superiority |
 | R8 complexity | product-state scaling evidence | reference CPU only |
 | B7 constrained-product formal | faithful CRF x BIO-DFA constrained decoding baseline | not full WFST system or superiority evidence |
-| Public CoNLL2000 chunking formal | public BIO/chunking audit case | one frozen case-study configuration; three-seed full run pending; not SOTA or benchmark superiority |
+| Public CoNLL2000 chunking formal | public BIO/chunking audit case | full local three-seed case study; B4 raises event mass on average while mean token/span metrics decrease; not SOTA or benchmark superiority |
 | R7 sensitivity formal | lambda/rule difficulty boundary evidence | includes a wrapped-formal swapped-rule event/task tradeoff; boundary study only; not task-method dominance |
 
 ## Directory Map
@@ -133,4 +133,4 @@ uMPS work suggests that regular languages can be treated as probabilistic events
 
 ## Immediate Next Step
 
-External review and manuscript integration. Do not run more HPC unless review identifies a concrete missing experiment tied to a specific claim; the main candidate is the pending CoNLL2000 three-seed full public case.
+External review and manuscript integration. Do not run more HPC unless review identifies a concrete missing experiment tied to a specific claim.

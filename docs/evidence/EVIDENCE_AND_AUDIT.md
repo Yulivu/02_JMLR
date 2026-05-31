@@ -65,7 +65,7 @@ python -m unittest discover -s src/tensor_crf_jmlr/event_training/tests -v
 | P6 R6a diagnostic reanalysis | AUROC `0.7088`, AUPRC `0.8470`; exact error falls from `0.8862` in lowest event-mass decile to `0.2624` in highest decile | ranking/risk evidence only; not calibration |
 | P6 R8 complexity formal | reference product-transfer scaling measured across length/labels/DFA states/context order | not optimized benchmark, GPU, or low-rank evidence |
 | B7 constrained-product formal | legal rate `1.0000`; event mass is not used for decoding | constrained-product decoding baseline only; not full WFST |
-| Public CoNLL2000 formal | one frozen public BIO/chunking case with event-mass movement and B7 legal decoding | not SOTA or benchmark superiority |
+| Public CoNLL2000 formal | full local three-seed public BIO/chunking case with event-mass movement, hidden-conflict accounting, B7 legal decoding, and task-metric boundary behavior | not SOTA or benchmark superiority |
 | R7 sensitivity formal + derisk | lambda/rule sensitivity plus legal-rate-not-useful and event/task tradeoff boundaries | boundary evidence only; `product_code_swapped_rule` shows event mass can rise while task metrics fall |
 
 ## 4. Important Numbers
@@ -177,7 +177,7 @@ Current evidence does not support:
 | WNUT17 task viability | feature CRF gives B0 entity F1 `0.1660` over 10 formal seeds | task regime saturates `P(BIO|x)`, so keep separate from hidden-conflict stress |
 | retail field slice | current slice is frozen but still small-field | keep as auxiliary evidence |
 | diagnostic full coverage | current diagnostic is representative | expand all tasks/baselines |
-| CoNLL2000 multiseed public case | one-seed formal evidence is helpful but thin | run 3-seed CPU/HPC command if external review says one frozen case is too weak |
+| CoNLL2000 multiseed public case | completed locally with full 1000/1000/1000 seeds 0/1/2; B4 raises event mass but lowers mean token/span metrics | use as case-study boundary evidence, not benchmark superiority |
 | final R7 reproducibility packaging | derisk run is curated as a local direct run | rerun through the suite wrapper if a submission package requires uniform metadata |
 
 ## 9. Gate

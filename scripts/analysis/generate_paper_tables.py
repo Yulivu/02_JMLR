@@ -277,7 +277,7 @@ def table_public_conll2000_smoke(results_dir: Path) -> list[dict[str, object]]:
                     "B7_legal_mean": numfmt(row["b7_legal_rate_mean"]),
                     "token_acc_mean": numfmt(row["token_accuracy_mean"]),
                     "span_F1_mean": numfmt(row["span_f1_mean"]),
-                    "claim_use": "plumbing smoke only; full multiseed pending",
+                    "claim_use": "plumbing smoke only; not formal evidence",
                 }
             )
     if not selected:

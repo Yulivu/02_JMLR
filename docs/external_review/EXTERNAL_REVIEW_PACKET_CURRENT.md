@@ -123,12 +123,12 @@ Review task: identify whether these distinctions are accurate, sufficient, or ov
 | R6a diagnostic | 21,000 field-style cases | event risk AUROC `0.7088`, AUPRC `0.8470` | rule-specific posterior-consistency signal | not calibration; generic uncertainty baselines are stronger |
 | R6a uncertainty baselines | same 21,000 cases | entropy/margin/max-probability AUROC about `0.78-0.81` | boundary on diagnostic claim | no uncertainty-superiority or complementarity claim |
 | R8 complexity | reference CPU transfer scaling | product-state scaling measured | complexity discussion | not optimized runtime |
-| Public CoNLL2000 formal | 1000/1000/1000 public BIO/chunking case, one seed/config | B4 raises `P(BIO|x)` from `0.9762` to `0.9953`, hidden conflict drops from `0.0240` to `0.0040`, span F1 is `0.7773` to `0.7936`, B7 legality `1.0000` | public structured-prediction audit case | not SOTA, benchmark superiority, or general task-improvement claim |
+| Public CoNLL2000 multiseed formal | 1000/1000/1000 public BIO/chunking case, seeds 0/1/2 | B4 raises mean `P(BIO|x)` from `0.9837` to `0.9885`, hidden conflict drops from `0.0133` to `0.0123`, while token acc drops from `0.8731` to `0.8697` and span F1 drops from `0.7973` to `0.7918`; B7 legality `1.0000` | public structured-prediction audit case | not SOTA, benchmark superiority, or general task-improvement claim |
 | Public CoNLL2000 uncertainty | same 2,000 variant/case detail rows | event risk has positive exact-error ranking signal, but entropy/max-probability baselines are stronger | public-case uncertainty boundary | no uncertainty-superiority or calibration claim |
 | B7 constrained-product formal | WNUT17 BIO, 500/500/500, B0 and B4 source models | legal rate `1.0000`; `uses_event_mass_for_decoding=False` | faithful constrained decoding comparison object | not full WFST, constrained CRF, or replacement claim |
 | R7 sensitivity formal | 3 rule difficulties x 10 seeds x lambda sweep | event mass moves with lambda; stock-like digits has legal-rate-not-useful boundary | lambda/rule boundary evidence | not an accuracy-method or benchmark claim |
 | R7 derisk boundary | wrapped formal run, 10 seeds, config `experiments/configs/exp7/r7_sensitivity_formal.yaml`, includes intentionally swapped rule | `product_code_swapped_rule` B4 lambda 1.0 raises `P(event)` by `+0.9485`, while char accuracy drops `-0.5524` and exact accuracy drops `-0.0816` | explicit event/task tradeoff boundary | shows rule choice can make event loss harmful for task metrics |
-| CoNLL2000 multiseed tiny smoke | wrapped smoke run, 30/30/30 examples, 3 seeds, 1 epoch | B4 raises mean `P(BIO|x)` from `0.3487` to `0.5187`, while mean span F1 drops from `0.6894` to `0.6647` | plumbing check only | separate smoke provenance table; not formal evidence; full three-seed run pending |
+| CoNLL2000 multiseed tiny smoke | wrapped smoke run, 30/30/30 examples, 3 seeds, 1 epoch | B4 raises mean `P(BIO|x)` from `0.3487` to `0.5187`, while mean span F1 drops from `0.6894` to `0.6647` | plumbing check only | separate smoke provenance table; not formal evidence |
 
 ## Key Numbers
 
@@ -162,29 +162,29 @@ max sequence probability -0.0314, negative log Viterbi probability -0.0314.
 
 Review task: determine what diagnostic claim, if any, these numbers support.
 
-### Public CoNLL2000 Formal Case
+### Public CoNLL2000 Multiseed Formal Case
 
-| Variant | P(BIO\|x) | Hidden Conflict | Unconstrained Legal | B7 Legal | Token Acc | Span F1 |
-|---|---:|---:|---:|---:|---:|---:|
-| B0 | 0.9762 | 0.0240 | 0.9800 | 1.0000 | 0.8623 | 0.7773 |
-| B4 | 0.9953 | 0.0040 | 1.0000 | 1.0000 | 0.8681 | 0.7936 |
+| Variant | Seeds | P(BIO\|x) mean | P(BIO\|x) std | Hidden Conflict | B7 Legal | Token Acc | Span F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| B0 | 3 | 0.9837 | 0.0011 | 0.0133 | 1.0000 | 0.8731 | 0.7973 |
+| B4 | 3 | 0.9885 | 0.0063 | 0.0123 | 1.0000 | 0.8697 | 0.7918 |
 
 Public-case uncertainty:
 
 | Variant | Score | AUROC exact | AUPRC exact | Spearman token error | Exact risk gap |
 |---|---|---:|---:|---:|---:|
-| B0 | event risk | 0.7202 | 0.9011 | 0.2607 | 0.3950 |
-| B0 | token entropy | 0.8330 | 0.9468 | 0.4114 | 0.5500 |
-| B0 | max-prob inverse | 0.8265 | 0.9448 | 0.3834 | 0.5550 |
-| B4 | event risk | 0.6861 | 0.8664 | 0.2621 | 0.2450 |
-| B4 | token entropy | 0.8242 | 0.9417 | 0.4042 | 0.5350 |
-| B4 | max-prob inverse | 0.7980 | 0.9298 | 0.3422 | 0.5100 |
+| B0 | event risk | 0.7384 | 0.8829 | 0.3117 | 0.4450 |
+| B0 | strongest generic: sequence entropy | 0.8339 | 0.9405 | 0.4346 | not reported here |
+| B4 | event risk | 0.6895 | 0.8865 | 0.2886 | 0.2650 |
+| B4 | strongest generic: sequence entropy | 0.8178 | 0.9394 | 0.3785 | not reported here |
 
 Review task: decide whether this is enough as a public structured-prediction case study, and whether any wording implies benchmark superiority.
 
-Full three-seed CoNLL2000 remains pending. The tiny three-seed run is a wrapped
-smoke/provenance check and appears only in `table_6a_public_conll2000_smoke`;
-it is not C13 evidence and should not be read as formal multiseed evidence.
+Full three-seed CoNLL2000 was completed locally in
+`experiments/runs/local_checks/public_conll2000_chunking_multiseed_full`
+at git commit `002ecbb` with returncode `0` and duration `3076.544701`
+seconds. The tiny three-seed run remains a wrapped smoke/provenance check and
+appears only in `table_6a_public_conll2000_smoke`; it is not C13 evidence.
 
 ### B7 And R7 Formal Additions
 
@@ -206,7 +206,7 @@ The repository currently allows these claims, subject to boundaries in `docs/man
 - Event loss has an expectation-difference gradient under explicit finite assumptions.
 - Semi-event training can raise posterior event mass in audited settings.
 - In the evaluated field-style diagnostics, low event mass has positive risk-ranking signal.
-- Public CoNLL2000 provides a structured-prediction audit case with event-mass movement, hidden-conflict reduction, and legal constrained decoding under one frozen configuration.
+- Public CoNLL2000 provides a structured-prediction multiseed audit case with event-mass movement, hidden-conflict accounting, legal constrained decoding, and task-metric boundary behavior.
 - B7 constrained-product decoding can be reported as a decoding comparison object that does not use event mass for decoding.
 - R7 sensitivity shows lambda/rule-dependent movement and includes legal-rate-not-useful and wrapped-formal event/task tradeoff boundary cases.
 - Product-state scaling can be discussed conservatively.
@@ -231,9 +231,7 @@ The project is not JMLR-main submission-ready and should not be described as
 submission-ready. Manuscript drafting can proceed with conservative boundaries now
 that B7, public CoNLL2000, and R7 sensitivity formal runs are audited, but
 submission still requires final proof review, final related-work citations,
-table/figure integration, reproducibility packaging, and a decision on whether
-the one-seed CoNLL2000 public case is enough or the pending full three-seed run
-is required.
+table/figure integration, and reproducibility packaging.
 ```
 
 Review task: check whether the allowed list is still too broad, and whether any forbidden claim is implied elsewhere.

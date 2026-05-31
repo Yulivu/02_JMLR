@@ -2,5 +2,5 @@
 
 | setting | variant | seeds | P_BIO_mean | P_BIO_std | hidden_conflict_mean | B7_legal_mean | token_acc_mean | span_F1_mean | claim_use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| formal_seed0 | B0_unconstrained | 1 | 0.9762 | 0.0000 | 0.0240 | 1.0000 | 0.8623 | 0.7773 | public structured-prediction audit case; not benchmark superiority |
-| formal_seed0 | B4_semi_event_0.1 | 1 | 0.9953 | 0.0000 | 0.0040 | 1.0000 | 0.8681 | 0.7936 | public structured-prediction audit case; not benchmark superiority |
+| formal_3seed | B0_unconstrained | 3 | 0.9837 | 0.0011 | 0.0133 | 1.0000 | 0.8731 | 0.7973 | public structured-prediction multiseed audit case; not benchmark superiority |
+| formal_3seed | B4_semi_event_0.1 | 3 | 0.9885 | 0.0063 | 0.0123 | 1.0000 | 0.8697 | 0.7918 | public structured-prediction multiseed audit case; not benchmark superiority |

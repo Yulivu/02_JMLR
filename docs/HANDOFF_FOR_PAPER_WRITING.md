@@ -72,7 +72,7 @@ Do not write the paper as any of the following:
 | R6a diagnostic | Risk/audit analysis. | Event mass has positive rule-specific ranking signal, but generic uncertainty baselines are stronger. |
 | R8 complexity | Scaling reference. | Product-state scaling should be described conservatively. |
 | B7 constrained-product | Decoding comparison object. | Legal decoding can be reported without using original posterior event mass. |
-| Public CoNLL2000 | Public BIO/chunking audit case. | Helpful structured-prediction case, but one frozen configuration until multiseed full run is completed. |
+| Public CoNLL2000 | Public BIO/chunking audit case. | Full local three-seed case study strengthens provenance, but B4 lowers mean token/span metrics while raising event mass. |
 | R7 sensitivity | Lambda/rule boundary study. | Includes a wrapped-formal irrelevant-rule derisk run: B4 lambda 1.0 raises `P(event)` by `+0.9485` while char accuracy drops `-0.5524` and exact accuracy drops `-0.0816`. |
 
 ## Where Things Are
@@ -115,17 +115,13 @@ The second risk is empirical strength. R6a shows positive signal but generic unc
 
 The third risk is overclaiming event training. Event loss is a computable training signal, but the current evidence does not justify a general task-accuracy improvement claim.
 
-The main pending empirical option is the CoNLL2000 three-seed full public case. The existing tiny three-seed run is a wrapped plumbing smoke only; do not cite it as formal evidence. If external review says one frozen public configuration is too fragile, run:
+The CoNLL2000 three-seed full public case is now completed locally:
 
 ```bash
-cd /root/autodl-tmp/02_JMLR
-git pull --ff-only origin master
-python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
-```
-
-Then curate it with:
-
-```bash
-python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/autodl_jmlr_block/jmlr_derisk/public_conll2000_chunking_multiseed
+python scripts/exp1/run_event_training_task.py --config experiments/configs/exp7/public_conll2000_chunking_multiseed.yaml --out-dir experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
+python scripts/analysis/curate_jmlr_cpu_upgrade_results.py --public-multiseed-run experiments/runs/local_checks/public_conll2000_chunking_multiseed_full
 python scripts/analysis/generate_paper_tables.py
 ```
+
+Use it as case-study evidence only. The tiny three-seed run remains a wrapped
+plumbing smoke and should not be cited as formal evidence.

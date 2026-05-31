@@ -1,6 +1,6 @@
 # Paper Tables Index
 
-Generated from curated audit CSVs using repository state `a10517d+dirty`.
+Generated from curated audit CSVs using repository state `002ecbb+dirty`.
 
 This is table-generation provenance, not a claim that later documentation-only
 handoff commits changed the curated numeric evidence.
