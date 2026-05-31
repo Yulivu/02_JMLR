@@ -1,0 +1,44 @@
+\section{Finite Product Transfer and Event Loss}
+
+Assume the score admits a finite-context local factorization.  Let \(C\) be a
+finite context state space with initial context \(c_0\), deterministic update
+\(U:C \times \Y \to C\), and local potentials
+\(\phi_t(x,c_{t-1},y_t)\) such that
+\[
+  S_{\theta}(x,y) = \sum_{t=1}^T \phi_t(x,c_{t-1},y_t).
+\]
+Let \(G_t(c,j)=\exp\phi_t(x,c,j)\).  Let a complete DFA for \(\Lang\) be
+\((Q,q_{\mathrm{start}},F,\delta)\).  Define the product transfer
+\[
+M_t^{\Lang}[(c,q),(c',q')]
+= \sum_{j \in \Y} G_t(c,j)
+  \mathbf{1}[c'=U(c,j)]\mathbf{1}[q'=\delta(q,j)] .
+\]
+Let \(u_0\) be one at \((c_0,q_{\mathrm{start}})\) and let
+\(b_{\Lang}(c,q)=\mathbf{1}[q \in F]\).
+
+\begin{theorem}
+Under the finite setup above, including finite-context local factorization and
+a complete deterministic DFA,
+\[
+  u_0 M_1^{\Lang}\cdots M_T^{\Lang} b_{\Lang}
+  = \Z_{\theta,\Lang}(x).
+\]
+\end{theorem}
+
+\noindent The proof is the standard product-path expansion: every label
+sequence induces a unique context--DFA trajectory, and expansion of the
+nonnegative product transfer sums exactly the weights of accepting trajectories.
+
+\begin{proposition}
+If scores are finite and differentiable and \(\Z_{\theta,\Lang}(x)>0\), then
+\[
+\nabla_{\theta}[-\log \ptheta(\Lang \mid x)]
+= \E_{\ptheta(y\mid x)}[\nabla_{\theta}S_{\theta}(x,y)]
+ - \E_{\ptheta(y\mid x,y\in\Lang_T)}[\nabla_{\theta}S_{\theta}(x,y)].
+\]
+\end{proposition}
+
+This proposition explains the event loss as a computable training signal.  It
+does not imply that task accuracy, F1, calibration, or constrained-decoding
+quality improves.

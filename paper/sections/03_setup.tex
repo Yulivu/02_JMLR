@@ -1,0 +1,23 @@
+\section{Setup}
+
+Let \(\Y\) be a finite label alphabet and \(T\) a fixed sequence length.  For a
+fixed input \(x\), a CRF-style score \(S_{\theta}(x,y)\) assigns a finite real
+score to each \(y \in \Y^T\).  The ordinary normalizer is
+\[
+  \Z_{\theta}(x) = \sum_{y \in \Y^T} \exp S_{\theta}(x,y).
+\]
+For a regular language \(\Lang \subseteq \Y^*\), define the length-\(T\) event
+\(\Lang_T = \Lang \cap \Y^T\) and
+\[
+  \Z_{\theta,\Lang}(x)
+  = \sum_{y \in \Lang_T} \exp S_{\theta}(x,y),
+  \qquad
+  \ptheta(\Lang \mid x)
+  = \frac{\Z_{\theta,\Lang}(x)}{\Z_{\theta}(x)}.
+\]
+
+This definition is finite and well-defined for any finite score table.  The
+efficient product-transfer computation in the next section additionally assumes
+a finite-context local factorization.  An arbitrary finite score table can be
+represented by an exponentially large context or explicit table, but that is an
+expressivity fallback, not an efficiency claim.

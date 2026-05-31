@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{natbib}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\Lang}{\mathcal{L}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ptheta}{p_{\theta}}
+\newcommand{\Z}{Z}
+
+\title{Auditing CRF Posteriors with Regular-Language Event Mass}
+\author{Anonymous Authors}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We formalize and study posterior regular-language event mass for conditional
+random fields as an audit statistic under the original model posterior.
+Known product-automaton marginal inference is the computational neighborhood;
+the contribution is not a new CRF--DFA inference algorithm.  Instead, the paper
+separates decoded legality from posterior consistency, studies event loss as a
+computable training signal, and reports empirical boundaries where event mass is
+useful, saturated, weaker than generic uncertainty, or harmful when the rule is
+misleading.
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_setup}
+\input{sections/04_theory}
+\input{sections/05_methods}
+\input{sections/06_experiments}
+\input{sections/07_limitations}
+\input{sections/08_conclusion}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{sections/a_reproducibility}
+
+\end{document}

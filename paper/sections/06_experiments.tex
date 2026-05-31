@@ -1,0 +1,44 @@
+\section{Experiments}
+
+The experiments are designed as audit and boundary diagnostics, not as a
+benchmark-superiority study.
+
+\paragraph{Hidden posterior conflict.}
+WNUT17 diagnostic stress tests show that legal constrained decoding can coexist
+with low posterior BIO mass.  These runs are diagnostic only; they do not
+support a NER F1 improvement claim.
+
+\input{tables/table_2_r5_wnut17}
+
+\paragraph{Event-mass movement.}
+Controlled, semi-real, real-source, and public sequence-labeling cases show
+that event training can raise posterior event mass.  Task metrics vary, so the
+claim is event-mass movement rather than task superiority.
+
+\input{tables/table_3_event_training_signal}
+
+\paragraph{Diagnostic uncertainty boundary.}
+In evaluated field-style diagnostics, event risk has positive ranking signal,
+but generic uncertainty baselines are stronger in several settings.  We
+therefore report event risk as a rule-specific audit statistic, not a universal
+uncertainty replacement.
+
+\input{tables/table_4_diagnostic_ranking}
+\input{tables/table_7_public_uncertainty}
+
+\paragraph{Public CoNLL2000 case study.}
+The public BIO/chunking case provides a multiseed structured-prediction audit.
+B4 raises mean posterior BIO event mass and slightly reduces hidden conflict,
+while mean token accuracy and span F1 decrease.  This is boundary evidence
+against reading event loss as a general accuracy method.
+
+\input{tables/table_6_public_conll2000}
+
+\paragraph{Constrained-product baseline and sensitivity.}
+B7 reports a faithful constrained-product Viterbi baseline using the same BIO
+language.  R7 sensitivity studies show that rule and lambda choice matter,
+including a misleading-rule case where event mass rises while task metrics
+fall.
+
+\input{tables/table_8_b7_constrained_product}
+\input{tables/table_9_r7_sensitivity}

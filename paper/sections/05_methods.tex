@@ -1,0 +1,13 @@
+\section{Audit and Training Protocol}
+
+We report three objects separately.  First, the unconstrained CRF posterior
+event mass \(\ptheta(\Lang \mid x)\).  Second, the legality of the unconstrained
+Viterbi output.  Third, a constrained-product Viterbi baseline that returns a
+legal sequence using the same rule language.  The constrained decoder does not
+use \(\ptheta(\Lang \mid x)\) for decoding; it is a comparison object, not a
+full WFST toolkit.
+
+For training experiments, we include a semi-event objective that adds
+\(-\log \ptheta(\Lang \mid x)\) on rule-labeled or unlabeled examples.  We
+report event-mass movement, decoded legality, task metrics, and uncertainty
+baselines.  We do not interpret event loss as a general accuracy method.

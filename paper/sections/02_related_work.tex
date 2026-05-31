@@ -1,0 +1,42 @@
+\section{Related Work}
+
+\paragraph{CRFs and automata-based inference.}
+Conditional random fields provide the base conditional sequence model
+\citep{lafferty2001crf}.  Finite-state methods and weighted finite-state
+transducers are a close computational neighbor for constrained sequence
+decoding and automata composition \citep{mohri2002wfst}.  We do not claim that
+CRF--automaton product inference is new.  We use this known neighborhood to
+report a different quantity: event mass under the original posterior.
+
+\paragraph{Constrained decoding and regular-constrained CRFs.}
+Constrained decoding answers which legal output should be returned.  Regular
+constraints can also be built into a CRF's support; regular-constrained CRFs
+are therefore among the closest prior systems \citep{papay2022constraining}.
+Our audit keeps the original denominator \(\Z_{\theta}(x)\) and reports
+\(\Z_{\theta,\Lang}(x)/\Z_{\theta}(x)\).  A constrained-support CRF normalizes
+over legal structures; our diagnostic asks how much legal mass the original
+model had before such an intervention.
+
+\paragraph{Posterior regularization and generalized expectation.}
+Posterior regularization can encode posterior constraints and weak structural
+supervision \citep{ganchev2010posterior}.  Generalized expectation criteria
+also use weak supervision through expectation matching \citep{mann2010ge}.  The
+event loss in this paper is a computable use of the audit object, not a new
+weak-supervision family.
+
+\paragraph{Semantic loss.}
+Semantic loss penalizes low probability assigned to satisfying assignments of a
+logical constraint \citep{xu2018semantic}.  The loss
+\(-\log \ptheta(\Lang \mid x)\) is semantic-loss-like.  Our emphasis is the CRF
+posterior audit object, regular-language diagnostic protocol, and the
+distinction from decoded legality and constrained-support normalization.
+
+\paragraph{Constrained optimization and uncertainty.}
+Dual decomposition and related constrained optimization methods connect
+symbolic constraints with structured prediction objectives
+\citep{rush2010dual}.  Our statistic can be evaluated before choosing such an
+intervention.  Calibration and uncertainty work ask whether confidence scores
+match or rank empirical correctness \citep{platt1999probabilities,guo2017calibration}.
+This paper is not a calibration paper: event risk is reported as a
+rule-specific posterior-consistency signal, and our diagnostics explicitly show
+cases where generic uncertainty baselines are stronger.

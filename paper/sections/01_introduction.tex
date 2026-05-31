@@ -1,0 +1,38 @@
+\section{Introduction}
+
+Regular constraints are common in structured prediction: a BIO tag sequence
+should be legal, an extracted date should match a format, and a product code may
+need to satisfy a finite-state rule.  A constrained decoder can enforce such a
+rule at prediction time, but the legality of the decoded output does not answer
+how much probability the original model assigned to legal structures.
+
+This paper studies that latter question.  For a CRF posterior
+\(\ptheta(y \mid x)\) and a regular language \(\Lang\), we report
+\(\ptheta(\Lang \mid x)\), the posterior mass assigned by the original CRF to
+the regular-language event.  The denominator remains the original CRF
+normalizer over all length-\(T\) label sequences; it is not replaced by a
+constrained-support model.
+
+Known product-automaton marginal inference is the computational neighborhood.
+Our focus is original-posterior regular-language event mass as an auditable
+semantic object, separated from constrained decoding and constrained-support
+normalization.  This distinction matters when a legal decoded output coexists
+with low posterior mass on the legal event.
+
+The paper makes four conservative claims.  First, posterior regular-language
+event mass is a well-defined finite CRF posterior statistic and can be computed
+exactly by standard product-state transfer under explicit finite-context local
+factorization assumptions.  Second, hard-constrained decoding and posterior
+consistency answer different questions.  Third, the event loss
+\(-\log \ptheta(\Lang \mid x)\) is a computable training signal, but not an
+accuracy theorem.  Fourth, empirical diagnostics show both utility and
+boundaries: event risk can rank rule-specific errors, generic uncertainty can
+be stronger, event mass can saturate, and misleading rules can harm task
+metrics.
+
+\paragraph{Contributions.}
+The contribution is not a replacement for WFST, constrained decoding,
+regular-constrained CRFs, posterior regularization, or semantic loss.  The
+contribution is a posterior-semantics and audit protocol for reporting the
+original CRF posterior's mass on regular-language events, with training and
+diagnostic experiments that state their limitations.
