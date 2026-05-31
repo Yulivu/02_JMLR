@@ -17,6 +17,12 @@ Our audit keeps the original denominator \(\Z_{\theta}(x)\) and reports
 over legal structures; our diagnostic asks how much legal mass the original
 model had before such an intervention.
 
+This is a narrow distinction, not a dominance claim.  If illegal outputs should
+receive zero probability by design, a constrained-support CRF is a natural
+modeling choice.  Our audit is useful in the complementary situation where the
+unconstrained model remains the object under inspection and one wants to know
+whether a legal prediction is supported by posterior mass.
+
 \paragraph{Posterior regularization and generalized expectation.}
 Posterior regularization can encode posterior constraints and weak structural
 supervision \citep{ganchev2010posterior}.  Generalized expectation criteria
@@ -24,12 +30,25 @@ also use weak supervision through expectation matching \citep{mann2010ge}.  The
 event loss in this paper is a computable use of the audit object, not a new
 weak-supervision family.
 
+Posterior regularization is therefore a close conceptual neighbor.  It supplies
+an optimization framework for posterior constraints; our main object can be
+computed and reported before deciding whether to regularize, project, constrain
+decoding, or change model support.  Generalized expectation similarly motivates
+care around weak supervision claims: event loss should be described as a use of
+posterior event mass, not as a new family of weak-supervision methods.
+
 \paragraph{Semantic loss.}
 Semantic loss penalizes low probability assigned to satisfying assignments of a
 logical constraint \citep{xu2018semantic}.  The loss
 \(-\log \ptheta(\Lang \mid x)\) is semantic-loss-like.  Our emphasis is the CRF
 posterior audit object, regular-language diagnostic protocol, and the
 distinction from decoded legality and constrained-support normalization.
+
+This concession matters for the paper's scope.  The loss form should not be
+presented as unrelated to prior semantic-loss objectives.  The paper instead
+asks what this event probability means under a finite CRF posterior and how it
+behaves when contrasted with legal decoding, task metrics, and uncertainty
+scores.
 
 \paragraph{Constrained optimization and uncertainty.}
 Dual decomposition and related constrained optimization methods connect
@@ -40,3 +59,18 @@ match or rank empirical correctness \citep{platt1999probabilities,guo2017calibra
 This paper is not a calibration paper: event risk is reported as a
 rule-specific posterior-consistency signal, and our diagnostics explicitly show
 cases where generic uncertainty baselines are stronger.
+
+\paragraph{Tensor-network motivation.}
+Tensor-network language can motivate regular-language events in probabilistic
+sequence models, but it is not the main identity of this paper.  The current
+results do not establish arbitrary low-rank event transfer, optimized runtime,
+or tensor-rank superiority.  Any MPO or rank statement is appendix-only and
+conditional on explicit nonnegative factor constructions.
+
+\paragraph{Summary boundary.}
+The closest-prior risk is that the paper appears to rename known CRF--automaton
+marginal inference and semantic loss.  The manuscript should therefore be read
+as a posterior-semantics and auditability paper: the reported object is the
+original CRF posterior mass on a regular-language event, and the empirical
+claim is about decoded-legality separation, training-signal behavior, and
+diagnostic boundaries.

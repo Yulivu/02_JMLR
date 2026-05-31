@@ -36,3 +36,59 @@ regular-constrained CRFs, posterior regularization, or semantic loss.  The
 contribution is a posterior-semantics and audit protocol for reporting the
 original CRF posterior's mass on regular-language events, with training and
 diagnostic experiments that state their limitations.
+
+\subsection{What This Object Answers}
+
+The key distinction is the denominator and the intervention point.  Table
+\ref{tab:intro:objects} summarizes the neighboring objects that otherwise look
+similar in notation.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Nearby structured-prediction objects answer different questions.}
+\label{tab:intro:objects}
+\begin{tabular}{llll}
+\toprule
+Object & Procedure & Space & Question \\
+\midrule
+CRF posterior &
+\(\ptheta(y\mid x)\) &
+all \(y\in\Y^T\) &
+what distribution did the model assign? \\
+Constrained decoding &
+\(\arg\max_{y\in\Lang} S_\theta(x,y)\) &
+legal outputs &
+what is the best legal output? \\
+Constrained-support CRF &
+\(\ptheta(y\mid x,y\in\Lang)\) &
+legal outputs &
+what posterior results after support restriction? \\
+This audit &
+\(\ptheta(\Lang\mid x)=\Z_{\theta,\Lang}(x)/\Z_\theta(x)\) &
+all outputs in denominator &
+how much original posterior mass is legal? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This distinction is useful only if the scalar is reported with its limitations.
+If a rule is already saturated, event mass may add little diagnostic
+information.  If a rule is weakly related to task correctness, optimizing event
+loss can raise event mass while degrading task metrics.  If the goal is only to
+return a legal output, a constrained decoder may be the right tool.  The point
+of the audit is to make these cases visible rather than to replace those
+interventions.
+
+\subsection{Closest-Prior Objection}
+
+A natural objection is that \(\ptheta(\Lang\mid x)\) is just standard marginal
+inference on a product automaton with a different name.  We agree about the
+computation.  The product-state dynamic program is not the novelty claim.  The
+paper's claim is that the resulting original-posterior event probability is a
+useful object to report and study: it can be low when constrained Viterbi
+returns a legal output, can define a semantic-loss-like training signal, and can
+support diagnostics with explicit empirical boundaries.  This is why the
+experiments compare posterior event mass, unconstrained decoded legality,
+constrained-product decoded legality, task metrics, and uncertainty baselines
+as separate quantities.

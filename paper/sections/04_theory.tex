@@ -1,6 +1,8 @@
 \section{Finite Product Transfer and Event Loss}
 
-Assume the score admits a finite-context local factorization.  Let \(C\) be a
+The setup in Section 3 defines \(\ptheta(\Lang\mid x)\) for any finite score
+table over \(\Y^T\).  The product-transfer computation below requires more
+structure.  Assume the score admits a finite-context local factorization.  Let \(C\) be a
 finite context state space with initial context \(c_0\), deterministic update
 \(U:C \times \Y \to C\), and local potentials
 \(\phi_t(x,c_{t-1},y_t)\) such that
@@ -17,6 +19,13 @@ M_t^{\Lang}[(c,q),(c',q')]
 Let \(u_0\) be one at \((c_0,q_{\mathrm{start}})\) and let
 \(b_{\Lang}(c,q)=\mathbf{1}[q \in F]\).
 
+The finite-context assumption covers standard first-order linear-chain CRFs and
+fixed higher-order Markov contexts.  An arbitrary finite score table can be
+represented with a sufficiently large context or table construction, but that
+fallback is exponential in general and does not support an efficiency or
+scaling claim.  Product-state scaling statements therefore apply only to the
+chosen finite-context implementation.
+
 \begin{theorem}
 Under the finite setup above, including finite-context local factorization and
 a complete deterministic DFA,
@@ -26,9 +35,30 @@ a complete deterministic DFA,
 \]
 \end{theorem}
 
-\noindent The proof is the standard product-path expansion: every label
-sequence induces a unique context--DFA trajectory, and expansion of the
-nonnegative product transfer sums exactly the weights of accepting trajectories.
+\begin{proof}
+Fix a label sequence \(y=(y_1,\ldots,y_T)\).  The deterministic context update
+and complete DFA transition induce a unique trajectory
+\[
+  (c_0,q_0),(c_1,q_1),\ldots,(c_T,q_T),
+  \qquad q_0=q_{\mathrm{start}},
+\]
+where \(c_t=U(c_{t-1},y_t)\) and \(q_t=\delta(q_{t-1},y_t)\).  Along this path,
+the product of local transfer weights is
+\[
+  \prod_{t=1}^T G_t(c_{t-1},y_t)
+  = \exp\left(\sum_{t=1}^T \phi_t(x,c_{t-1},y_t)\right)
+  = \exp S_\theta(x,y).
+\]
+Conversely, any nonzero term in the expansion of
+\(u_0M_1^\Lang\cdots M_T^\Lang b_\Lang\) selects labels that satisfy the same
+deterministic context and DFA updates.  If multiple labels induce the same
+product transition, the transfer entry sums their weights, and distributivity
+of the finite matrix product still assigns each label sequence exactly its own
+product of local weights.  The terminal vector \(b_\Lang\) keeps exactly the
+trajectories with \(q_T\in F\), which by DFA correctness are exactly
+\(\Lang_T\).  Thus the product transfer sums \(\exp S_\theta(x,y)\) over
+\(y\in\Lang_T\), which is \(\Z_{\theta,\Lang}(x)\).
+\end{proof}
 
 \begin{proposition}
 If scores are finite and differentiable and \(\Z_{\theta,\Lang}(x)>0\), then
@@ -39,6 +69,29 @@ If scores are finite and differentiable and \(\Z_{\theta,\Lang}(x)>0\), then
 \]
 \end{proposition}
 
+\begin{proof}
+Because \(\Y^T\) is finite, differentiation commutes with summation.  Therefore
+\[
+ \nabla_\theta \log \Z_\theta(x)
+ = \sum_{y\in\Y^T}\ptheta(y\mid x)\nabla_\theta S_\theta(x,y)
+\]
+and, when \(\Z_{\theta,\Lang}(x)>0\),
+\[
+ \nabla_\theta \log \Z_{\theta,\Lang}(x)
+ = \sum_{y\in\Lang_T}\ptheta(y\mid x,y\in\Lang_T)
+   \nabla_\theta S_\theta(x,y).
+\]
+Since \(-\log\ptheta(\Lang\mid x)=\log\Z_\theta(x)-\log\Z_{\theta,\Lang}(x)\),
+subtracting the two identities gives the result.
+\end{proof}
+
 This proposition explains the event loss as a computable training signal.  It
 does not imply that task accuracy, F1, calibration, or constrained-decoding
 quality improves.
+
+\paragraph{Diagnostic interpretation.}
+The scalar \(\ptheta(\Lang\mid x)\) is attached to the original posterior, not
+to the selected decoded sequence.  It can therefore be evaluated even when a
+constrained decoder returns a legal output.  Low event mass should be
+interpreted as posterior inconsistency with a specified rule; whether that
+inconsistency predicts task error is an empirical diagnostic question.
