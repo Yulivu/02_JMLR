@@ -1,13 +1,43 @@
 \section{Audit and Training Protocol}
 
-We report three objects separately.  First, the unconstrained CRF posterior
-event mass \(\ptheta(\Lang \mid x)\).  Second, the legality of the unconstrained
-Viterbi output.  Third, a constrained-product Viterbi baseline that returns a
-legal sequence using the same rule language.  The constrained decoder does not
-use \(\ptheta(\Lang \mid x)\) for decoding; it is a comparison object, not a
-full WFST toolkit.
+We report four quantities separately because they answer different questions.
+First, the unconstrained CRF posterior event mass \(\ptheta(\Lang \mid x)\)
+measures how much original posterior probability satisfies the rule.  Second,
+the legality of the unconstrained Viterbi output records whether the model's
+own best sequence is legal.  Third, a constrained-product Viterbi baseline
+returns the best legal sequence under the same CRF score and the same rule
+language.  Fourth, ordinary task metrics measure agreement with labels.  None
+of these quantities subsumes the others.
 
-For training experiments, we include a semi-event objective that adds
-\(-\log \ptheta(\Lang \mid x)\) on rule-labeled or unlabeled examples.  We
-report event-mass movement, decoded legality, task metrics, and uncertainty
-baselines.  We do not interpret event loss as a general accuracy method.
+\subsection{Constrained-Product Decoding Baseline}
+
+The B7 baseline uses the same regular language \(\Lang\) as the audit event and
+performs Viterbi decoding over the CRF-context \(\times\) DFA product state.
+It returns a legal decoded sequence by construction when a legal path exists.
+It does not use \(\ptheta(\Lang \mid x)\) for decoding and should not be read
+as a full WFST toolkit or as a replacement for finite-state decoding systems.
+Its role is to make decoded legality observable next to original-posterior
+event mass.
+
+\subsection{Event Training}
+
+For training experiments, we include a semi-event objective of the form
+\[
+  \mathcal{L}(\theta)
+  = \mathcal{L}_{\mathrm{sup}}(\theta)
+    + \lambda[-\log \ptheta(\Lang \mid x)].
+\]
+Labeled examples use the supervised CRF negative log likelihood.  Rule-labeled
+or unlabeled examples can supply event pressure through the second term.  The
+gradient proposition in Section 4 explains this as pulling unconstrained
+posterior expectations toward event-conditioned posterior expectations.  It is
+not a theorem that task accuracy improves.
+
+\subsection{Diagnostic Use}
+
+For diagnostics, we use event risk \(1-\ptheta(\Lang\mid x)\) to rank examples
+by posterior inconsistency with the rule.  We report bottom/top quantile gaps,
+hidden conflict, and uncertainty baselines when available.  Hidden conflict is
+high when legal decoded outputs coexist with low original posterior event mass.
+Generic uncertainty baselines are included to prevent over-reading event risk
+as a universal uncertainty or calibration score.

@@ -5,12 +5,26 @@ Product automaton marginal inference is the known computational neighborhood.
 The method is not a replacement for WFST methods, constrained decoding,
 regular-constrained CRFs, posterior regularization, or semantic loss.
 
+The theory is finite and local.  Product transfer assumes finite label set,
+fixed finite length, complete deterministic DFA, finite scores, and
+finite-context local factorization.  Arbitrary finite score tables can be
+encoded only by a large explicit context or table representation; this is not
+an efficient arbitrary-score result.
+
 The empirical evidence is not benchmark-superiority evidence.  WNUT17
-diagnostic stress has zero entity F1 in the hidden-conflict setting, the public
+diagnostic stress has zero entity F1 in the hidden-conflict setting.  The public
 CoNLL2000 multiseed case shows event-mass movement with lower mean task metrics
-for B4, and uncertainty baselines can be stronger than event risk.  The tensor
-or MPO material is appendix-only motivation and does not establish arbitrary
-low-rank event transfers or optimized runtime.
+for B4.  R7 includes a misleading-rule case where event loss raises event mass
+while harming task metrics.  These are intended boundaries, not failures to be
+hidden.
+
+The diagnostic evidence is not calibration evidence.  Event risk can have
+positive rule-specific ranking signal, but entropy, margin, or sequence
+probability baselines can be stronger.  We therefore do not claim robust
+residual predictive power after controlling for generic uncertainty.
+
+The tensor or MPO material is appendix-only motivation and does not establish
+arbitrary low-rank event transfers or optimized runtime.
 
 Final submission requires a fresh proof audit, citation-context audit, and
 paper-claim audit on the completed LaTeX and BibTeX package.

@@ -3,17 +3,33 @@
 The experiments are designed as audit and boundary diagnostics, not as a
 benchmark-superiority study.
 
+\subsection{Reporting Principles}
+
+Each block reports event mass, movement in event mass, decoded legality, task
+metrics, and an explicit claim boundary.  We use the variant name B4 for the
+semi-event training objective, B5/B6 for local rule-feature or
+posterior-regularization-style comparisons where available, and B7 for the
+constrained-product decoding baseline.  The central question is whether
+posterior event mass reveals information that decoded legality alone would
+hide, not whether B4 is a generally superior task model.
+
 \paragraph{Hidden posterior conflict.}
 WNUT17 diagnostic stress tests show that legal constrained decoding can coexist
 with low posterior BIO mass.  These runs are diagnostic only; they do not
-support a NER F1 improvement claim.
+support a NER F1 improvement claim.  In the diagnostic stress setting, B0 has
+posterior BIO mass \(0.0566\), while B4 raises this to \(0.3389\); entity F1
+remains \(0.0000\).  The separate feature-based viability check shows a nonzero
+B0 entity F1 of \(0.1660\), but B4 does not improve it.
 
 \input{tables/table_2_r5_wnut17}
 
 \paragraph{Event-mass movement.}
 Controlled, semi-real, real-source, and public sequence-labeling cases show
 that event training can raise posterior event mass.  Task metrics vary, so the
-claim is event-mass movement rather than task superiority.
+claim is event-mass movement rather than task superiority.  In the formal
+R1/R2/R4 aggregation, B4 has positive mean \(\Delta P\) in every listed block;
+B5/B6 comparisons remain competitive on several task metrics, so the evidence
+does not support a dominance claim.
 
 \input{tables/table_3_event_training_signal}
 
@@ -21,7 +37,10 @@ claim is event-mass movement rather than task superiority.
 In evaluated field-style diagnostics, event risk has positive ranking signal,
 but generic uncertainty baselines are stronger in several settings.  We
 therefore report event risk as a rule-specific audit statistic, not a universal
-uncertainty replacement.
+uncertainty replacement.  The R6a aggregate exact-error AUROC is \(0.7088\)
+with AUPRC \(0.8470\).  The public CoNLL2000 multiseed uncertainty table shows
+the same boundary: event risk is positive, but sequence entropy is stronger by
+AUROC for both B0 and B4 variants.
 
 \input{tables/table_4_diagnostic_ranking}
 \input{tables/table_7_public_uncertainty}
@@ -30,7 +49,11 @@ uncertainty replacement.
 The public BIO/chunking case provides a multiseed structured-prediction audit.
 B4 raises mean posterior BIO event mass and slightly reduces hidden conflict,
 while mean token accuracy and span F1 decrease.  This is boundary evidence
-against reading event loss as a general accuracy method.
+against reading event loss as a general accuracy method.  Specifically, B0 has
+mean \(P(\mathrm{BIO}\mid x)=0.9837\) and span F1 \(0.7973\), while B4 has mean
+\(P(\mathrm{BIO}\mid x)=0.9885\) and span F1 \(0.7918\).  B7 legality is
+\(1.0000\), reinforcing that legal decoding and original-posterior event mass
+should be reported separately.
 
 \input{tables/table_6_public_conll2000}
 
@@ -38,7 +61,10 @@ against reading event loss as a general accuracy method.
 B7 reports a faithful constrained-product Viterbi baseline using the same BIO
 language.  R7 sensitivity studies show that rule and lambda choice matter,
 including a misleading-rule case where event mass rises while task metrics
-fall.
+fall.  For the swapped product-code rule at B4 \(\lambda=1.0\), event mass rises
+by \(0.9485\), while character accuracy drops by \(0.5524\) and exact accuracy
+drops by \(0.0816\).  This is evidence against using event loss as a generic
+accuracy objective.
 
 \input{tables/table_8_b7_constrained_product}
 \input{tables/table_9_r7_sensitivity}
