@@ -34,7 +34,7 @@ The project is no longer an early idea search. It is in the pre-paper review sta
 | claim table | updated for review | C1/C2 formal foundation, C7 appendix/sanity, B7/public/sensitivity included with boundaries |
 | paper positioning | narrowed | methods/theory/auditability, not benchmark superiority |
 | HPC | paused | no new AutoDL job unless review requires a specific experiment |
-| next step | external review / manuscript integration | stress-test novelty, proof assumptions, related work, empirical framing, and whether single-case public evidence is enough |
+| next step | manuscript integration with final audits | repository-level proof, related-work, claim/evidence, and reproducibility audits exist; repeat them on final LaTeX/BibTeX before submission |
 
 ## Supported Claims
 

@@ -19,7 +19,10 @@ Before paper submission, the repository should expose exact code, configs, data 
 | data notes | partial | WNUT and retail notes exist; final paper citation notes need checking |
 | exact commit references | partial | commits in run metadata; final table should list them |
 | table-generation scripts | done-for-review | `scripts/analysis/generate_paper_tables.py` regenerates `experiments/results/paper_tables/` from curated audit CSVs and `docs/manuscript/FINAL_CLAIM_TABLE.md` |
-| external proof/claim review | pending | next step |
+| internal proof/theory audit | done-for-review | `docs/evidence/FINAL_PROOF_THEORY_AUDIT.md`; final external proof review still required on LaTeX |
+| citation/related-work anchor audit | done-for-review | `docs/manuscript/CITATION_RELATED_WORK_AUDIT.md`; final BibTeX/context audit pending |
+| paper-claim/evidence audit | done-for-review | `docs/evidence/PAPER_CLAIM_EVIDENCE_AUDIT.md`; final manuscript audit pending |
+| reproducibility status report | done-for-review | `docs/manuscript/REPRODUCIBILITY_PACKAGE_STATUS.md` |
 
 ## Paper-Ready Requirements
 
@@ -55,4 +58,4 @@ Generated outputs:
 - `experiments/results/paper_tables/table_4_diagnostic_ranking.*`
 - `experiments/results/paper_tables/table_5_complexity_scaling.*`
 
-These tables are ready for external review and paper outlining. They are not yet final camera-ready tables because final provenance, citations, and external proof/claim review are still pending.
+These tables are ready for external review and paper outlining. They are not yet final camera-ready tables because final LaTeX, BibTeX, citation contexts, and archival raw-run packaging are still pending.

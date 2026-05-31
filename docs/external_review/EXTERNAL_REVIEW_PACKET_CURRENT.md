@@ -230,8 +230,11 @@ The repository currently forbids these claims:
 The project is not JMLR-main submission-ready and should not be described as
 submission-ready. Manuscript drafting can proceed with conservative boundaries now
 that B7, public CoNLL2000, and R7 sensitivity formal runs are audited, but
-submission still requires final proof review, final related-work citations,
-table/figure integration, and reproducibility packaging.
+submission still requires final proof review on the final LaTeX, final BibTeX
+and citation-context audit, final table/figure integration, and archival
+reproducibility packaging. Current repository-level pre-submission audits are:
+`FINAL_PROOF_THEORY_AUDIT.md`, `CITATION_RELATED_WORK_AUDIT.md`,
+`PAPER_CLAIM_EVIDENCE_AUDIT.md`, and `REPRODUCIBILITY_PACKAGE_STATUS.md`.
 ```
 
 Review task: check whether the allowed list is still too broad, and whether any forbidden claim is implied elsewhere.

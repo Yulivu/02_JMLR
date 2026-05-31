@@ -299,7 +299,10 @@ def table_public_conll2000_smoke(results_dir: Path) -> list[dict[str, object]]:
 
 
 def table_public_uncertainty(results_dir: Path) -> list[dict[str, object]]:
-    rows = read_csv(results_dir / "public_sequence_labeling" / "conll2000_public_uncertainty_metrics.csv")
+    public_dir = results_dir / "public_sequence_labeling"
+    multiseed_path = public_dir / "conll2000_public_multiseed_uncertainty_metrics.csv"
+    one_seed_path = public_dir / "conll2000_public_uncertainty_metrics.csv"
+    rows = read_csv(multiseed_path if multiseed_path.is_file() else one_seed_path)
     selected = []
     keep = {
         "event_risk_1_minus_p",

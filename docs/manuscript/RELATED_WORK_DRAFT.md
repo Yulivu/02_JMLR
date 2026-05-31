@@ -150,7 +150,7 @@ We introduce a new product-automaton inference algorithm for CRFs.
 |---|---|---|
 | CRFs | Lafferty, McCallum, and Pereira (2001), "Conditional Random Fields" | base conditional sequence model and marginal inference neighborhood |
 | WFST / finite-state methods | Mohri, Pereira, and Riley (2002), "Weighted Finite-State Transducers in Speech Recognition" | automata/product-style constrained decoding neighborhood |
-| regular-constrained CRFs | Papay, Klinger, and Pado (2021), "Constraining Linear-chain CRFs to Regular Languages" | closest constrained-CRF neighbor; support restriction vs original-posterior event mass |
+| regular-constrained CRFs | Papay, Klinger, and Padó (2022), "Constraining Linear-chain CRFs to Regular Languages" | closest constrained-CRF neighbor; support restriction vs original-posterior event mass |
 | posterior regularization | Ganchev et al. (2010), "Posterior Regularization for Structured Latent Variable Models" | closest conceptual neighbor for posterior constraints |
 | generalized expectation | Mann and McCallum (2010), "Generalized Expectation Criteria for Semi-Supervised Learning with Weakly Labeled Data" | weak-supervision expectation criterion boundary |
 | semantic loss | Xu et al. (2018), "A Semantic Loss Function for Deep Learning with Symbolic Knowledge" | logic/event loss boundary |

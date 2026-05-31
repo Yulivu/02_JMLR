@@ -15,6 +15,11 @@ dist/
 *.pkl
 *.pickle
 
+# Local Codex/debuffer skill installs are machine-specific agent tooling, not
+# project evidence or manuscript artifacts.
+.agents/
+.debuffer_skills/
+
 # Data staging. Keep directory placeholders and the current retained small-field
 # research artifact, but ignore future raw/interim/processed drops by default.
 data/raw/*

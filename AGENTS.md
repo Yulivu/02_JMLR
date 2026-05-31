@@ -10,4 +10,4 @@ Keep this repository focused on artifacts that directly support final experiment
 
 Default policy: do not deploy experiments, rent GPUs, or run long jobs unless the user explicitly asks. Prefer local probes and written research artifacts until the JMLR protocol, run list, public slice, and smoke tests are frozen.
 
-Use external ARIS/Codex research skills when helpful; local copies of generic skills are intentionally not stored in this repo.
+Use external Codex research skills when helpful; local copies of generic skills are intentionally not stored in this repo.

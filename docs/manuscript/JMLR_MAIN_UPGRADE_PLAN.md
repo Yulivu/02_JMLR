@@ -72,5 +72,8 @@ python scripts/analysis/generate_paper_tables.py
 
 ```text
 JMLR main manuscript drafting can proceed with caveats: B7, public CoNLL2000, and R7 sensitivity formal runs are audited, and the R7 derisk run now gives a wrapped-formal event/task tradeoff boundary.
-JMLR submission-ready: no. Submission still requires final proof review, final related-work citations, final table/figure integration, and reproducibility packaging.
+JMLR submission-ready: no. Repository-level proof, related-work, claim/evidence,
+and reproducibility audits now exist for drafting, but submission still requires
+the same audits on the final LaTeX/BibTeX package plus final table/figure
+integration and archival raw-run packaging.
 ```
